@@ -3,7 +3,8 @@
         "*.embeddedhtml": "html",
         "iostream": "cpp",
         "chrono": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "random": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
