@@ -1,3 +1,4 @@
+// Sieve // Totient // Mobius
 // Generate the all primes <= n
 // Time complexity: O(nlog(logn)) for standard sieve, O(n) for linear sieve
 // Problem link: https://cses.fi/problemset/task/2417/ (using linear sieve to generate the mobius function)
