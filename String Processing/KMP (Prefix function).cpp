@@ -24,7 +24,25 @@ vector<int> prefix_func(string s) {
     }
     return f;
 }
- 
+
+// Prefix Automation -> Finding the next state for each character c of string t 
+// (using only string s and character '#' and lowercase letters)
+void compute_automaton(string s, vector<vector<int>>& aut) {
+    s += '#';
+    int n = s.size();
+    vector<int> pi = prefix_func(s);
+    aut.assign(n, vector<int>(26));
+    for (int i = 0; i < n; i++) {
+        for (int c = 0; c < 26; c++) {
+            if (i > 0 && 'a' + c != s[i])
+                aut[i][c] = aut[pi[i-1]][c];
+            else
+                aut[i][c] = i + ('a' + c == s[i]);
+        }
+    }
+}
+
+// Ocuurrence of s in t
 int cnt_occ(string s, string t) {
     string ts = t + "#" + s;
     int n = t.size(), m = s.size(), nm = ts.size();
