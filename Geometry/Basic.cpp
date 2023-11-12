@@ -44,6 +44,10 @@ template <class T> struct Point {
     Point rotate(const double& a) const { return P(x*cos(a) - y*sin(a), x*sin(a) + y*cos(a)); } // ccw around (0,0)
 };
 
+Point intersect(Point a1, Point d1, Point a2, Point d2) {
+    return a1 + (a2-a1).cross(d2) / d1.cross(d2) * d1;
+}
+
 using pt = Point<ll>;
 
 template<class T> T polygonArea2(vector<Point<T>>& v) {
