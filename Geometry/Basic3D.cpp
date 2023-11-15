@@ -1,4 +1,4 @@
-// Basic geometry template for 3D Point
+// Basic geometry template for 3D point3d
 
 #include <bits/stdc++.h>
 
@@ -15,6 +15,10 @@ struct point3d {
     ftype x, y, z;
     point3d() {}
     point3d(ftype x, ftype y, ftype z): x(x), y(y), z(z) {}
+    
+    friend std::ostream& operator<<(std::ostream& out, const point3d& p) { return out << "(" << p.x << "," << p.y << "," << p.z << ")"; }
+    friend std::istream& operator>>(std::istream& in, point3d& p) { return in >> p.x >> p.y >> p.z; }
+
     point3d& operator+=(const point3d &t) {
         x += t.x;
         y += t.y;
