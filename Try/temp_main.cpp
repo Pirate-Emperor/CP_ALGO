@@ -655,55 +655,8 @@ void sol()
     
     ll a,b,c,n,m,k=-1,x,res=0;
     cin >> n;
-    string s;
-    cin>> s;
-    ll sa=0,sb=0,pa=0,pb=0;
-    char last;
+    vector<ll> arr(n);
 
-    for (int i=1;i<=n;i++)
-    {
-        for (auto si:s)
-        {
-            pa+=si=='A';
-            pb+=si=='B';
-            if (pa>=i)
-            {
-                sa++;
-                pa=pb=0;
-                last='A';
-            }
-            else if (pb>=i) 
-            {
-                sb++;
-                pa=pb=0;
-                last='B';
-            }
-        }
-        if (pa>0 || pb>0) continue;
-        if (sb==sa) continue;
-        if ( (sa>sb && last=='A'))
-        {
-            cout << 'A' << endl;
-            return;
-        }
-        if ( (sb>sa && last=='B') )
-        {
-            cout << 'B' << endl;
-            return;
-        }
-    }
-    if (pa>pb && s[s.size()-1]=='A')
-    {
-        cout << 'A' << endl;
-        return;
-    }
-    if (pb>pa && s[s.size()-1]=='B')
-    {
-        cout << 'B' << endl;
-        return;
-    }
-    cout << "?\n";
-   
     return;
 }
 
