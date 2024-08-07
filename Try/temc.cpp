@@ -9,57 +9,13 @@ uniform_int_distribution<long long> rnd(0,LLONG_MAX);
 
 #define ll long long
 
-const ll MAXN = 1e5 + 5; 
-const ll MAX_N = 2e5 + 1;
+const int MAXN = 3e6 + 5; 
+const int MAX_N = 2e5 + 1;
 ll MOD = 1000000007;
 const ll MOD2 = 1073676287;
 const ll MOD3 = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
-
-pair<ll, ll> t[4*MAXN];
-
-pair<ll, ll> combine(pair<ll, ll> a, pair<ll, ll> b) {
-    if (a.first > b.first) 
-        return a;
-    if (b.first > a.first)
-        return b;
-    return make_pair(a.first, a.second + b.second);
-}
-
-void build(ll a[], ll v, ll tl, ll tr) {
-    if (tl == tr) {
-        t[v] = make_pair(a[tl], 1);
-    } else {
-        ll tm = (tl + tr) / 2;
-        build(a, v*2, tl, tm);
-        build(a, v*2+1, tm+1, tr);
-        t[v] = combine(t[v*2], t[v*2+1]);
-    }
-}
-
-pair<ll, ll> get_max(ll v, ll tl, ll tr, ll l, ll r) {
-    if (l > r)
-        return make_pair(-INF, 0);
-    if (l == tl && r == tr)
-        return t[v];
-    ll tm = (tl + tr) / 2;
-    return combine(get_max(v*2, tl, tm, l, min(r, tm)), 
-                   get_max(v*2+1, tm+1, tr, max(l, tm+1), r));
-}
-
-void update(ll v, ll tl, ll tr, ll pos, ll new_val) {
-    if (tl == tr) {
-        t[v] = make_pair(new_val, 1);
-    } else {
-        ll tm = (tl + tr) / 2;
-        if (pos <= tm)
-            update(v*2, tl, tm, pos, new_val);
-        else
-            update(v*2+1, tm+1, tr, pos, new_val);
-        t[v] = combine(t[v*2], t[v*2+1]);
-    }
-}
 
 ll qexp(ll a, ll b, ll m) {
     ll res = 1;
@@ -73,15 +29,15 @@ ll qexp(ll a, ll b, ll m) {
 
 vector<ll> fact, invf;
 
-void precompute(ll n) {
+void precompute(int n) {
     fact.assign(n + 1, 1); 
-    for (ll i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
+    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
     invf.assign(n + 1, 1);
     invf[n] = qexp(fact[n], MOD - 2, MOD);
-    for (ll i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
+    for (int i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
 }
 
-ll nCk(ll n, ll k) {
+ll nCk(int n, int k) {
     if (k < 0 || k > n) return 0;
     return fact[n] * invf[k] % MOD * invf[n - k] % MOD;
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
@@ -90,61 +46,47 @@ ll nCk(ll n, ll k) {
 void sol()
 {
     
-    ll a,b,c,d,n,m,k=-1,x,y,z,r,resu=0,res=0;
-    cin >> n >> m;
-    vector<ll> arr(n,0),brr(n,0),crr(m,0);
-    map<ll,ll> mpi, inmp ,remp;
+    ll a,b,c,n,m,k=-1,x,resu=0;
+    cin >> n >> k;
+    vector<ll> arr(n,0);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
     }
+    sort(arr.begin(),arr.end());
+    vector<ll> brr(2*k,0);
+    a=0;
+    b=0;
     for (int i=0;i<n;i++)
     {
-        cin >> brr[i];
-        if (inmp[arr[i]-brr[i]]) mpi[arr[i]-brr[i]]=min(mpi[arr[i]-brr[i]],arr[i]);
-        else mpi[arr[i]-brr[i]]=arr[i];
-        inmp[arr[i]-brr[i]]=1;
+        x=(arr[i]-arr[0])%(2*k);
+        brr[x]=max(brr[x],arr[i]);
+        b=x; 
     }
-    ll inf = 1e6;
-    x=inf+5;
-    k=0;
-    for (auto it: mpi)
+    for (int i=1;i<brr.size();i++)
     {
-        if (it.second<x)
+        if (brr[x]!=0) a++;
+    }
+    m=2*k;
+    int i=(b-k+1+m)%m;
+    while (brr[i]==0) i=(i+1)%m;
+    int j=(b+k-1+m)%m;
+    while (brr[j]==0) j=(j-1+m)%m;
+    // cout << i << b << j << " T ";
+    if ((j-i+m)%m<k)
+    {
+        for (int l=(j+1)%m;l!=i;l=(l+1)%m)
         {
-            if (x==inf+5) k=it.second;
-            x=it.second;
-            remp[it.second]=it.first;
+            if (brr[l]!=0) 
+            {
+                cout << -1 << endl;
+                return;
+            }
         }
+        resu = brr[b]+(j-b+m)%m;
+        cout << resu << endl;
     }
-    x=inf;
-    vector<ll> dp(inf+5,0);
-    for (auto it = remp.rbegin(); it != remp.rend(); it++)
-    {
-        while (x>=it->first)
-        {
-            if (x+it->second<=inf) dp[x] = dp[x+it->second]+1;
-            else dp[x] = 0;
-            x--;
-        }
-    }
-    for (int i=0;i<m;i++)
-    {
-        cin >> crr[i];
-        
-    }
-    resu = 0;
-    for (int i=0;i<m;i++)
-    {
-        if (crr[i]>=inf) 
-        {
-            resu += (crr[i]-inf-1)/k + 1;
-            crr[i] = inf-(k-((crr[i]-inf)%k))%k;
-        }
-        resu += dp[crr[i]];
-        cout << dp[crr[i]] << " ";
-    }
-    cout << resu << endl;
+    else cout << -1 << endl;
     return;
 }
 
@@ -154,9 +96,9 @@ int main() {
     cin.tie(0); cout.tie(0);
     
     // precompute(100);
-    ll tc = 1;
-    // cin >> tc;
-    for (ll t = 1; t <= tc; t++) {
+    int tc = 1;
+    cin >> tc;
+    for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();
  
