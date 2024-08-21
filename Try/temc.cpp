@@ -43,53 +43,186 @@ ll nCk(int n, int k) {
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
 }
 
-void sol()
-{
-    
-    ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> n >> k;
-    vector<ll> arr(n,0);
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
+
+struct tdata {
+    ll sum, pref, suff, ans, tmax, tmin, imax, imin;
+    tdata() {
+        sum = pref = suff = ans = 0;
+        tmax = -LINF;
+        tmin = LINF;
+        imax = -1;
+        imin = -1;
     }
-    sort(arr.begin(),arr.end());
-    vector<ll> brr(2*k,0);
-    a=0;
-    b=0;
-    for (int i=0;i<n;i++)
-    {
-        x=(arr[i]-arr[0])%(2*k);
-        brr[x]=max(brr[x],arr[i]);
-        b=x; 
+    tdata(int val, int ind) {
+        sum = val;
+        pref = suff = ans = max(0, val);
+        tmax = val;
+        tmin = val;
+        imax =ind;
+        imin = ind;
     }
-    for (int i=1;i<brr.size();i++)
-    {
-        if (brr[x]!=0) a++;
+    tdata(tdata l, tdata r) {
+        sum = l.sum + r.sum;
+        pref = max(l.pref, l.sum + r.pref);
+        suff = max(r.suff, r.sum + l.suff);
+        ans = max({l.ans, r.ans, l.suff + r.pref});
+        tmax = max(l.tmax,r.tmax);
+        if (r.tmax>l.tmax) imax = r.imax;
+        else imax = min(l.imax,r.imax);
+        tmin = min(l.tmin,r.tmin);
+        if (r.tmin<l.tmin) imin = r.imin;
+        else imin = min(l.imin,r.imin);
     }
-    m=2*k;
-    int i=(b-k+1+m)%m;
-    while (brr[i]==0) i=(i+1)%m;
-    int j=(b+k-1+m)%m;
-    while (brr[j]==0) j=(j-1+m)%m;
-    // cout << i << b << j << " T ";
-    if ((j-i+m)%m<k)
-    {
-        for (int l=(j+1)%m;l!=i;l=(l+1)%m)
-        {
-            if (brr[l]!=0) 
-            {
-                cout << -1 << endl;
-                return;
-            }
-        }
-        resu = brr[b]+(j-b+m)%m;
-        cout << resu << endl;
+};
+ 
+int n, q, arr[MAX_N],brr[MAX_N];
+tdata st[4 * MAX_N];
+tdata st2[4 * MAX_N];
+ 
+void build2(int node, int start, int end) {
+    if (start == end) {
+        st2[node] = tdata(brr[start], start);
+        return;
     }
-    else cout << -1 << endl;
-    return;
+    int mid = (start + end) / 2;
+    build2(2 * node, start, mid);
+    build2(2 * node + 1, mid + 1, end);
+    st2[node] = tdata(st2[2 * node], st2[2 * node + 1]);
+}
+ 
+void update2(int node, int start, int end, int idx, int val) {
+    if (start == end) {
+        arr[idx] = val;
+        st2[node] = tdata(val, start);
+        return;
+    }
+    int mid = (start + end) / 2;
+    if (idx <= mid) update2(2 * node, start, mid, idx, val);
+    else update2(2 * node + 1, mid + 1, end, idx, val);
+    st2[node] = tdata(st2[2 * node], st2[2 * node + 1]);
+}
+ 
+tdata query2(int node, int start, int end, int l, int r) {
+    if (start > r || end < l) return tdata(0,0);
+    if (l <= start && end <= r) return st2[node];
+    int mid = (start + end) / 2;
+    return tdata(query2(2 * node, start, mid, l, r), query2(2 * node + 1, mid + 1, end, l, r));
 }
 
+void build(int node, int start, int end) {
+    if (start == end) {
+        st[node] = tdata(arr[start], start);
+        return;
+    }
+    int mid = (start + end) / 2;
+    build(2 * node, start, mid);
+    build(2 * node + 1, mid + 1, end);
+    st[node] = tdata(st[2 * node], st[2 * node + 1]);
+}
+ 
+void update(int node, int start, int end, int idx, int val) {
+    if (start == end) {
+        arr[idx] = val;
+        st[node] = tdata(val, start);
+        return;
+    }
+    int mid = (start + end) / 2;
+    if (idx <= mid) update(2 * node, start, mid, idx, val);
+    else update(2 * node + 1, mid + 1, end, idx, val);
+    st[node] = tdata(st[2 * node], st[2 * node + 1]);
+}
+ 
+tdata query(int node, int start, int end, int l, int r) {
+    if (start > r || end < l) return tdata(0,0);
+    if (l <= start && end <= r) return st[node];
+    int mid = (start + end) / 2;
+    return tdata(query(2 * node, start, mid, l, r), query(2 * node + 1, mid + 1, end, l, r));
+}
+
+void sol(){
+    ll a,b,c,m,k=-1,x,resu=0;
+    cin >> n;
+    vector<ll> crr(n+1,-1);
+    map<ll,vector<ll>> mpi;
+    x=0;
+    for (int i=0;i<n;i++)
+    {
+        cin >> arr[i+1];
+        brr[i+1]=arr[i+1];
+        mpi[arr[i+1]].push_back(i+1);
+    }
+    build(1, 1, n);
+    build2(1, 1, n);
+    set<ll> path;
+    for (int i=n;i>=1;i--)
+    {
+        if (crr[arr[i]]==-1)
+        {
+            crr[arr[i]]=i;
+            resu++;
+            path.insert(i);
+        }
+        
+        
+    }
+    cout << resu << endl;
+    ll past=0;
+    vector<ll>  res;
+    resu=0;
+    while(!path.empty())
+    {
+        int tem = *path.end();
+        if (resu%2==0)
+        {
+            auto q1 = query(1,1,n,past+1,tem);
+            ll tem2 =  q1.tmax;
+            res.push_back(tem2);
+            x=crr[tem2];
+            auto it = upper_bound(path.begin(),path.end(),x);
+            auto ti = it;
+            ti--;
+            if (it!= path.begin() && *(ti)==x)
+            {
+                path.erase(--it);
+            }
+            else if (it!= path.end()) path.erase(it);
+            for (auto it2: mpi[tem2])
+            {
+                update(1,1,n,it2,-INF);
+            }
+            mpi[tem2].clear();
+            past = q1.imax;
+        }
+        else
+        {
+            auto q1 = query2(1,1,n,past+1,tem);
+            ll tem2 =  q1.tmin;
+            res.push_back(tem2);
+            x=crr[tem2];
+            auto it = upper_bound(path.begin(),path.end(),x);
+            auto ti = it;
+            ti--;
+            if (it!= path.begin() && *(ti)==x)
+            {
+                path.erase(--it);
+            }
+            else if (it!= path.end()) path.erase(it);
+            for (auto it2: mpi[tem2])
+            {
+                update2(1,1,n,it2,INF);
+            }
+            mpi[tem2].clear();
+            past = q1.imin;
+        }
+        resu++;
+    }
+    for (int i=0;i<res.size();i++)
+    {
+        cout << res[i] << " ";
+    }
+    cout << endl;
+    return;
+}
 
 int main() {
     ios_base::sync_with_stdio(0);

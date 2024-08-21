@@ -47,54 +47,30 @@ void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> n;
-    string s;
-    cin >> s;
-    a=0;
-    b=0;
+    cin >> n >> k;
+    vector<ll> arr(n,0);
     for (int i=0;i<n;i++)
     {
-        if (s[i]=='(') a++;
-        else if (s[i]==')') b++;
+        cin >> arr[i];
     }
-    // if (a>b)
-    // {
-    //     x=0;
-    //     for (int i=n-1;i>=0;i--)
-    //     {
-    //         if (s[i]==')') x++;
-    //         else if (s[i]=='_' && x>0) 
-    //         {
-    //             s[i]='(';
-    //             x--;
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     x=0;
-    //     for (int i=0;i<n;i++)
-    //     {
-    //         if (s[i]=='(') x++;
-    //         else if (s[i]=='_' && x>0) 
-    //         {
-    //             s[i]=')';
-    //             x--;
-    //         }
-    //     }
-    // }
-    x=0;
-    // for (int i=0;i<n;i++)
-    // {
-    //     if (s[i]=='_') 
-    //     {
-    //         x=1-x;
-    //         if (x==0) s[i]=')';
-    //         else s[i]='(';
-    //     }
+    sort(arr.begin(),arr.end());
+    for (int i=0;i<n;i++)
+    {
+        if (i%2==0) resu+=arr[n-1-i];
+        else resu-=arr[n-1-i];
     }
-    cout << s << endl;
-    
+    if (n%2==0)
+    {
+        resu = max(0LL,resu-k);
+        cout << resu << endl;
+    }
+    else 
+    {
+        resu -= arr[0];
+        resu = max(0LL,resu-k);
+        resu += arr[0];
+        cout << resu << endl;
+    }
     return;
 }
 

@@ -14,19 +14,25 @@ const int INF = 1e9;
 const ll LINF = 1e18;
 
 struct tdata {
-    ll sum, pref, suff, ans;
+    ll sum, pref, suff, ans, tmax, tmin;
     tdata() {
         sum = pref = suff = ans = 0;
+        tmax = -LINF;
+        tmin = LINF;
     }
     tdata(int val) {
         sum = val;
         pref = suff = ans = max(0, val);
+        tmax = val;
+        tmin = val;
     }
     tdata(tdata l, tdata r) {
         sum = l.sum + r.sum;
         pref = max(l.pref, l.sum + r.pref);
         suff = max(r.suff, r.sum + l.suff);
         ans = max({l.ans, r.ans, l.suff + r.pref});
+        tmax = max(l.tmax,r.tmax);
+        tmin = min(l.tmin,r.tmin);
     }
 };
  
