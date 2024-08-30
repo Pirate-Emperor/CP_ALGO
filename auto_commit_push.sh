@@ -10,8 +10,8 @@ monitor() {
 
     while true; do
         # Pull Changes
-        git pull origin $BRANCH
         
+
         # Current state of the repository
         current=$(git status --porcelain)
 
