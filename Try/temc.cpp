@@ -10,7 +10,7 @@ uniform_int_distribution<long long> rnd(0,LLONG_MAX);
 #define ll long long
 
 const int MAXN = 3e6 + 5; 
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 2e5 + 1;
 ll MOD = 1000000007;
 const ll MOD2 = 1073676287;
 const ll MOD3 = 998244353;
@@ -25,6 +25,10 @@ ll qexp(ll a, ll b, ll m) {
         b /= 2;
     }
     return res;
+}
+
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
 }
 
 vector<ll> fact, invf;
@@ -43,94 +47,138 @@ ll nCk(int n, int k) {
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
 }
 
-ll mex(vector<ll> const& A, int N) {
-    set<int> b(A.begin(), A.begin() + N);
-
-    ll result = 0;
-    while (b.count(result))
-        ++result;
-    return result;
-}
-
-
-map<ll, ll> vis;
-map<ll,vector<ll>> adj;
-
-void dfs(int u) {
-    vis[u] = u;
-    if (adj.find(u)==adj.end()) return;
-    ll res=u;
-    for (ll v : adj[u]) {
-        if (vis[v]) 
-        {
-            res=max(res,vis[v]);
-            continue;
-        }
-        dfs(v);
-        res=max(res,vis[v]);
-    }
-    vis[u] = res;
-}
-
 void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> n >> m;
-    vector<ll> temp(MAX_N+1);
-    map<ll,ll> val;
+    cin >> n >> a >> b;
+    c=min(a,b);
+    b=max(a,b);
+    a=c;
+    // b=b%c;
+    // if (b!=0) a%=b;
+    if (b==0) b=a;
+    b=gcd(a,b);
+    cout << b << " ";
+    
+    vector<ll> arr(n,0);
+    ll maxi=0;
+    ll mini=LINF;
     for (int i=0;i<n;i++)
     {
-        cin >> a;
-        for (int j=0;j<a;j++)
+        cin >> arr[i];
+        maxi=max(maxi,arr[i]);
+        mini=min(mini,arr[i]);
+    }
+    resu = maxi-mini;
+    cout << resu << " ";
+    ll l=0;
+    ll r=2*resu;
+    ll mid=l+(r-l)/2;
+    bool check=false;
+    bool fail=false;
+    ll temp=0;
+    ll t1=-1;
+    ll t2=-1;
+    while (l<r)
+    {
+        mid=l+(r-l)/2;
+        fail=false;
+        t1=LINF;
+        t2=LINF;
+        for (int i=0;i<n;i++)
         {
-            cin >> temp[j];
+            check=false;
+            temp = (maxi-arr[i])%b;
+            if (temp < b-temp) 
+            {
+                t1=min(t1,temp);
+            }
+            else t2=min(t2,b-temp);
+            if ((maxi-arr[i])%b <= mid)
+            {
+                check=true;
+            }
+            if (b-((maxi-arr[i])%b) <= mid) check=true;
+            if (check==false) 
+            {
+                fail=true;
+                break;
+            }
         }
-        b = mex(temp,a);
-        temp[a]=b;
-        c = mex(temp,a+1);
-        adj[b].push_back(c);
-        val[b]++;
-        // cout << b << " " << c << " | ";
-    }    
-    resu = m*(m+1)/2;
-    for (auto it: val)
-    {
-        if (vis[it.first]) continue;
-        dfs(it.first); 
-    }
-    vector<pair<ll,ll>> mpi;
-    for (auto it: vis)
-    {
-        mpi.push_back(make_pair(it.second,it.first));
-    }
-    sort(mpi.begin(),mpi.end());
-    int st=0;
-    ll mas=0;
-    for (int i=0;i<=min((ll)2e5+5,m);i++)
-    {
-        if (vis.find(i)!=vis.end())
+        
+        if (fail==true || (t2!=LINF && t1!=LINF && t2+t1>mid))
         {
-            mas = max(mas,vis[i]);
+            l=mid+1;
         }
-        // while (mpi[st].first<=i)
-        // {
-        //     st++;
-        // }
-        // if (mpi[st].second>=i) continue;
-        cout << mas << " ";
-        resu+=max(mas,(ll)i)-i;
-
+        else 
+        {
+            resu=min(mid,resu);
+            r=mid-1;
+        }
     }
-    // for (auto it: val)
-    // {
-    //     // cout << it.first << " " << it.second << " | ";
-    //     resu+=it.second*(vis[it.first]-it.first);
-    //     // resu+=max(it.second,it.first)-it.first;
-    // }
+    mid=l;
+    fail=false;
+    t1=LINF;
+    t2=LINF;
+    for (int i=0;i<n;i++)
+    {
+        check=false;
+        temp = (maxi-arr[i])%b;
+        if (temp < b-temp) 
+        {
+            t1=min(t1,temp);
+        }
+        else t2=min(t2,b-temp);
+        if ((maxi-arr[i])%b <= mid)
+        {
+            check=true;
+        }
+        if (b-((maxi-arr[i])%b) <= mid) check=true;
+        if (check==false) 
+        {
+            fail=true;
+            break;
+        }
+    }
+    
+    if (fail==true || (t2!=LINF && t1!=LINF && t2+t1>mid)) {}
+    else 
+    {
+        resu=min(mid,resu);
+    }
+    mid=r;
+    fail=false;
+    t1=LINF;
+    t2=LINF;
+    for (int i=0;i<n;i++)
+    {
+        check=false;
+        temp = (maxi-arr[i])%b;
+        if (temp < b-temp) 
+        {
+            t1=min(t1,temp);
+        }
+        else t2=min(t2,b-temp);
+        if ((maxi-arr[i])%b <= mid)
+        {
+            check=true;
+        }
+        if (b-((maxi-arr[i])%b) <= mid) check=true;
+        if (check==false) 
+        {
+            fail=true;
+            break;
+        }
+    }
+        
+    if (fail==true || (t2!=LINF && t1!=LINF && t2+t1>mid)) {}
+    else
+    {
+        resu=min(mid,resu);
+    }
+    // resu=min(resu,l);
     cout << resu << endl;
-    adj.clear();
-    vis.clear();
     return;
 }
 
