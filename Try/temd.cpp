@@ -47,30 +47,9 @@ void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> n >> k;
+    cin >> n;
     vector<ll> arr(n,0);
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-    }
-    sort(arr.begin(),arr.end());
-    for (int i=0;i<n;i++)
-    {
-        if (i%2==0) resu+=arr[n-1-i];
-        else resu-=arr[n-1-i];
-    }
-    if (n%2==0)
-    {
-        resu = max(0LL,resu-k);
-        cout << resu << endl;
-    }
-    else 
-    {
-        resu -= arr[0];
-        resu = max(0LL,resu-k);
-        resu += arr[0];
-        cout << resu << endl;
-    }
+    
     return;
 }
 
