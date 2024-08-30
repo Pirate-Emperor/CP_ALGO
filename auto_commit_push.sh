@@ -9,8 +9,6 @@ monitor() {
     initial=$(git status --porcelain)
 
     while true; do
-        # Pull Changes
-        
 
         # Current state of the repository
         current=$(git status --porcelain)
@@ -23,7 +21,7 @@ monitor() {
             NOW=$(date +"%Y-%m-%d %H:%M:%S")
 
             # Commit the changes with a message
-            git commit -m "Auto-commit at $NOW"
+            git commit -m "Main-Branch-commit at $NOW"
 
             # Push the changes to the remote repository
             git push origin $BRANCH
