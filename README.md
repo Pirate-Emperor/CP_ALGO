@@ -1,3 +1,8 @@
+<!-- Steps To Enable Auto Sync Option
+1. Execute the auto_sync.sh => ./auto_sync.sh &
+2. Stop the auto_sync.sh => ./stop_auto_sync.sh
+-->
+
 # Competitive Programming
 My own templates and implementation of important algorithms and data structures for competitive programming
 
