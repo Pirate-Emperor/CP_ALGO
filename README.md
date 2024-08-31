@@ -9,6 +9,8 @@ My own templates and implementation of important algorithms and data structures 
 
 My profile: [Codeforces](https://codeforces.com/profile/ncduy0303), [AtCoder](https://atcoder.jp/users/ncduy0303)
 
+## Contest templates
+  - [My template C++](Contest%20Template/main.cpp)
 
 ## Graph
   - Graph Traversing ([DFS](Graphs/Graph%20Traversal/DFS.cpp), [BFS](Graphs/Graph%20Traversal/BFS.cpp))
