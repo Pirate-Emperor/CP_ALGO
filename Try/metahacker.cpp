@@ -45,51 +45,46 @@ ll nCk(int n, int k) {
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
 }
 
-void sol(int t)
+void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
     cin >> a >> b >> c;
-    n = a + 2*b;
-    m = 2*a + 2*b;
-    cout << "Case #" << t <<  ": ";
-    if (n>= c && m>=c+1) 
+    n = a;
+    m = b/2;
+    if (n<=m)
     {
-        cout << "YES" << "\n";
+        resu = c/n;
     }
-    else 
+    else
     {
-        cout << "NO" << "\n";
+        resu = 2*(c/b);
+        if (c%b>=n) resu++;
+        else
+        {
+
+            resu--;
+            if (((c%b)+b)/n>=2) resu++;
+        }
     }
+    if (resu<0) resu=0;
+    cout << resu << endl;
     return;
 }
 
 
 int main() {
 
-    // ios_base::sync_with_stdio(0);
-    // cin.tie(0); cout.tie(0);
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
     
     // precompute(2e5+10);
-    // TxtIO;
+    TxtIO;
     int tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {
-        // cout << "Case #" << t << ": ";
-        ll a,b,c,n,m;
-        cin >> a >> b >> c;
-        n = a + 2*b;
-        m = 2*a + 2*b;
-        cout << "Case #" << t <<  ": ";
-        if (n>= c && m>=c+1) 
-        {
-            cout << "YES" << "\n";
-        }
-        else 
-        {
-            cout << "NO" << "\n";
-        }
- 
+        cout << "Case #" << t << ": ";
+        sol();
     }
     // cout.flush();
     return 0;
