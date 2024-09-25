@@ -49,26 +49,29 @@ void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> a >> b >> c;
-    n = a;
-    m = b/2;
-    if (n<=m)
+    cin >> n >> k;
+    vector<pair<ll,ll>> arr;
+    for (int i=0;i<n;i++)
     {
-        resu = c/n;
+        cin >> x;
+        arr.push_back(make_pair(x,i+1));
     }
-    else
+    sort(arr.begin(),arr.end(),greater<pair<ll,ll>>());
+    resu=LINF;
+    x=n+1;
+    for (int i=0;i<n;i++)
     {
-        resu = 2*(c/b);
-        if (c%b>=n) resu++;
-        else
+        if (abs(arr[i].first-k)==resu) 
         {
-
-            resu--;
-            if (((c%b)+b)/n>=2) resu++;
+            x=min((ll)(i+1),x);
+        }
+        else if (abs(arr[i].first-k)<resu) 
+        {
+            resu = abs(arr[i].first-k);
+            x=i+1;
         }
     }
-    if (resu<0) resu=0;
-    cout << resu << endl;
+    cout << x << " " << resu << endl;
     return;
 }
 
@@ -83,7 +86,7 @@ int main() {
     int tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {
-        cout << "Case #" << t << ": ";
+        cout << setprecision(10) << "Case #" << t << ": ";
         sol();
     }
     // cout.flush();

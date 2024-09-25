@@ -45,22 +45,62 @@ ll nCk(int n, int k) {
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
 }
 
-void sol(int t)
+void sol()
 {
     
-    ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> a >> b >> c;
-    n = a + 2*b;
-    m = 2*a + 2*b;
-    cout << "Case #" << t <<  ": ";
-    if (n>= c && m>=c+1) 
+    ll a,b,c,n,m,k=-1,x,resu=LINF;
+    cin >> n;
+    vector<ll> arr(n);
+    for (int i=0;i<n;i++) 
     {
-        cout << "YES" << "\n";
+        cin >> arr[i];
     }
-    else 
+    ll low=0;
+    ll high=1e13;
+    ll mid=0;
+    while(low<=high)
     {
-        cout << "NO" << "\n";
+        mid=(high-low)/2;
+        mid+=low;
+        ll temp=0;
+        ll mini=mid;
+        ll lef=0;
+        ll cnt=0;
+        for (int i=0;i<n;i++)
+        {
+            if (arr[i]<mid) 
+            {
+                ll t1=min(temp,mid-arr[i]);
+                temp-=t1;
+                ll te = arr[i]+t1;
+                if (te < mini && (mini-te > lef-mini*cnt))
+                {
+                    ll t2=(lef+te)/(cnt+1);
+                    // te+=lef-mini*cnt;
+                    te =t2;
+                    mini = min(mini, te);
+                }
+                lef+=arr[i]+t1;
+                cnt++;
+            }
+            else 
+            {
+                temp+=arr[i]-mid;
+                lef+=mid;
+                cnt++;
+            }
+            
+        }
+     
+        if (temp>0) low=mid+1;
+        else 
+        {
+            high=mid-1;
+            resu = min(resu,mid-mini);
+        }
     }
+    // cout << high;
+    cout << resu << endl;
     return;
 }
 
@@ -76,19 +116,7 @@ int main() {
     cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
-        ll a,b,c,n,m;
-        cin >> a >> b >> c;
-        n = a + 2*b;
-        m = 2*a + 2*b;
-        cout << "Case #" << t <<  ": ";
-        if (n>= c && m>=c+1) 
-        {
-            cout << "YES" << "\n";
-        }
-        else 
-        {
-            cout << "NO" << "\n";
-        }
+        sol();
  
     }
     // cout.flush();
