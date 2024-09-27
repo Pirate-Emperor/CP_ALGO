@@ -1,67 +1,74 @@
-// https://codeforces.com/problemset/problem/580/E
-
 #include <bits/stdc++.h>
-using namespace std;
-
-mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<long long> rnd(0,LLONG_MAX);
-// Use rnd(gen) for random number generation
-
-#define ll long long
-
-const int MAXN = 3e6 + 5; 
-const int MAX_N = 2e5 + 1;
-ll MOD = 1000000007;
-const ll MOD2 = 1073676287;
-const ll MOD3 = 998244353;
-const ll INF = 1e9;
-const ll LINF = 1e18;
-
-ll qexp(ll a, ll b, ll m) {
-    ll res = 1;
-    while (b) {
-        if (b % 2) res = res * a % m;
-        a = a * a % m;
-        b /= 2;
-    }
-    return res;
-}
-
-vector<ll> fact, invf;
-
-void precompute(int n) {
-    fact.assign(n + 1, 1); 
-    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
-    invf.assign(n + 1, 1);
-    invf[n] = qexp(fact[n], MOD - 2, MOD);
-    for (int i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
-}
-
-ll nCk(int n, int k) {
-    if (k < 0 || k > n) return 0;
-    return fact[n] * invf[k] % MOD * invf[n - k] % MOD;
-    // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
-}
-
-void sol()
-{
-    
-    ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> n;
-    vector<ll> arr(n,0);
-    
-    return;
-}
-
-
-int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
-    int tc = 1;
-    cin >> tc;
-    for (int t = 1; t <= tc; t++) {
-        sol();
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
  
+#define all(x) x.begin(), x.end()
+ 
+using namespace __gnu_pbds; using namespace std;
+ 
+template<class T> using ordered_set = tree<T, null_type , less<T> , rb_tree_tag , tree_order_statistics_node_update>; template<class T> using ordered_multiset = tree<T, null_type , less_equal<T> , rb_tree_tag , tree_order_statistics_node_update>; typedef long long ll;  typedef pair<int, int> ii;  typedef tuple<int, int, int> iii; typedef tuple<int, int, int, int> iiii; typedef vector<int> vi; 
+const ll oo = 1e9 + 7;
+ 
+template<class It> void db(It b, It e) { for (auto it = b; it != e; it++) cout << *it << ' '; cout<< endl; } template<typename A> istream& operator>>(istream& fin, vector<A>& v) { for (auto it = v.begin(); it != v.end(); ++it) fin >> *it; return fin; } template<typename A, typename B> istream& operator>>(istream& fin, pair<A, B>& p){ fin >> p.first >> p.second; return fin; } template<typename T> void chmin(T &a, T b){ a = min(a, b); } template<typename T> void chmax(T &a, T b){ a = max(a, b); } template <typename T, typename S> ostream& operator<<(ostream& os, const pair<T, S>& v) { os << "(" << v.first << "," << v.second << ")"; return os; }
+ 
+const int MAX = 4123;
+int c[MAX][MAX];
+int pref[MAX + 1][MAX + 1];
+int dp[2][MAX], K;
+int n, k;
+ 
+int read() {
+	char c = getchar();
+	while (c < '0' || c > '9') c = getchar();
+	int ret = 0;
+	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
+	return ret;
+}
+ 
+inline int getbit(int lx, int ly, int rx, int ry) {  // entrada - fechado
+  rx++;                                       // aberto
+  ry++;
+  return pref[rx][ry] - pref[rx][ly] - pref[lx][ry] + pref[lx][ly];
+}
+ 
+void solve(int l, int r, int optl, int optr){
+    if (l > r) return;
+    int mid = (l + r)/2;
+    ii mi = {oo, -1};
+    for (int pos=optl; pos <= min(mid, optr); pos++){
+        chmin(mi, {(pos == 0 ?  0 : dp[(K & 1)^1][pos - 1]) + c[pos][mid], pos});
     }
-    return 0;
+    int opt = mi.second;
+    dp[(K & 1)][mid] = mi.first;
+    solve(l, mid - 1, optl, opt);
+    solve(mid + 1, r, opt, optr);
+}
+ 
+ 
+ 
+signed main(){
+    n = read();
+    k = read();
+    for (int i=0; i < n; i++){
+        dp[0][i] = oo;
+        for (int j=0; j < n; j++){
+            int x = read();
+            pref[i + 1][j + 1] = pref[i + 1][j] + pref[i][j + 1] - pref[i][j] + x;
+            // cout << pref[i + 1][j + 1] << " ";
+        }
+        // cout << endl;
+    }
+    for (int i=0; i < n; i++){
+        for (int j=i; j < n; j++){
+            c[i][j] = getbit(i, i, j, j);
+            cout << c[i][j] << " ";
+        }
+        cout << endl;
+    }
+    for (int kk=1; kk <= k; kk++){
+        K = kk;
+        solve(0, n - 1, 0, n - 1);
+    }
+    printf("%d\n", dp[K & 1][n - 1] / 2);
 }

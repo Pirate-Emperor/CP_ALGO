@@ -45,61 +45,80 @@ ll nCk(int n, int k) {
     // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
 }
 
+const int NI = 4005;
+ll ddp[2][NI];
+vector<vector<ll>> c;
+vector<vector<ll>> pref;
+
+int read() {
+	char c = getchar();
+	while (c < '0' || c > '9') c = getchar();
+	int ret = 0;
+	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
+	return ret;
+}
+
+ll ki;
+void divCon(ll l, ll r, ll optL, ll optR)
+{
+    if (l>r) return;
+    ll m = (r+l)/2;
+    pair<ll,ll> mi = make_pair(LINF,-1);
+    for (ll i=optL;i<=min(m,optR);i++)
+    {
+        mi = min(mi,make_pair((i==0?0LL:ddp[(ki&1)^1][i-1])+c[i][m],i));
+    }
+    // cout << mi.first << " ";
+    ddp[(ki&1)][m]=mi.first;
+    divCon(l,m-1,optL,mi.second);
+    divCon(m+1,r,mi.second,optR);
+}
+
 void sol()
 {
     
-    ll a,b,c,n,m,k=-1,x,resu=LINF;
-    cin >> n;
-    vector<ll> arr(n);
-    for (int i=0;i<n;i++) 
+    ll a,b,n,m,k=-1,x,resu=LINF;
+    cin >> n >> k;
+    // vector<vector<ll>> arr(n+1,vector<ll>(n+1));
+    pref.resize(n+5,vector<ll>(n+5));
+    c.resize(n+5,vector<ll>(n+5));
+    for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
-    }
-    ll low=0;
-    ll high=1e13;
-    ll mid=0;
-    while(low<=high)
-    {
-        mid=(high-low)/2;
-        mid+=low;
         ll temp=0;
-        ll mini=mid;
-        ll lef=0;
-        ll cnt=0;
-        for (int i=0;i<n;i++)
+        for (int j=0;j<n;j++)
         {
-            if (arr[i]<mid) 
-            {
-                ll t1=min(temp,mid-arr[i]);
-                temp-=t1;
-                ll te = arr[i]+t1;
-                if (te < mini && (mini-te > lef-mini*cnt))
-                {
-                    ll t2=(lef+te)/(cnt+1);
-                    // te+=lef-mini*cnt;
-                    te =t2;
-                    mini = min(mini, te);
-                }
-                lef+=arr[i]+t1;
-                cnt++;
-            }
-            else 
-            {
-                temp+=arr[i]-mid;
-                lef+=mid;
-                cnt++;
-            }
             
+            x=read();
+            temp+=x;
+            
+            pref[i+1][j+1]=pref[i][j+1] + pref[i+1][j] - pref[i][j] + x;
+            if (pref[i][j+1]+temp!=pref[i+1][j+1]) cout << "FALSE\n";
+            // cout << pref[i + 1][j + 1] << " ";
         }
-     
-        if (temp>0) low=mid+1;
-        else 
-        {
-            high=mid-1;
-            resu = min(resu,mid-mini);
-        }
+        // cout << endl;
     }
-    // cout << high;
+    ll ti=1;
+    for(int i=0;i<n;i++)
+    {
+        for(int j=i;j<n;j++)
+        {
+
+            c[i][j]=pref[i][i]+pref[j+ti][j+ti]-pref[i][j+ti]-pref[j+ti][i];
+            // cout << c[i][j] << " ";
+        }
+        // cout << endl;
+    }
+    for (int i=0;i<n;i++)
+    {
+        ddp[0][i]=LINF;
+        // ddp[1][i]=LINF;
+    }
+    for (int i=1;i<=k;i++)
+    {
+        ki=i;
+        divCon(0,n-1,0,n-1);
+    }
+    resu = ddp[(k&1)][n-1]/2;
     cout << resu << endl;
     return;
 }
@@ -113,7 +132,7 @@ int main() {
     // precompute(2e5+10);
     // TxtIO;
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();
