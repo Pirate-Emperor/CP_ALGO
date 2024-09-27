@@ -79,46 +79,49 @@ void sol()
     
     ll a,b,n,m,k=-1,x,resu=LINF;
     cin >> n >> k;
-    // vector<vector<ll>> arr(n+1,vector<ll>(n+1));
-    pref.resize(n+5,vector<ll>(n+5));
-    c.resize(n+5,vector<ll>(n+5));
+    vector<ll> arr(n);
+    ll ma=0;
+    ll sum=0;
+    resu=1;
     for (int i=0;i<n;i++)
     {
-        ll temp=0;
-        for (int j=0;j<n;j++)
+        cin >> arr[i];
+        ma=max(ma,arr[i]);
+        sum+=arr[i];
+    }
+    if (ma==0 || ma==1) 
+    {
+        resu = min(sum+k,n);
+        cout << resu << endl;
+        return;
+    }
+    ll mid=0;
+    ll res;
+    ll lef;
+    ll res2=0;
+    for (int i=2;i<=n;i++)
+    {
+        
+        res=(sum+i-1)/i;
+        lef=sum%res;
+        if (ma*i>sum)
         {
-            
-            x=read();
-            temp+=x;
-            
-            pref[i+1][j+1]=pref[i][j+1] + pref[i+1][j] - pref[i][j] + x;
-            if (pref[i][j+1]+temp!=pref[i+1][j+1]) cout << "FALSE\n";
-            // cout << pref[i + 1][j + 1] << " ";
+            if (ma*i<=sum+k) 
+            {
+                resu=max(resu,(ll)i);
+            }
         }
-        // cout << endl;
-    }
-    ll ti=1;
-    for(int i=0;i<n;i++)
-    {
-        for(int j=i;j<n;j++)
+        if (sum>=ma*i)
         {
-
-            c[i][j]=pref[i][i]+pref[j+ti][j+ti]-pref[i][j+ti]-pref[j+ti][i];
-            // cout << c[i][j] << " ";
+            if (((i-(sum%i))%i)<=k) resu=max(resu,(ll)i);
+            // if (sum==res*i) resu=max(resu,(ll)i);
+            // else if (lef+k>=res)
+            // {
+            //     resu=max(resu,(ll)i);
+            // }
         }
-        // cout << endl;
     }
-    for (int i=0;i<n;i++)
-    {
-        ddp[0][i]=LINF;
-        // ddp[1][i]=LINF;
-    }
-    for (int i=1;i<=k;i++)
-    {
-        ki=i;
-        divCon(0,n-1,0,n-1);
-    }
-    resu = ddp[(k&1)][n-1]/2;
+    
     cout << resu << endl;
     return;
 }
@@ -132,7 +135,7 @@ int main() {
     // precompute(2e5+10);
     // TxtIO;
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();
