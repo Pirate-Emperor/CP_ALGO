@@ -77,52 +77,31 @@ void divCon(ll l, ll r, ll optL, ll optR)
 void sol()
 {
     
-    ll a,b,n,m,k=-1,x,resu=LINF;
-    cin >> n >> k;
-    vector<ll> arr(n);
-    ll ma=0;
-    ll sum=0;
-    resu=1;
-    for (int i=0;i<n;i++)
+    ll a,b,c,d,n,m,k=-1,x,resu=LINF;
+    cin >> b >> c >> d;
+    a=0;
+    n=1;
+    for (int i=0;i<62;i++)
     {
-        cin >> arr[i];
-        ma=max(ma,arr[i]);
-        sum+=arr[i];
-    }
-    if (ma==0 || ma==1) 
-    {
-        resu = min(sum+k,n);
-        cout << resu << endl;
-        return;
-    }
-    ll mid=0;
-    ll res;
-    ll lef;
-    ll res2=0;
-    for (int i=2;i<=n;i++)
-    {
-        
-        res=(sum+i-1)/i;
-        lef=sum%res;
-        if (ma*i>sum)
+        if (b%2==d%2)
         {
-            if (ma*i<=sum+k) 
-            {
-                resu=max(resu,(ll)i);
-            }
+           
         }
-        if (sum>=ma*i)
+        else if (b%2==c%2)
         {
-            if (((i-(sum%i))%i)<=k) resu=max(resu,(ll)i);
-            // if (sum==res*i) resu=max(resu,(ll)i);
-            // else if (lef+k>=res)
-            // {
-            //     resu=max(resu,(ll)i);
-            // }
+            a+=n;
         }
+        else 
+        {
+            cout << -1 << endl;
+            return;
+        }
+        b/=2;
+        c/=2;
+        d/=2;
+        n*=2;
     }
-    
-    cout << resu << endl;
+    cout << a << endl;
     return;
 }
 
