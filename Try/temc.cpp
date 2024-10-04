@@ -78,30 +78,34 @@ void sol()
 {
     
     ll a,b,c,d,n,m,k=-1,x,resu=LINF;
-    cin >> b >> c >> d;
-    a=0;
-    n=1;
-    for (int i=0;i<62;i++)
+    cin >> n;
+    vector<ll> arr(2*n);
+    for (int i=0;i<n;i++)
     {
-        if (b%2==d%2)
-        {
-           
-        }
-        else if (b%2==c%2)
-        {
-            a+=n;
-        }
-        else 
-        {
-            cout << -1 << endl;
-            return;
-        }
-        b/=2;
-        c/=2;
-        d/=2;
-        n*=2;
+        cin >> arr[i];
     }
-    cout << a << endl;
+    if (n==1) cout << 0 << endl;
+    else if (n%2==0)
+    {
+        ll mi=LINF,ma=0;
+        for (int i=0;i<n/2;i++)
+        {
+            vector<ll> temp(4);
+            temp[0] = arr[2*i]+arr[2*i+1];
+            temp[0] = arr[2*i]+arr[2*i+1+n];
+            temp[0] = arr[2*i+n]+arr[2*i+1];
+            temp[0] = arr[2*i+n]+arr[2*i+1+n];
+            sort(temp.begin(),temp.end());
+            mi = min(mi,temp[1]);
+            ma = min(ma,temp[2]);
+        }
+        resu=ma-mi;
+        cout << resu << endl;        
+    }
+    else
+    {   
+        brid
+    }
     return;
 }
 
