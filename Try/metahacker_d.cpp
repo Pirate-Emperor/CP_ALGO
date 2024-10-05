@@ -49,9 +49,84 @@ void sol()
 {
     
     ll a,b,c,n,m,k=-1,x,resu=0;
-    cin >> a >> b >> c;
-    n = a-b;
+    string s;
+    cin >> s >> k;
+    n = s.size();
+    vector<ll> temp;
+    for (int i=0;i<n;i++)
+    {
+        if (s[i]=='?')
+        {
+            if (i+1<n)
+            {
+                if (s[i+1]=='?') temp.push_back(i);
+                else
+                {
+                    a = s[i+1]-'1'+1;
+                    if (a<=6) temp.push_back(i);
+                    else s[i]='1';
+                }
+            } 
+            else temp.push_back(i);
+        }
+    }
+    x = k-1;
+    if (s[n-1]=='?')
+    {
+        if (s[n-2]=='?')
+        {
+            a = x%15;
+            x/=15;
+            if (a<=5) 
+            {
+                s[n-2]='2';
+                s[n-1]='0'+(6-a);
+            }
+            else
+            {
+                s[n-2]='1';
+                s[n-1]='0'+(16-a);
+            }
+            temp.pop_back();
+            temp.pop_back();
+        }
+        else
+        {
+            a = x%9;
+            x/=9;
+            s[n-1]='0'+(10-a);
+            temp.pop_back();
+        }
+    }
     
+
+    while(!temp.empty())
+    {
+        if (x%2==1) 
+        {
+            b=temp.back();
+            s[b]='1';
+        }
+        else 
+        {
+            b=temp.back();
+            s[b]='2';
+        }
+        temp.pop_back();
+        x/=2;
+    }
+    b=0;
+    vector<ll> dp(n+5);
+    dp[0]=1;
+    dp[1]=1;
+    for (int i=1;i<n;i++)
+    {
+        a = s[i]-'1'+1;
+        b = (s[i-1]-'1'+1)*10 + a;
+        dp[i+1] = ((a!=0)?dp[i]:0)+((b!=a && b<=26)?dp[i-1]:0);
+    }
+    resu=dp[n];
+    cout << s << " " << resu << endl;
     return;
 }
 
