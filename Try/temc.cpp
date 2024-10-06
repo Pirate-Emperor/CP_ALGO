@@ -77,35 +77,51 @@ void divCon(ll l, ll r, ll optL, ll optR)
 void sol()
 {
     
-    ll a,b,c,d,n,m,k=-1,x,resu=LINF;
-    cin >> n;
-    vector<ll> arr(2*n);
-    for (int i=0;i<n;i++)
+    ll a,b,c,d,n,m,q=0,k=-1,x,resu=LINF;
+    cin >> n >> m >> q;
+    vector<ll> arr(n+5),vis(n+1,0);
+    vector<ll> brr(m);
+    map<ll> mpc;
+    for (int i=0;i<n;i++) 
     {
         cin >> arr[i];
+        mpc[arr[i]]=i;
     }
-    if (n==1) cout << 0 << endl;
-    else if (n%2==0)
+    int j=0;
+    bool res=true;
+    map<ll,ll> mpi;
+    for (int i=0;i<m;i++)
     {
-        ll mi=LINF,ma=0;
-        for (int i=0;i<n/2;i++)
+        cin >> brr[i];
+    }
+    vector<ll> od(n+1);
+    ll tr=0;
+    for (int i=0;i<m;i++)
+    {
+        if (vis[brr[i]]==1) continue;
+        else 
         {
-            vector<ll> temp(4);
-            temp[0] = arr[2*i]+arr[2*i+1];
-            temp[0] = arr[2*i]+arr[2*i+1+n];
-            temp[0] = arr[2*i+n]+arr[2*i+1];
-            temp[0] = arr[2*i+n]+arr[2*i+1+n];
-            sort(temp.begin(),temp.end());
-            mi = min(mi,temp[1]);
-            ma = min(ma,temp[2]);
+            if (arr[j]==brr[i]) 
+            {
+                vis[brr[i]]=1;
+                mpi[i]=j;
+                od[j]=j;
+                j++;
+                
+            }
+            else 
+            {
+                res=false;
+                mpi[i]=mpc[brr[i]];
+                tr++;
+                j++;
+                // break;
+            }
+            if (j>=n) break;
         }
-        resu=ma-mi;
-        cout << resu << endl;        
     }
-    else
-    {   
-        brid
-    }
+    if (res) cout << "YA\n";
+    else cout << "TIDAK\n";
     return;
 }
 
