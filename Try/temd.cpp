@@ -1,143 +1,133 @@
-// https://codeforces.com/problemset/problem/580/E
-
 #include <bits/stdc++.h>
 using namespace std;
-
-
-mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<long long> rnd(0,LLONG_MAX);
-// Use rnd(gen) for random number generation
-
-#define ll long long
-#define TxtIO   freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
-
-const int MAXN = 3e6 + 5; 
-const int MAX_N = 405;
-ll MOD = 998244353;
-const ll MOD2 = 1073676287;
-const ll MOD3 = 998244353;
-const ll INF = 1e9;
-const ll LINF = 1e18;
-
-ll qexp(ll a, ll b, ll m) {
-    ll res = 1;
-    while (b) {
-        if (b % 2) res = res * a % m;
-        a = a * a % m;
-        b /= 2;
-    }
-    return res;
-}
-
-vector<ll> fact, invf;
-
-void precompute(int n) {
-    fact.assign(n + 1, 1); 
-    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
-    invf.assign(n + 1, 1);
-    invf[n] = qexp(fact[n], MOD - 2, MOD);
-    for (int i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
-}
-
-ll nCk(int n, int k) {
-    if (k < 0 || k > n) return 0;
-    return fact[n] * invf[k] % MOD * invf[n - k] % MOD;
-    // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
-}
-
-int read() {
-	char c = getchar();
-	while (c < '0' || c > '9') c = getchar();
-	int ret = 0;
-	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
-	return ret;
-}
-
-int n, m, p;
-ll dist[MAX_N][MAX_N];
-
-void floyd_warshall() {
-    for (int k = 1; k <= n; k++)
-        for (int i = 1; i <= n; i++) 
-            for (int j = 1; j <= n; j++)
-                dist[i][j] = min(dist[i][j], max(dist[i][k] , dist[k][j]));
-}
  
-void sol() {
-    cin >> n >> m >> p;
-    vector<ll> parr(p);
-    for (int i=0;i<p;i++)
-    {
-        cin >> parr[i];
-    }
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= n; j++)
-            dist[i][j] = (i == j) ? 0 : LINF;
-    for (int i = 0; i < m; i++) {
-        int u, v, w; cin >> u >> v >> w;
-        dist[u][v] = dist[v][u] = min(dist[u][v], (ll)w); 
-    }
-    floyd_warshall();
-    ll resu=LINF;
-    vector<ll> dp(p+1,LINF);
-    vector<ll> ans;
-    // for (int i=1;i<=n;i++)
-    // {
-    //     for (int j=1;j<=n;j++)
-    //     {
-    //         cout << dist[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-    for (int i=0;i<n;i++)
-    {
-        vector<ll> t1dp(p+1,LINF);
-        ll rest = LINF;
-        for (int j=1;j<=n;j++)
-        {
-            ll res=0;
-            vector<ll> tdp(p+1,LINF);
-            for (int k=0;k<p;k++)
-            {
-                tdp[k] = min(dp[k],max(dist[j][parr[k]],dist[parr[k]][j]));
-                res+=tdp[k];
-            }
-            // cout << res << " "; 
-            if (res<=rest) 
-            {
-                rest=res;
-                t1dp = tdp;
-            }
-        }
-        if (rest<=resu)
-        {
-            resu=rest;
-            dp=t1dp;
-        }
-        ans.push_back(resu);
-    }
-    for (int i=0;i<n;i++)
-    {
-        cout << ans[i] << " ";
-    }
-    cout << endl;
-}
-
-
+const int N = 16;
+ 
+int n, m;
+int a[N][N];
+ 
+int fr[N][N], fc[N][N];
+int w[N][N], dp[N][1<<N];
+ 
 int main() {
-
-    // ios_base::sync_with_stdio(0);
-    // cin.tie(0); cout.tie(0);
+    cin.tie(0)->sync_with_stdio(0);
     
-    // precompute(2e5+10);
-    // TxtIO;
-    int tc = 1;
-    cin >> tc;
-    for (int t = 1; t <= tc; t++) {
-        // cout << "Case #" << t << ": ";
-        sol();
+    int t;
+    cin >> t;
  
+    while (t--) {
+        cin >> n >> m;
+ 
+        for (int i = 0; i <= n; i++) a[i][m] = 0;
+        for (int j = 0; j <= m; j++) a[n][j] = 0;
+ 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> a[i][j];
+                a[i][m] ^= a[i][j];
+                a[n][j] ^= a[i][j];
+                a[n][m] ^= a[i][j];
+            }
+        }
+ 
+        int fullmask_n = (1 << (n+1)) - 1;
+        int fullmask_m = (1 << (m+1)) - 1;
+ 
+        for (int rmv = 0; rmv <= m; rmv++) {
+            for (int i = 0; i <= n; i++) {
+                for (int j = i + 1; j <= n; j++) {
+                    w[i][j] = 0;
+                    for (int l = 0; l <= m; l++) {
+                        if (rmv == l) continue;
+                        w[i][j] += abs(a[i][l] - a[j][l]);
+                    }
+                    w[j][i] = w[i][j];
+                }
+            }
+ 
+            for (int i = 0; i <= n; i++) {
+                fill(dp[i], dp[i] + fullmask_n, INT_MAX);
+                dp[i][1 << i] = 0;
+            }
+ 
+            for (int mask = 0; mask <= fullmask_n; mask++) {
+                for (int last = 0; last <= n; last++) {
+                    if (~mask >> last & 1) continue;
+                    if (__builtin_popcount(mask) == n) continue;
+ 
+                    for (int next = 0; next <= n; next++) {
+                        if (mask >> next & 1) continue;
+ 
+                        int new_mask = mask | 1 << next;
+                        dp[next][new_mask] = min(
+                            dp[next][new_mask],
+                            dp[last][mask] + w[last][next]
+                        );
+                    }
+                }
+            }
+ 
+            for (int i = 0; i <= n; i++) {
+                fr[i][rmv] = INT_MAX;
+                int mask = fullmask_n ^ 1 << i;
+ 
+                for (int last = 0; last <= n; last++) {
+                    fr[i][rmv] = min(fr[i][rmv], dp[last][mask]);
+                }
+            }
+        }
+ 
+        for (int rmv = 0; rmv <= n; rmv++) {
+            for (int i = 0; i <= m; i++) {
+                for (int j = i + 1; j <= m; j++) {
+                    w[i][j] = 0;
+                    for (int l = 0; l <= n; l++) {
+                        if (rmv == l) continue;
+                        w[i][j] += abs(a[l][i] - a[l][j]);
+                    }
+                    w[j][i] = w[i][j];
+                }
+            }
+ 
+            for (int i = 0; i <= m; i++) {
+                fill(dp[i], dp[i] + fullmask_m, INT_MAX);
+                dp[i][1 << i] = 0;
+            }
+ 
+            for (int mask = 0; mask <= fullmask_m; mask++) {
+                for (int last = 0; last <= m; last++) {
+                    if (~mask >> last & 1) continue;
+                    if (__builtin_popcount(mask) == m) continue;
+ 
+                    for (int next = 0; next <= m; next++) {
+                        if (mask >> next & 1) continue;
+ 
+                        int new_mask = mask | 1 << next;
+                        dp[next][new_mask] = min(
+                            dp[next][new_mask],
+                            dp[last][mask] + w[last][next]
+                        );
+                    }
+                }
+            }
+ 
+            for (int i = 0; i <= m; i++) {
+                fc[rmv][i] = INT_MAX;
+                int mask = fullmask_m ^ 1 << i;
+ 
+                for (int last = 0; last <= m; last++) {
+                    fc[rmv][i] = min(fc[rmv][i], dp[last][mask]);
+                }
+            }
+        }
+ 
+        int ans = INT_MAX;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                ans = min(ans, fr[i][j] + fc[i][j]);
+            }
+        }
+ 
+        cout << ans << '\n';
     }
-    // cout.flush();
-    return 0;
 }
