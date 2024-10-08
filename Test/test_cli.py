@@ -64,10 +64,10 @@ def run_test_cases(test_directory, file_name):
 
             
             if output == expected:
-                result = f"{Fore.GREEN}{PASS_ICON} {Fore.GREEN}Passed"
+                result = f"{Fore.GREEN}{PASS_ICON} {Fore.GREEN}Passed{Fore.WHITE}"
                 passed_count += 1
             else:
-                result = f"{Fore.RED}{FAIL_ICON} {Fore.RED}Failed"
+                result = f"{Fore.RED}{FAIL_ICON} {Fore.RED}Failed{Fore.WHITE}"
                 failed_count += 1
 
             
