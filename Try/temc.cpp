@@ -78,50 +78,71 @@ void sol()
 {
     
     ll a,b,c,d,n,m,q=0,k=-1,x,resu=LINF;
-    cin >> n >> m >> q;
-    vector<ll> arr(n+5),vis(n+1,0);
-    vector<ll> brr(m);
-    map<ll> mpc;
+    cin >> n;
+    vector<ll> arr(n),brr(n);
     for (int i=0;i<n;i++) 
     {
         cin >> arr[i];
-        mpc[arr[i]]=i;
     }
-    int j=0;
-    bool res=true;
-    map<ll,ll> mpi;
-    for (int i=0;i<m;i++)
+    for (int j=0;j<2e3;j++)
     {
-        cin >> brr[i];
-    }
-    vector<ll> od(n+1);
-    ll tr=0;
-    for (int i=0;i<m;i++)
-    {
-        if (vis[brr[i]]==1) continue;
-        else 
+        for (int i=0;i<n;i++)
         {
-            if (arr[j]==brr[i]) 
+            int ti = (i+1)%n;
+            arr[ti]=max(0LL,arr[ti]-arr[i]);
+        }
+    }
+    int ki=-1;
+    for (int i=0;i<n;i++)
+    {
+        if (arr[i]==0)
+        {
+            ki=i;
+            break;
+        }
+        int ti = (i+1)%n;
+        arr[ti]=max(0LL,arr[ti]-arr[i]);
+    }
+    if (ki==-1) 
+    {
+        cout << "Extend the Brute Force Range" << endl;
+        return;
+    }
+    
+    for (int i=0;i<n;i++)
+    {
+        brr[i]=arr[(i+ki)%n];
+    }
+    arr = brr;
+    for (int i=2;i<n;i++)
+    {
+        if (arr[i-2]!=0) 
+        {
+            ll k = (arr[i-1]+arr[i-2]-1)/arr[i-2];
+            ll tsum = k*(2*arr[i-1] - (k-1)*arr[i-2])/2 - (arr[i-1]%arr[i-2]);
+            if (arr[i]>tsum) 
             {
-                vis[brr[i]]=1;
-                mpi[i]=j;
-                od[j]=j;
-                j++;
-                
+                arr[i-1]=0;
+                arr[i]-=tsum;
             }
             else 
             {
-                res=false;
-                mpi[i]=mpc[brr[i]];
-                tr++;
-                j++;
-                // break;
+                arr[i-1]=0;
+                arr[i]=0;
             }
-            if (j>=n) break;
         }
     }
-    if (res) cout << "YA\n";
-    else cout << "TIDAK\n";
+    vector<ll> ans;
+    for (int i=0;i<n;i++)
+    {
+        if (arr[(i-ki+n)%n]!=0) ans.push_back(i+1);
+    }
+    cout << ans.size() << endl;
+    for (int i=0;i<ans.size();i++)
+    {
+        cout << ans[i] << " ";
+    }
+    cout << endl;
     return;
 }
 
