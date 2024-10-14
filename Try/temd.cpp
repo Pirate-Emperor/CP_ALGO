@@ -64,63 +64,27 @@ void floyd_warshall() {
 }
  
 void sol() {
-    cin >> n >> m >> p;
-    vector<ll> parr(p);
-    for (int i=0;i<p;i++)
-    {
-        cin >> parr[i];
-    }
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= n; j++)
-            dist[i][j] = (i == j) ? 0 : LINF;
-    for (int i = 0; i < m; i++) {
-        int u, v, w; cin >> u >> v >> w;
-        dist[u][v] = dist[v][u] = min(dist[u][v], (ll)w); 
-    }
-    floyd_warshall();
-    ll resu=LINF;
-    vector<ll> dp(p+1,LINF);
-    vector<ll> ans;
-    // for (int i=1;i<=n;i++)
-    // {
-    //     for (int j=1;j<=n;j++)
-    //     {
-    //         cout << dist[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
+    string s;
+    cin >> s;
+    n = s.size();
+    vector<ll> arr(26,0), cnt(26,0);
+    ll resu=0;
     for (int i=0;i<n;i++)
     {
-        vector<ll> t1dp(p+1,LINF);
-        ll rest = LINF;
-        for (int j=1;j<=n;j++)
+        int num = s[i]-'A';
+        if (i>1)
         {
-            ll res=0;
-            vector<ll> tdp(p+1,LINF);
-            for (int k=0;k<p;k++)
-            {
-                tdp[k] = min(dp[k],max(dist[j][parr[k]],dist[parr[k]][j]));
-                res+=tdp[k];
-            }
-            // cout << res << " "; 
-            if (res<=rest) 
-            {
-                rest=res;
-                t1dp = tdp;
-            }
+            resu+=(i-1)*cnt[num] - arr[num];
+            arr[num]+=i;
+            cnt[num]+=1;
         }
-        if (rest<=resu)
+        else
         {
-            resu=rest;
-            dp=t1dp;
+            arr[num]+=i;
+            cnt[num]+=1;
         }
-        ans.push_back(resu);
     }
-    for (int i=0;i<n;i++)
-    {
-        cout << ans[i] << " ";
-    }
-    cout << endl;
+    cout << resu << endl;
 }
 
 
@@ -132,7 +96,7 @@ int main() {
     // precompute(2e5+10);
     // TxtIO;
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();
