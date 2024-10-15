@@ -1,173 +1,144 @@
-// Segment tree with lazy propagation for range sum query, range add update, range set update
-// Problem link: https://cses.fi/problemset/task/1735/
+// https://codeforces.com/problemset/problem/580/E
 
 #include <bits/stdc++.h>
-
 using namespace std;
 
-#define ar array
-#define ll long long
 
-const int MAX_N = 5e3 + 100;
-const int MOD = 1e9 + 7;
-const int INF = 1e9;
+mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<long long> rnd(0,LLONG_MAX);
+// Use rnd(gen) for random number generation
+
+#define ll long long
+#define TxtIO   freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
+
+const int MAXN = 3e6 + 5; 
+const int MAX_N = 2e5 + 1;
+ll MOD = 998244353;
+const ll MOD2 = 1073676287;
+const ll MOD3 = 998244353;
+const ll INF = 1e9;
 const ll LINF = 1e18;
 
-struct tdata {
-    ll sum, setval, addval;
-    bool lazyset;
-    tdata() {
-        sum = setval = addval = lazyset = 0;
-    }
-    tdata(ll val) {
-        sum = val;
-        setval = addval = lazyset = 0;
-    }
-    tdata(tdata l, tdata r) {
-        sum = l.sum + r.sum; 
-    }
-};
- 
-int n, q, arr[MAX_N];
-tdata st[4 * MAX_N];
- 
-void build(int node, int start, int end) {
-    if (start == end) {
-        st[node] = tdata(arr[start]);
-        return;
-    }
-    int mid = (start + end) / 2;
-    build(2 * node, start, mid);
-    build(2 * node + 1, mid + 1, end);
-    st[node].sum = st[2 * node].sum + st[2 * node + 1].sum;
-}
- 
-void down(int node, int start, int end) { 
-    int mid = (start + end) / 2;
-    if (st[node].lazyset) {
-        st[2 * node] = st[2 * node + 1] = st[node];
-        st[2 * node].sum = (st[node].setval + st[node].addval) * (mid - start + 1);
-        st[2 * node + 1].sum = (st[node].setval + st[node].addval) * (end - mid);
-    }
-    else {
-        st[2 * node].addval += st[node].addval;
-        st[2 * node + 1].addval += st[node].addval;
-        st[2 * node].sum += st[node].addval * (mid - start + 1);
-        st[2 * node + 1].sum += st[node].addval * (end - mid);
-    }
-    st[node].addval = st[node].setval = st[node].lazyset = 0;
+int read() {
+	char c = getchar();
+	while (c < '0' || c > '9') c = getchar();
+	int ret = 0;
+	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
+	return ret;
 }
 
-// t = 1 means range add update, t = 2 means range set update
-void update(int node, int start, int end, int l, int r, ll val, int t) { 
-    if (r < start || end < l) return;
-    if (l <= start && end <= r) {
-        if (t == 2) {
-            st[node].setval = val;
-            st[node].lazyset = 1;
-            st[node].addval = 0;
-            st[node].sum = val * (end - start + 1);
-        }
-        else {
-            st[node].addval += val;
-            st[node].sum += val * (end - start + 1);
-        }
-        return;
-    }
-    down(node, start, end);
-    int mid = (start + end) / 2;
-    update(2 * node, start, mid, l, r, val, t);
-    update(2 * node + 1, mid + 1, end, l, r, val, t);
-    st[node].sum = st[2 * node].sum + st[2 * node + 1].sum;
-}
- 
-tdata query(int node, int start, int end, int l, int r) {
-    if (r < start || end < l) return tdata(0);
-    if (l <= start && end <= r) return st[node];
-    down(node, start, end);
-    int mid = (start + end) / 2;
-    return tdata(query(2 * node, start, mid, l, r), query(2 * node + 1, mid + 1, end, l, r));
-}
- 
-void solve() {
-    cin >> n >> q;
-    for (int i = 1; i <= n; i++) cin >> arr[i];
-    build(1, 1, n);
-    while (q--) {
-        int t, l, r; cin >> t >> l >> r;
-        if (t == 3) cout << query(1, 1, n, l, r).sum << "\n";
-        else {
-            int x; cin >> x;
-            update(1, 1, n, l, r, x, t);
-        }
-    }
-}
 
 void sol()
 {
     
-    ll a,b,c,d,n,m,q=0,k=-1,x,resu=LINF;
-    cin >> n >> m;
-    // vector<vector<ll>> dp(2,vector<ll>(m+10,0));
-    // ll sq = 70;
-    // ll sqSize = m/sq;
-    // vector<ll> mat(80,0);
-    a=0;
-    // map<ll,ll> mpi,npi;
-    // ll np=0,mp=0;
-    int maxN = 5e3+10;
-    for (int i=0;i<=maxN;i++) arr[i]=0;
-    build(1,1,maxN);
+    ll a,b,c,d,n,m,q=0,x,resu=LINF;
+    n = read();
+    vector<ll> arr(n),brr(n);
     for (int i=0;i<n;i++) 
     {
-        cin >> x;
-        if (x==0)
-        {
-            a++;
-        }
-        else
-        {
-            if (x>0 && x<=a) 
-            {
-                update(1, 1, maxN, x+1, m+1, 1, 1);
-                // mpi[x]++;
-                // int tem = ((x+sq-1)/sq)*sq;
-                // for (int j=x;j<=tem;)
-                // for (int j=x;j<=m;j++) dp[0][j]=dp[0][j]+1;
-                // mp++;
-            }
-            else if (x<0 && abs(x)<=a) 
-            {
-                update(1, 1, maxN, 1, a+x+1, 1, 1);
-                // npi[a+x]++;
-                // for (int j=0;j<=a+x;j++) dp[0][j] = dp[0][j]+1;
-                // np++;
-            }
-        }
+        arr[i] = read();
     }
-    // int last = 0;
-    // // int ni = npi.size();
-    // // for (int i=0;i<ni;i++)
-    // // {
-    // //     for (int j=last;j<=npi[i];j++) dp[0][j]+=np;
-    // //     np-=npi[i];
-    // //     last=npi[i]+1;
-    // // }
-    // last=m;
-    // int mi = mpi.size();
-    // for (int i=mi-1;i>=0;i--) 
-    // {
-    //     for (int j=last;j>=mpi[i];j--) dp[0][j]+=mp;
-    //     mp-=mpi[i];
-    //     last=mpi[i]-1;
-    // }   
-    resu=0;
-    for (int i=0;i<=m;i++)
+    int maxM = 1e3+10;
+    if (n<4)
     {
-        ll tem = query(1, 1, maxN, i+1, i+1).sum;
-        resu=max(resu,tem);
+        while(true)
+        {
+            a=0;
+            for (int i=0;i<n;i++)
+            {
+                int ti = (i+1)%n;
+                arr[ti]=max(0LL,arr[ti]-arr[i]);
+                if (arr[ti]==0) a++;
+            }
+            if (a>=1) break;
+        }
     }
-    cout << resu << endl;
+    else
+    {
+        // bool check=true;
+        for (int j=0;j<maxM;j++)
+        {
+            // check=true;
+            for (int i=0;i<n;i++)
+            {
+                int ti = (i+1)%n;
+                arr[ti]=max(0LL,arr[ti]-arr[i]);
+                // if (arr[(i-2+n)%n]!=0) check=false;
+            }
+            // if (check) break;
+        }
+    }
+    int ki=-1;
+    for (int i=0;i<n;i++)
+    {
+        if (arr[i]==0)
+        {
+            ki=i;
+            break;
+        }
+        int ti = (i+1)%n;
+        arr[ti]=max(0LL,arr[ti]-arr[i]);
+    }
+    for (int i=0;i<n;i++)
+    {
+        brr[i]=arr[(i+ki)%n];
+    }
+    arr = brr;
+    ll k,tsum;
+    for (int i=2;i<n;i++)
+    {
+        if (arr[i-2]!=0) 
+        {
+            if (arr[i-1]==0) continue;
+            k = arr[i-1]+arr[i-2]-1LL;
+            k/=arr[i-2];
+            tsum = 2LL*arr[i-1];
+            tsum-= (k)*arr[i-2];
+            tsum*=(k-1);
+            tsum=(tsum+1LL)/2LL;
+            if (arr[i]>=tsum) 
+            {
+                arr[i-1]=0;
+                arr[i]-=tsum;
+            }
+            else 
+            {
+                arr[i-1]=0;
+                arr[i]=0;
+            }
+        }
+    }
+    int i=n-1;
+    if (n>=3 && arr[i-2]!=0) 
+    {
+        ll k = (arr[i-1]+arr[i-2]-1)/arr[i-2];
+        ll tsum = k*(2*arr[i-1] - (k)*arr[i-2])/2 - (arr[i-1]%arr[i-2]);
+        if (arr[i]>tsum) 
+        {
+            arr[i-1]=0;
+            arr[i]-=tsum;
+        }
+        else 
+        {
+            arr[i-1]=0;
+            arr[i]=0;
+        }
+    }
+    else if (n>=2) {
+        if (arr[i-1]!=0) arr[i]=0;
+    }
+    vector<ll> ans;
+    for (int i=0;i<n;i++)
+    {
+        int ti = (i-ki+n)%n;
+        if (arr[ti]!=0) ans.push_back(i+1);
+    }
+    cout << ans.size() << endl;
+    for (int i=0;i<ans.size();i++)
+    {
+        cout << ans[i] << " ";
+    }
+    cout << endl;
     return;
 }
 
@@ -180,7 +151,7 @@ int main() {
     // precompute(2e5+10);
     // TxtIO;
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();
