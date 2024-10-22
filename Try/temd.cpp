@@ -52,36 +52,51 @@ int read() {
 	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
 	return ret;
 }
-
-int n, m, p;
-ll dist[MAX_N][MAX_N];
-
-void floyd_warshall() {
-    for (int k = 1; k <= n; k++)
-        for (int i = 1; i <= n; i++) 
-            for (int j = 1; j <= n; j++)
-                dist[i][j] = min(dist[i][j], max(dist[i][k] , dist[k][j]));
-}
  
 void sol() {
-    string s;
-    cin >> s;
-    n = s.size();
-    vector<ll> arr(26,0), cnt(26,0);
-    ll resu=0;
+    ll n,a;
+    cin >> n;
+    vector<ll> arr(n),brr(n);
     for (int i=0;i<n;i++)
     {
-        int num = s[i]-'A';
-        if (i>1)
+        cin >> arr[i];
+    }
+    for (int i=0;i<n;i++)
+    {
+        cin >> brr[i];
+    }
+    vector<ll> dp(n+1,-1);
+    priority_queue<ll> q;
+    q.push(1);
+    ll i=0;
+    dp[0]=0;
+    while(i<n && q.size()>0)
+    {
+        a = q.top();
+        q.pop();
+        while(i<n && i<a)
         {
-            resu+=(i-1)*cnt[num] - arr[num];
-            arr[num]+=i;
-            cnt[num]+=1;
+            if (brr[i]>a)
+            { 
+                ll temp = dp[a-1]+arr[i];
+                if (dp[brr[i]-1]==-1)
+                {
+                    dp[brr[i]-1] = temp;
+                }
+                else dp[brr[i]-1] = min(dp[brr[i]-1],temp); 
+                q.push(brr[i]);
+            }
+            i++;
         }
-        else
+    }
+    ll resu=0,sum=0;
+
+    for (int i=0;i<n;i++)
+    {
+        sum+=arr[i];
+        if (dp[i]!=-1)
         {
-            arr[num]+=i;
-            cnt[num]+=1;
+            resu = max(resu, sum-dp[i]);
         }
     }
     cout << resu << endl;
@@ -96,7 +111,7 @@ int main() {
     // precompute(2e5+10);
     // TxtIO;
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         sol();

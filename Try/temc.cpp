@@ -31,113 +31,66 @@ int read() {
 void sol()
 {
     
-    ll a,b,c,d,n,m,q=0,x,resu=LINF;
+    ll a,b,c,d,n,k,m,q=0,x,resu=LINF;
     n = read();
-    vector<ll> arr(n),brr(n);
-    for (int i=0;i<n;i++) 
-    {
-        arr[i] = read();
-    }
-    int maxM = 1e3+10;
-    if (n<4)
-    {
-        while(true)
-        {
-            a=0;
-            for (int i=0;i<n;i++)
-            {
-                int ti = (i+1)%n;
-                arr[ti]=max(0LL,arr[ti]-arr[i]);
-                if (arr[ti]==0) a++;
-            }
-            if (a>=1) break;
-        }
-    }
-    else
-    {
-        // bool check=true;
-        for (int j=0;j<maxM;j++)
-        {
-            // check=true;
-            for (int i=0;i<n;i++)
-            {
-                int ti = (i+1)%n;
-                arr[ti]=max(0LL,arr[ti]-arr[i]);
-                // if (arr[(i-2+n)%n]!=0) check=false;
-            }
-            // if (check) break;
-        }
-    }
-    int ki=-1;
+    vector<pair<ll,ll>> arr, brr,res;
+    // for (int i=0;i<n;i++)
+    // {
+    //     a = read();
+    //     b = read();
+    //     if (a<=b) arr.push_back(make_pair(b,a));
+    //     else brr.push_back(make_pair(a,b));
+    // }
+    // sort(arr.begin(),arr.end());
+    // sort(brr.begin(),brr.end());
+    // int j=0;
+    // for (int i=0;i<arr.size();i++)
+    // {
+    //     if (j<brr.size() && arr[i].first>brr[j].first)
+    //     {
+    //         res.push_back(brr[j]);
+    //         j++;
+    //         i=i-1;
+    //         continue;
+    //     }
+    //     res.push_back(make_pair(arr[i].second,arr[i].first));
+    // }
+    // for(int i=j;i<brr.size();i++)
+    // {
+    //     res.push_back(brr[i]);
+    // }
+
     for (int i=0;i<n;i++)
     {
-        if (arr[i]==0)
-        {
-            ki=i;
-            break;
-        }
-        int ti = (i+1)%n;
-        arr[ti]=max(0LL,arr[ti]-arr[i]);
+        a = read();
+        b = read();
+        if (a<=b) arr.push_back(make_pair(a,b));
+        else brr.push_back(make_pair(b,a));
     }
+    sort(arr.begin(),arr.end());
+    sort(brr.begin(),brr.end());
+    int j=0;
+    for (int i=0;i<arr.size();i++)
+    {
+        if (j<brr.size() && arr[i].first>brr[j].first)
+        {
+            res.push_back(make_pair(brr[j].second,brr[j].first));
+            j++;
+            i=i-1;
+            continue;
+        }
+        res.push_back(arr[i]);
+    }
+    for(int i=j;i<brr.size();i++)
+    {
+        res.push_back(make_pair(brr[i].second,brr[i].first));
+    }
+
     for (int i=0;i<n;i++)
     {
-        brr[i]=arr[(i+ki)%n];
+        cout << res[i].first << " " << res[i].second << " ";
     }
-    arr = brr;
-    ll k,tsum;
-    for (int i=2;i<n;i++)
-    {
-        if (arr[i-2]!=0) 
-        {
-            if (arr[i-1]==0) continue;
-            k = arr[i-1]+arr[i-2]-1LL;
-            k/=arr[i-2];
-            tsum = 2LL*arr[i-1];
-            tsum-= (k)*arr[i-2];
-            tsum*=(k-1);
-            tsum=(tsum+1LL)/2LL;
-            if (arr[i]>=tsum) 
-            {
-                arr[i-1]=0;
-                arr[i]-=tsum;
-            }
-            else 
-            {
-                arr[i-1]=0;
-                arr[i]=0;
-            }
-        }
-    }
-    int i=n-1;
-    if (n>=3 && arr[i-2]!=0) 
-    {
-        ll k = (arr[i-1]+arr[i-2]-1)/arr[i-2];
-        ll tsum = k*(2*arr[i-1] - (k)*arr[i-2])/2 - (arr[i-1]%arr[i-2]);
-        if (arr[i]>tsum) 
-        {
-            arr[i-1]=0;
-            arr[i]-=tsum;
-        }
-        else 
-        {
-            arr[i-1]=0;
-            arr[i]=0;
-        }
-    }
-    else if (n>=2) {
-        if (arr[i-1]!=0) arr[i]=0;
-    }
-    vector<ll> ans;
-    for (int i=0;i<n;i++)
-    {
-        int ti = (i-ki+n)%n;
-        if (arr[ti]!=0) ans.push_back(i+1);
-    }
-    cout << ans.size() << endl;
-    for (int i=0;i<ans.size();i++)
-    {
-        cout << ans[i] << " ";
-    }
+    // resu*=n;
     cout << endl;
     return;
 }
