@@ -12,12 +12,82 @@ uniform_int_distribution<long long> rnd(0,LLONG_MAX);
 #define TxtIO   freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
 
 const int MAXN = 3e6 + 5; 
-const int MAX_N = 2e5 + 1;
+const int MAX_N = 2e2 + 5;
 ll MOD = 998244353;
 const ll MOD2 = 1073676287;
 const ll MOD3 = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
+
+struct tdata {
+    ll sum, pref, suff, ans, tmax, tmin;
+    vector<ll> dat;
+    tdata() {
+        sum = pref = suff = ans = 0;
+        tmax = -LINF;
+        tmin = LINF;
+    }
+    tdata(int val) {
+        sum = val;
+        pref = suff = ans = max(0, val);
+        tmax = val;
+        tmin = val;
+    }
+    tdata(vector<ll> dVal)
+    {
+        dat = dVal;
+    }
+    tdata(tdata l, tdata r) {
+        sum = l.sum + r.sum;
+        pref = max(l.pref, l.sum + r.pref);
+        suff = max(r.suff, r.sum + l.suff);
+        ans = max({l.ans, r.ans, l.suff + r.pref});
+        tmax = max(l.tmax,r.tmax);
+        tmin = min(l.tmin,r.tmin);
+        dat = l.dat;
+        dat[0] = (l.dat[0]*r.dat[0])|(l.dat[1]*r.dat[2]);
+        dat[1] = (l.dat[0]*r.dat[1])|(l.dat[1]*r.dat[3]);
+        dat[2] = (l.dat[2]*r.dat[0])|(l.dat[3]*r.dat[2]);
+        dat[3] = (l.dat[2]*r.dat[1])|(l.dat[3]*r.dat[3]);
+    }
+};
+ 
+vector<ll> arr[MAX_N];
+tdata st[4 * MAX_N];
+ 
+void build(int node, int start, int end) {
+    if (start == end) {
+        st[node] = tdata(arr[start]);
+        return;
+    }
+    int mid = (start + end) / 2;
+    build(2 * node, start, mid);
+    build(2 * node + 1, mid + 1, end);
+    st[node] = tdata(st[2 * node], st[2 * node + 1]);
+}
+ 
+void update(int node, int start, int end, int idx, vector<ll> val) {
+    if (start == end) {
+        arr[idx] = val;
+        st[node] = tdata(val);
+        return;
+    }
+    int mid = (start + end) / 2;
+    if (idx <= mid) update(2 * node, start, mid, idx, val);
+    else update(2 * node + 1, mid + 1, end, idx, val);
+    st[node] = tdata(st[2 * node], st[2 * node + 1]);
+}
+ 
+tdata query(int node, int start, int end, int l, int r) {
+    if (start > r || end < l) 
+    {
+        vector<ll> zero(4,0);
+        return tdata(zero);
+    };
+    if (l <= start && end <= r) return st[node];
+    int mid = (start + end) / 2;
+    return tdata(query(2 * node, start, mid, l, r), query(2 * node + 1, mid + 1, end, l, r));
+}
 
 int read() {
 	char c = getchar();
@@ -26,72 +96,141 @@ int read() {
 	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
 	return ret;
 }
+ll qexp(ll a, ll b, ll m) {
+    ll res = 1;
+    while (b) {
+        if (b % 2) res = res * a % m;
+        a = a * a % m;
+        b /= 2;
+    }
+    return res;
+}
 
+vector<ll> fact, invf;
+
+void precompute(int n) {
+    fact.assign(n + 1, 1); 
+    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
+    invf.assign(n + 1, 1);
+    invf[n] = qexp(fact[n], MOD - 2, MOD);
+    for (int i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
+}
+
+ll nCk(int n, int k) {
+    if (k < 0 || k > n) return 0;
+    return fact[n] * invf[k] % MOD * invf[n - k] % MOD;
+    // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
+}
 
 void sol()
 {
-    
-    ll a,b,c,d,n,k,m,q=0,x,resu=LINF;
+    ll a,b,c,d,n,k,m,q=0,p,x,resu=LINF;
     n = read();
-    vector<pair<ll,ll>> arr, brr,res;
-    // for (int i=0;i<n;i++)
-    // {
-    //     a = read();
-    //     b = read();
-    //     if (a<=b) arr.push_back(make_pair(b,a));
-    //     else brr.push_back(make_pair(a,b));
-    // }
-    // sort(arr.begin(),arr.end());
-    // sort(brr.begin(),brr.end());
-    // int j=0;
-    // for (int i=0;i<arr.size();i++)
-    // {
-    //     if (j<brr.size() && arr[i].first>brr[j].first)
-    //     {
-    //         res.push_back(brr[j]);
-    //         j++;
-    //         i=i-1;
-    //         continue;
-    //     }
-    //     res.push_back(make_pair(arr[i].second,arr[i].first));
-    // }
-    // for(int i=j;i<brr.size();i++)
-    // {
-    //     res.push_back(brr[i]);
-    // }
-
+    vector<ll> brr(2*n+1), crr(2*n+1);
+    for (int i=0;i<2*n;i++)
+    {
+        cin >> brr[i];
+    }
+    if (n==1)
+    {
+        cout << 0 << endl;
+        return;
+    }
+    if (n%2==0)
+    {
+        ll mi = LINF;
+        ll ma = -INF;
+        for (int i=0;i<n/2;i++)
+        {
+            int j = i+n/2;
+            a = brr[2*i]+brr[2*i+1];
+            b = brr[2*i]+brr[2*j+1];
+            c = brr[2*j]+brr[2*i+1];
+            d = brr[2*j]+brr[2*j+1];
+            mi = min(mi,max(min(a,d),min(b,c)));
+            ma = max(ma,min(max(a,d),max(b,c)));
+        }
+        resu = ma-mi;
+        cout << resu << endl;
+        return;
+    }
+    vector<ll> one(4,1);
+    for (int i=1;i<=n;i++)
+    {
+        arr[i] = one;
+    }
+    for (int i=0;i<n/2;i++)
+    {
+        crr[4*i]=brr[2*i];
+        crr[4*i+1]=brr[2*i+1];
+        crr[4*i+2]=brr[2*(i+n/2+1)];
+        crr[4*i+3]=brr[2*(i+n/2+1)+1];
+    }
+    crr[2*n-2] = brr[n-1];
+    crr[2*n-1] = brr[n];
+    build(1,1,n);
+    vector<pair<ll,ll>> seg(4*n);
+    vector<ll> temp(4,0);
+    ll val=0;
+    int N = 2*n;
     for (int i=0;i<n;i++)
     {
-        a = read();
-        b = read();
-        if (a<=b) arr.push_back(make_pair(a,b));
-        else brr.push_back(make_pair(b,a));
-    }
-    sort(arr.begin(),arr.end());
-    sort(brr.begin(),brr.end());
-    int j=0;
-    for (int i=0;i<arr.size();i++)
-    {
-        if (j<brr.size() && arr[i].first>brr[j].first)
+        for (int j=0;j<4;j++)
         {
-            res.push_back(make_pair(brr[j].second,brr[j].first));
-            j++;
-            i=i-1;
+            temp[j]=1;
+            val = crr[(2*i-j/2+N)%N]+crr[(2*i+1+j%2)%N];
+            seg[4*i+j]=make_pair(val,4*i+j);
+            temp[j]=0;
+        }
+    }
+    sort(seg.begin(),seg.end());
+    ll l=0;
+    ll r=4*n-1;
+    while(true)
+    {
+        int i = seg[l].second;
+        int j = i%4;
+        i/=4;
+        i++;
+        arr[i][j]^=1;
+        update(1,1,n,i,arr[i]);
+        auto tem = query(1,1,n,1,n).dat;
+        if (tem[0]==1 || tem[3]==1)
+        {
+            l++;
             continue;
         }
-        res.push_back(arr[i]);
+        else
+        {
+            arr[i][j]^=1;
+            update(1,1,n,i,arr[i]);
+            break;
+        }
     }
-    for(int i=j;i<brr.size();i++)
+    while(true)
     {
-        res.push_back(make_pair(brr[i].second,brr[i].first));
+        int i = seg[r].second;
+        int j = i%4;
+        i/=4;
+        i++;
+        arr[i][j]^=1;
+        update(1,1,n,i,arr[i]);
+        auto tem = query(1,1,n,1,n).dat;
+        if (tem[0]==1 || tem[3]==1)
+        {
+            r--;
+            continue;
+        }
+        else
+        {
+            arr[i][j]^=1;
+            update(1,1,n,i,arr[i]);
+            break;
+        }
     }
-
-    for (int i=0;i<n;i++)
-    {
-        cout << res[i].first << " " << res[i].second << " ";
-    }
-    // resu*=n;
-    cout << endl;
+    
+    resu = seg[r].first-seg[l].first;
+    cout << resu << endl;
     return;
 }
 
