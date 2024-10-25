@@ -57,53 +57,67 @@ void upd(ll it, ll val)
         }
     }
 }
+deque<ll> ans; 
+void recur(int n)
+{
+    if (n==0) return;
+    ll x,y,ti;
+    ti = max(n-2,0);
+    cout << "? " << ti << endl;
+    cin >> x >> y;
+    if (n==1)
+    {
+        ans.push_front(x);
+        return;
+    }
+    else if (n==2)
+    {
+        if (y==0)
+        {
+            ll a,b;
+            cout << "? " << 0 << endl;
+            cin >> a >> b;
+            ans.push_front(x);
+            ans.push_front(a);
+        }
+        else
+        {
+            ans.push_back(x);
+            ans.push_front(y);
+        }
+        return;
+    }
+    if (y==0)
+    {
+        ll a,b;
+        cout << "? " << 0 << endl;
+        cin >> a >> b;
+        recur(n-2);
+        ans.push_front(x);
+        ans.push_front(a);
+    }
+    else
+    {
+        recur(n-1);
+        if (ans.front()==y)
+        {
+            ans.push_back(x);
+        }
+        else ans.push_front(x);
+    }
+    return;
+}
 void solve() {
-    ll m, resu=0;
     cin >> n;
-    m = 22;
-    vector<ll> arr(n);
-    bm.resize(MAX_N);
-    for(int i=0;i<MAX_N;i++)
+    recur(n);
+    cout << "! ";
+    while(!ans.empty())
     {
-        bm[i]=make_pair(-1,-1);
+        cout << ans.front() << " ";
+        ans.pop_front();
     }
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-        upd(arr[i],i);
-        m = max((int)m,(int)log2(arr[i]));
-    }
-    for (int j=0;j<m;j++)
-    {
-        for (int i=0;i<(1<<m);i++)
-        {
-            if (i&(1<<j))
-            {
-                ll ind = i^(1<<j);
-                if (bm[i].first!=-1) upd(ind,bm[i].first);
-                if (bm[i].second!=-1) upd(ind,bm[i].second);
-            }
-        }
-    }
-    for (int i=0;i<n;i++)
-    {
-        ll cur = arr[i];
-        ll opt=0;
-        bool check=false;
-        for (int j=m-1;j>=0;j--)
-        {
-            if (((cur>>j)&1)==0)
-            {
-                if (bm[opt^(1<<j)].second!=-1 && bm[opt^(1<<j)].first>i)
-                {
-                    check=true;
-                    opt^=(1<<j);
-                }
-            }
-        }
-        if (bm[opt].second!=-1 && bm[opt].first>i) resu = max(resu,arr[i]^opt);
-    }
-    cout << resu << endl;
+    cout << endl;
+    cout.flush();
 }
 
 int main() {
@@ -113,9 +127,10 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
     }
+    cout.flush();
 }
