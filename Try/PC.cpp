@@ -82,104 +82,65 @@ void sol()
 {
     ll a,b,c,d,n,resu=LINF;
     n = read();
-    vector<ll> brr(2*n+1), crr(2*n+1);
-    for (int i=0;i<2*n;i++)
+    string s;
+    vector<ll> brr(n), crr, drr;
+    for (int i=0;i<n;i++)
     {
         brr[i] = read();
     }
-    if (n==1)
+    cin >> s;
+    crr.push_back(0);
+    a = brr[0];
+    for (int i=1;i<n;i++)
     {
-        cout << 0 << endl;
-        return;
-    }
-    if (n%2==0)
-    {
-        ll mi = LINF;
-        ll ma = -INF;
-        for (int i=0;i<n/2;i++)
+        if (brr[i]>a)
         {
-            int j = i+n/2;
-            a = brr[2*i]+brr[2*i+1];
-            b = brr[2*i]+brr[2*j+1];
-            c = brr[2*j]+brr[2*i+1];
-            d = brr[2*j]+brr[2*j+1];
-            mi = min(mi,max(min(a,d),min(b,c)));
-            ma = max(ma,min(max(a,d),max(b,c)));
-        }
-        resu = ma-mi;
-        cout << resu << endl;
-        return;
-    }
-    for (int i=1;i<=n;i++)
-    {
-        arr[i][0] = 0;
-        arr[i][1] = 0;
-        arr[i][2] = 0;
-        arr[i][3] = 0;
-    }
-    for (int i=0;i<n/2;i++)
-    {
-        crr[4*i]=brr[2*i];
-        crr[4*i+1]=brr[2*i+1];
-        crr[4*i+2]=brr[2*(i+n/2+1)];
-        crr[4*i+3]=brr[2*(i+n/2+1)+1];
-    }
-    crr[2*n-2] = brr[n-1];
-    crr[2*n-1] = brr[n];
-    build(1,1,n);
-    vector<pair<ll,ll>> seg(4*n);
-    bool temp[4]={0,0,0,0};
-    ll val=0;
-    int N = 2*n;
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<4;j++)
-        {
-            temp[j]=1;
-            val = crr[(2*i-j/2+N)%N]+crr[(2*i+1+j%2)%N];
-            seg[4*i+j]=make_pair(val,4*i+j);
-            temp[j]=0;
+            a=brr[i];
+            crr.push_back(i);
         }
     }
-    sort(seg.begin(),seg.end());
-    ll l=0;
-    ll r=0;
-    resu = LINF;
-    bool check=false;
-    int i,j;
-    while(true)
+    drr.push_back(n-1);
+    a=brr[n-1];
+    for (int i=n-2;i>=0;i--)
     {
-        if (check==true)
+        if (brr[i]>a)
         {
-            resu = min(resu,seg[r-1].first-seg[l].first);
-            i = seg[l].second;
-            j = i%4;
-            i/=4;
-            i++;
-            arr[i][j]=!arr[i][j];
-            update(1,1,n,i);
-            auto tem = query(1,1,n,1,n);
-            if (tem.dat[0]==1 || tem.dat[3]==1) check=true;
-            else check=false;
-            l++;
-        }
-        else
-        {
-            r++;
-            if (r>4*n) break;
-            i = seg[r-1].second;
-            j = i%4;
-            i/=4;
-            i++;
-            arr[i][j]=!arr[i][j];
-            update(1,1,n,i);
-            auto tem = query(1,1,n,1,n);
-            if (tem.dat[0]==1 || tem.dat[3]==1) check=true;
-            else check=false;
+            a=brr[i];
+            drr.push_back(i);
         }
     }
-    
-    // resu = seg[r].first-seg[l].first;
+    drr.pop_back();
+    while(!drr.empty())
+    {
+        crr.push_back(drr.back());
+        drr.pop_back();
+    }
+    drr.clear();
+    drr.resize(crr.size());
+    vector<pair<ll,ll>> ar;
+    resu = 0;
+    n = crr.size();
+    for (int i=0;i<crr.size();i++)
+    {
+        a = (i==0)?0:(crr[i]-crr[i-1]-1);
+        b = (i==n-1)?0:(crr[i+1]-crr[i]-1);
+        // cout << a << " " << b << "T";
+        ar.push_back(make_pair(a,b));
+        drr[i]=max(a,b);
+        if (ar.size()>1)
+        {
+            ll temp = max(ar[i-1].first+1LL+max(ar[i].first,ar[i].second),ar[i-1].second+1LL+ar[i].second); 
+            resu = max(resu, temp);
+        }
+    }
+    priority_queue<pair<ll,ll>> pq;
+    for (int i=n-3;i>=0;i--)
+    {
+        pq.push(make_pair(drr[i+2]+i+2,i+2));
+        auto tem = pq.top();
+        ll temp = drr[i]+drr[tem.second]+tem.second-i;
+        resu = max(resu,temp);
+    }
     cout << resu << endl;
     return;
 }
