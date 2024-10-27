@@ -13,96 +13,63 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
 
-int n, par[MAX_N], sz[MAX_N], num_grp;
-vector<pair<ll,ll>> bm;
+ll qexp(ll a, ll b, ll m) {
+    ll res = 1;
+    while (b) {
+        if (b % 2) res = res * a % m;
+        a = a * a % m;
+        b /= 2;
+    }
+    return res;
+}
 
-int find(int u) {
-    return u == par[u] ? u : par[u] = find(par[u]);
-}
- 
-void merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return;
-    if (sz[u] > sz[v]) swap(u, v);
-    par[u] = v;
-    sz[v] += sz[u];
-    num_grp--;
-}
-void upd(ll it, ll val)
-{
-    if (bm[it].first==-1) bm[it].first=val;
-    else if (bm[it].second==-1)
-    {
-        if (bm[it].first==val) return;
-        else 
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-            if (bm[it].second < bm[it].first)
-            {
-                swap(bm[it].first,bm[it].second);
-            }
-        }
-    }
-    else 
-    {
-        if (bm[it].second < val)
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-        }
-        else if (bm[it].second != val)
-        {   
-            bm[it].first = max(bm[it].first,val);
-        }
-    }
-}
+
 void solve() {
-    ll m, resu=0;
+    ll n,k,x,y;
     cin >> n;
-    m = 22;
     vector<ll> arr(n);
-    bm.resize(MAX_N);
-    for(int i=0;i<MAX_N;i++)
-    {
-        bm[i]=make_pair(-1,-1);
-    }
+    ll resu=0;
+    stack<ll> fi,si,ti;
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
-        upd(arr[i],i);
-        m = max((int)m,(int)log2(arr[i]));
     }
-    for (int j=0;j<m;j++)
-    {
-        for (int i=0;i<(1<<m);i++)
-        {
-            if (i&(1<<j))
-            {
-                ll ind = i^(1<<j);
-                if (bm[i].first!=-1) upd(ind,bm[i].first);
-                if (bm[i].second!=-1) upd(ind,bm[i].second);
-            }
-        }
-    }
+    vector<ll> ta(n+1,0);
     for (int i=0;i<n;i++)
     {
-        ll cur = arr[i];
-        ll opt=0;
-        bool check=false;
-        for (int j=m-1;j>=0;j--)
+        while(!ti.empty()) ti.pop();
+        for (int j=i;j<n;j++)
         {
-            if (((cur>>j)&1)==0)
+            if (ti.empty() || ti.top()<=arr[j]) 
             {
-                if (bm[opt^(1<<j)].second!=-1 && bm[opt^(1<<j)].first>i)
-                {
-                    check=true;
-                    opt^=(1<<j);
-                }
+                if (ti.size()==1 && ti.top()==arr[j]) {}
+                else ti.push(arr[j]);
             }
         }
-        if (bm[opt].second!=-1 && bm[opt].first>i) resu = max(resu,arr[i]^opt);
+        ta[i]=ti.size();
     }
+    resu = n-1;
+    for (int i=0;i<n-1;i++)
+    {
+        si.push(arr[i]);
+        for (int j=i+1;j<n;j++)
+        {
+            if (arr[i]>=arr[j])
+            {
+                ll tem = ta[j]+fi.size()+si.size()-2;
+                resu = min(resu,tem);
+            }
+            if (si.empty() || si.top()<=arr[j]) 
+            {
+                if (si.size()==1 && si.top()==arr[j]) {}
+                else si.push(arr[j]);
+            }
+            
+        }
+        while(!si.empty()) si.pop();
+        if (fi.empty() || fi.top()<=arr[i]) fi.push(arr[i]);
+    }
+    
     cout << resu << endl;
 }
 
@@ -113,7 +80,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
