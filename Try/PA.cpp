@@ -25,58 +25,54 @@ ll qexp(ll a, ll b, ll m) {
 
 
 void solve() {
-    ll n,x,res=0,resu=0;
+    ll n,q,x,y,k;
     cin >> n;
-    vector<ll> arr(n);
-    vector<pair<ll,ll>> brr(n);
+    vector<ll> arr(n+3,0),pref(n+3,0),suf(n+3,0),sufs(n+3,0),ind(n+3,LINF),sufa(n+3,0),resp(n+100,0);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
-        x=arr[i];
-        int lg=0;
-        while(x>0 && x%2==0)
-        {
-            lg++;
-            x/=2;
-        }
-        brr[i]=make_pair(x,lg);
-        
+        pref[i+1]=pref[i]+arr[i];
     }
-    stack<pair<ll,ll>> st;
-    ll sts = 0;
-    ll stp = 0;
+    for (int i=n-1;i>=0;i--)
+    {
+        suf[i]=suf[i+1]+arr[i];
+        sufs[i]=sufs[i+1]+suf[i];
+        sufa[i]=sufa[i+1]+arr[i]*(n-i);
+    }
+    for (int i=1;i<=n;i++)
+    {
+        resp[i]=resp[i-1]+sufa[i-1];
+    }
+    ind[0]=0;
     for (int i=0;i<n;i++)
     {
-        res+=brr[i].first;
-        ll ts=0;
-        ll xi = arr[i];
-        while (!st.empty() && st.top().first<=xi)
-        {
-            auto tem = st.top();
-            st.pop();
-            stp=(stp-tem.first+MOD)%MOD;
-            ll temp = (qexp(2,tem.second,MOD)*tem.first)%MOD;
-            sts=((sts-temp)%MOD+MOD)%MOD;
-            ts+=tem.second;
-            ll tx=ts;
-            while(tx>0 && !st.empty() && st.top().first>xi)
-            {
-                xi*=2LL;
-                tx--;
-            }
-        }
-        // cout << res << stp << sts << "T";
-        st.push(make_pair(brr[i].first,brr[i].second+ts));
-        auto tem = st.top();
-        stp=(stp+tem.first)%MOD;
-        ll temp = (qexp(2,tem.second,MOD)*tem.first)%MOD;
-        sts=(sts+temp)%MOD;
-        resu = ((res-stp+sts)%MOD+MOD)%MOD;
-        cout << resu << " ";
+        ind[i+1]=ind[i]+n-i;
     }
-    // resu = res - 5 + 1280;
-    // cout << resu << " ";
-    cout << endl;
+    cin >> q;
+    for (int i=0;i<q;i++)
+    {
+        cin >> x >> y;
+        x--;
+        y--;
+        auto prefsum = [&](ll y){
+            ll u = upper_bound(ind.begin(),ind.end(),y) - ind.begin();
+            u--;
+            ll pr = resp[u];
+            ll ti = u+y-ind[u]+2;
+            ll tu = sufa[u] + sufs[ti] - suf[u]*(n-ti+1);
+            // cout << u << " " << pr << " " << ti << " " << sufa[u] << " " << sufs[ti] << " " << suf[u] << " " << tu << " " << endl;
+            pr+=tu;
+            return pr;
+        };
+        ll resu = prefsum(y);
+        if (x==0)
+        {
+            cout << resu << endl;
+            continue;
+        }
+        resu-=prefsum(x-1);
+        cout << resu << endl;
+    }
     return;
 }
 
@@ -87,7 +83,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
