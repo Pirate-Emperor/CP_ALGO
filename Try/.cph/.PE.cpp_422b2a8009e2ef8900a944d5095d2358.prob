@@ -1,0 +1,1 @@
+{"name":"Local: PE","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PE.cpp","tests":[{"id":1730047000984,"input":"4\n2 3 5 5\n10 20 40 5\n1 60 100 10\n60 1 100 10\n","output":"12\n190\n280\n160\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PE.cpp","group":"local","local":true}

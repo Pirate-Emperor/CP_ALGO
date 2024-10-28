@@ -58,50 +58,49 @@ void upd(ll it, ll val)
     }
 }
 void solve() {
-    ll m, resu=0;
-    cin >> n;
-    m = 22;
-    vector<ll> arr(n);
-    bm.resize(MAX_N);
-    for(int i=0;i<MAX_N;i++)
+    ll x,y,z,k, resu=0;
+    cin >> x >> y >> z >> k;
+    ll d = 0;
+    resu = LINF;
+    while(z>0)
     {
-        bm[i]=make_pair(-1,-1);
-    }
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-        upd(arr[i],i);
-        m = max((int)m,(int)log2(arr[i]));
-    }
-    for (int j=0;j<m;j++)
-    {
-        for (int i=0;i<(1<<m);i++)
+        if (k<1e4)
         {
-            if (i&(1<<j))
+            for (int j=0;j<k;j++)
             {
-                ll ind = i^(1<<j);
-                if (bm[i].first!=-1) upd(ind,bm[i].first);
-                if (bm[i].second!=-1) upd(ind,bm[i].second);
+                ll di=d+j;
+                if (di==0) continue;
+                ll ti=(di*x);
+                ti+=((z+di-1)/(di))*y;
+                ti+=(d/k)*y;
+                resu = min(resu,ti);
             }
         }
-    }
-    for (int i=0;i<n;i++)
-    {
-        ll cur = arr[i];
-        ll opt=0;
-        bool check=false;
-        for (int j=m-1;j>=0;j--)
+        else
         {
-            if (((cur>>j)&1)==0)
+            ll cl = (z+d+k-2)/(d+k-1);
+            ll cr = (d==0)?sqrt(z): (z+d-1)/(d);
+            for (int i=cl;i<=cr;i++)
             {
-                if (bm[opt^(1<<j)].second!=-1 && bm[opt^(1<<j)].first>i)
-                {
-                    check=true;
-                    opt^=(1<<j);
-                }
+                ll di = (z)/i;
+                ll ti = di*x;
+                ti+=i*y;
+                ti+=(d/k)*y;
+                resu = min(resu,ti);
             }
         }
-        if (bm[opt].second!=-1 && bm[opt].first>i) resu = max(resu,arr[i]^opt);
+        
+        // cout << resu << " ";
+        d+=k;
+        z-=d;
+    }
+    if (z==0)
+    {
+        ll di = d;
+        ll ti=(di*x);
+        ti+=((z+di-1)/(di))*y;
+        ti+=(d/k)*y;
+        resu = min(resu,ti);
     }
     cout << resu << endl;
 }
@@ -113,7 +112,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

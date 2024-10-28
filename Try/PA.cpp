@@ -25,52 +25,59 @@ ll qexp(ll a, ll b, ll m) {
 
 
 void solve() {
-    ll n,k,x,y;
+    ll n,x,res=0,resu=0;
     cin >> n;
     vector<ll> arr(n);
-    ll resu=0;
-    stack<ll> fi,si,ti;
+    vector<pair<ll,ll>> brr(n);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
+        x=arr[i];
+        int lg=0;
+        while(x>0 && x%2==0)
+        {
+            lg++;
+            x/=2;
+        }
+        brr[i]=make_pair(x,lg);
+        
     }
-    vector<ll> ta(n+1,0);
+    stack<pair<ll,ll>> st;
+    ll sts = 0;
+    ll stp = 0;
     for (int i=0;i<n;i++)
     {
-        while(!ti.empty()) ti.pop();
-        for (int j=i;j<n;j++)
+        res+=brr[i].first;
+        ll ts=0;
+        ll xi = arr[i];
+        while (!st.empty() && st.top().first<=xi)
         {
-            if (ti.empty() || ti.top()<=arr[j]) 
+            auto tem = st.top();
+            st.pop();
+            stp=(stp-tem.first+MOD)%MOD;
+            ll temp = (qexp(2,tem.second,MOD)*tem.first)%MOD;
+            sts=((sts-temp)%MOD+MOD)%MOD;
+            ts+=tem.second;
+            ll tx=ts;
+            while(tx>0 && !st.empty() && st.top().first>xi)
             {
-                if (ti.size()==1 && ti.top()==arr[j]) {}
-                else ti.push(arr[j]);
+                xi*=2LL;
+                tx--;
             }
         }
-        ta[i]=ti.size();
+        // cout << res << stp << sts << "T";
+        st.push(make_pair(brr[i].first,brr[i].second+ts));
+        auto tem = st.top();
+        stp=(stp+tem.first)%MOD;
+        ll temp = (qexp(2,tem.second,MOD)*tem.first)%MOD;
+        sts=(sts+temp)%MOD;
+        resu = ((res-stp+sts)%MOD+MOD)%MOD;
+        cout << resu << " ";
     }
-    resu = n-1;
-    for (int i=0;i<n-1;i++)
-    {
-        si.push(arr[i]);
-        for (int j=i+1;j<n;j++)
-        {
-            if (arr[i]>=arr[j])
-            {
-                ll tem = ta[j]+fi.size()+si.size()-2;
-                resu = min(resu,tem);
-            }
-            if (si.empty() || si.top()<=arr[j]) 
-            {
-                if (si.size()==1 && si.top()==arr[j]) {}
-                else si.push(arr[j]);
-            }
-            
-        }
-        while(!si.empty()) si.pop();
-        if (fi.empty() || fi.top()<=arr[i]) fi.push(arr[i]);
-    }
-    
-    cout << resu << endl;
+    // resu = res - 5 + 1280;
+    // cout << resu << " ";
+    cout << endl;
+    return;
 }
 
 int main() {
