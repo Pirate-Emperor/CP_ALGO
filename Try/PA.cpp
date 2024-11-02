@@ -27,7 +27,7 @@ ll qexp(ll a, ll b, ll m) {
 void solve() {
     ll n,q,x,y,k;
     cin >> n;
-    vector<ll> arr(n,0);
+    vector<ll> arr(n+1,0);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
