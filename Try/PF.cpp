@@ -13,111 +13,55 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
 
-int n, par[MAX_N], sz[MAX_N], num_grp;
-vector<pair<ll,ll>> bm;
+int n, m, k, resu;
+vector<string> bd;
 
-int find(int u) {
-    return u == par[u] ? u : par[u] = find(par[u]);
-}
- 
-void merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return;
-    if (sz[u] > sz[v]) swap(u, v);
-    par[u] = v;
-    sz[v] += sz[u];
-    num_grp--;
-}
-void upd(ll it, ll val)
+void recur(int i, int j, int dep)
 {
-    if (bm[it].first==-1) bm[it].first=val;
-    else if (bm[it].second==-1)
+    if (i<0 || j<0 || i>=n || j>=m) return;
+    if (dep==k)
     {
-        if (bm[it].first==val) return;
-        else 
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-            if (bm[it].second < bm[it].first)
-            {
-                swap(bm[it].first,bm[it].second);
-            }
-        }
-    }
-    else 
-    {
-        if (bm[it].second < val)
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-        }
-        else if (bm[it].second != val)
-        {   
-            bm[it].first = max(bm[it].first,val);
-        }
-    }
-}
-deque<ll> ans; 
-void recur(int n)
-{
-    if (n==0) return;
-    ll x,y,ti;
-    ti = max(n-2,0);
-    cout << "? " << ti << endl;
-    cin >> x >> y;
-    if (n==1)
-    {
-        ans.push_front(x);
+        resu++;
         return;
     }
-    else if (n==2)
+    vector<int> xt = {0,0,-1,1};
+    vector<int> yt = {-1,1,0,0};
+    for (int t=0;t<4;t++)
     {
-        if (y==0)
+        int it = xt[t], jt = yt[t];
+        if ((i+it)<0 || (i+it)>=n) continue;
+        if ((j+jt)<0 || (j+jt)>=m) continue;
+        if (bd[i+it][j+jt]=='.')
         {
-            ll a,b;
-            cout << "? " << 0 << endl;
-            cin >> a >> b;
-            ans.push_front(x);
-            ans.push_front(a);
+            bd[i+it][j+jt]='#';
+            recur(i+it,j+jt,dep+1);
+            bd[i+it][j+jt]='.';
         }
-        else
-        {
-            ans.push_back(x);
-            ans.push_front(y);
-        }
-        return;
     }
-    if (y==0)
-    {
-        ll a,b;
-        cout << "? " << 0 << endl;
-        cin >> a >> b;
-        recur(n-2);
-        ans.push_front(x);
-        ans.push_front(a);
-    }
-    else
-    {
-        recur(n-1);
-        if (ans.front()==y)
-        {
-            ans.push_back(x);
-        }
-        else ans.push_front(x);
-    }
+    
     return;
 }
 void solve() {
-    cin >> n;
-    recur(n);
-    cout << "! ";
-    while(!ans.empty())
+    cin >> n >> m >> k;
+    bd.resize(n);
+    for (int i=0;i<n;i++)
     {
-        cout << ans.front() << " ";
-        ans.pop_front();
+        cin >> bd[i];
     }
-    cout << endl;
-    cout.flush();
+    resu=0;
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<m;j++)
+        {
+            if (bd[i][j]=='.')
+            {
+                bd[i][j]='#';
+                recur(i,j,0);
+                bd[i][j]='.';
+            }
+        }
+    }
+    cout << resu << endl;
 }
 
 int main() {
@@ -127,7 +71,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
