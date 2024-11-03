@@ -12,7 +12,27 @@ const int MAX_N = 2e5 + 1;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
-ll m;
+
+int n, m;
+vector<ar<int,2>> adj[MAX_N];
+vector<int> dist;
+
+void bfs(int s) {
+    dist.assign(n + 1, -1);
+    deque<int> q;
+    dist[s] = 0; q.push_front(s);
+    while (q.size()) {
+        int u = q.front(); q.pop_front();
+        for (auto [v, w] : adj[u]) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + w;
+                if (w == 1) q.push_back(v);
+                else q.push_front(v);
+            }
+        }
+    }
+}
+
 struct tdata {
     ll sum, setval, addval;
     bool lazyset;
