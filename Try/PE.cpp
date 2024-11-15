@@ -8,101 +8,96 @@ using namespace std;
 #define ar array
 #define ll long long
 
-const int MAX_N = 1<<22;
+const int MAX_N = 1e6;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
 
-int n, par[MAX_N], sz[MAX_N], num_grp;
-vector<pair<ll,ll>> bm;
+int n, m, vis[MAX_N];
+vector<int> adj[MAX_N];
 
-int find(int u) {
-    return u == par[u] ? u : par[u] = find(par[u]);
-}
- 
-void merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return;
-    if (sz[u] > sz[v]) swap(u, v);
-    par[u] = v;
-    sz[v] += sz[u];
-    num_grp--;
-}
-void upd(ll it, ll val)
-{
-    if (bm[it].first==-1) bm[it].first=val;
-    else if (bm[it].second==-1)
+
+
+ll dfs(int u) {
+    vis[u] = 1;
+    ll b=0,resu=0;
+    vector<ll> dep;
+    for (int v : adj[u]) {
+        if (vis[v]) continue;
+        b = dfs(v);
+        resu=max(resu,b);
+        dep.push_back(b);
+    }
+    if (dep.size()==0) return 0;
+    else if (dep.size()<3) return resu+1;
+    sort(dep.begin(),dep.end());
+    ll l=resu+1,r=resu+100,mid=0;
+    ll res=resu+100;
+    // cout << u << " " << dep[3] << " " << endl;
+    while(l<r)
     {
-        if (bm[it].first==val) return;
+        mid = (r+l)/2;
+        ll curd=mid-dep[0],cnt=1;
+        for (int i=1;i<dep.size();i++)
+        {
+            while(curd>mid-dep[i])
+            {
+                cnt=(cnt+1)/2;
+                curd--;
+            }
+            cnt++;
+        }
+        ll tem = log2(cnt-1);
+        
+        if (curd<=tem) l=mid+1;
         else 
         {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-            if (bm[it].second < bm[it].first)
-            {
-                swap(bm[it].first,bm[it].second);
-            }
+            // cout << mid << " " << tem << " " << curd << " " << endl;
+            res=min(res,mid);
+            r=mid-1;
         }
     }
-    else 
+    for (ll mid: {l,r})
     {
-        if (bm[it].second < val)
+        ll curd=mid-dep[0],cnt=1;
+        for (int i=1;i<dep.size();i++)
         {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-        }
-        else if (bm[it].second != val)
-        {   
-            bm[it].first = max(bm[it].first,val);
-        }
-    }
-}
-void solve() {
-    ll x,y,z,k, resu=0;
-    cin >> x >> y >> z >> k;
-    ll d = 0;
-    resu = LINF;
-    while(z>0)
-    {
-        if (k<1e4)
-        {
-            for (int j=0;j<k;j++)
+            while(curd>mid-dep[i])
             {
-                ll di=d+j;
-                if (di==0) continue;
-                ll ti=(di*x);
-                ti+=((z+di-1)/(di))*y;
-                ti+=(d/k)*y;
-                resu = min(resu,ti);
+                cnt=(cnt+1)/2;
+                curd--;
             }
+            cnt++;
         }
-        else
-        {
-            ll cl = (z+d+k-2)/(d+k-1);
-            ll cr = (d==0)?sqrt(z): (z+d-1)/(d);
-            for (int i=cl;i<=cr;i++)
-            {
-                ll di = (z)/i;
-                ll ti = di*x;
-                ti+=i*y;
-                ti+=(d/k)*y;
-                resu = min(resu,ti);
-            }
-        }
+        ll tem = log2(cnt-1);
         
-        // cout << resu << " ";
-        d+=k;
-        z-=d;
+        if (curd<=tem) l=mid+1;
+        else 
+        {
+            // cout << mid << " " << tem << " " << curd << " " << endl;
+            res=min(res,mid);
+            r=mid-1;
+        }
     }
-    if (z==0)
-    {
-        ll di = d;
-        ll ti=(di*x);
-        ti+=((z+di-1)/(di))*y;
-        ti+=(d/k)*y;
-        resu = min(resu,ti);
+    return res;
+}
+
+void solve() {
+    cin >> n;
+    m=n-1;
+    for (int i = 0; i < m; i++) {
+        int u, v; cin >> u;
+        v = i+2;
+        adj[u].push_back(v);
     }
+    ll resu=0;
+    resu = dfs(1);
     cout << resu << endl;
+    for (int i=1;i<=n;i++)
+    {
+        vis[i]=0;
+        adj[i].clear();
+    }
 }
 
 int main() {
