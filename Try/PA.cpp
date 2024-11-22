@@ -88,16 +88,28 @@ bool recur(ll cur)
 
 void solve() {
     ll n=0,m=0,l=0,x=0;
-    cin >> n >> m >> l;
-    for (int i=0;i<n;i++) cin >> x, arr.push_back(x);
-    for (int i=0;i<m;i++) cin >> x, brr.push_back(x);
-    for (int i=0;i<l;i++) cin >> x, crr.push_back(x);
-
-    ll res = recur(0);
-    if (res==true) cout << "Aoki\n";
-    else cout << "Takahashi\n";
-    map<ll,ll> col;
-    
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<ll> pref(n+1,0),suf(n+1,0);
+    for (int i=0;i<n;i++)
+    {
+        pref[i+1]=(s[i]!='1')?0:pref[i]+1;
+    }
+    for (int i=n-1;i>=0;i--)
+    {
+        suf[i]=(s[i]!='2')?0:suf[i+1]+1;
+    }
+    for (int i=0;i<n;i++)
+    {
+        
+        if (s[i]=='/')
+        {
+            // cout << pref[i]+suf[i+1];
+            x = max(x,2LL*min(pref[i],suf[i+1])+1);
+        }
+    }
+    cout << x << endl;
 }
 
 

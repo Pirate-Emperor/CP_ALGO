@@ -8,11 +8,11 @@ using namespace std;
 #define ar array
 #define ll long long
 
-const int MAX_N = 3e5+10;
+const int MAX_N = 5e5 + 5;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
-
+ 
 ll qexp(ll a, ll b, ll m) {
     ll res = 1;
     while (b) {
@@ -23,63 +23,128 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-int vis[2*MAX_N];
-ll idt[2*MAX_N];
-ll res;
-vector<int> adj[2*MAX_N];
-map<ll,ll> mpi;
-
-void dfs(int u) {
-    vis[u] = 1;
-    res = max(res,idt[u]);
-    for (int v : adj[u]) {
-        if (vis[v]) continue;
-        dfs(v);
-    }
+vector<ll> arr,brr,crr;
+ll moves=0;
+ll func(ll cur, ll a, ll b)
+{
+    return (cur==0)?max(a,b):min(a,b);
 }
+bool recur(ll cur)
+{
+    // if (moves>=3) return 1-cur;
+    if (cur==0 && arr.size()==0) return false;
+    else if (cur==1 && brr.size()==0) return false;
+    if (cur==0)
+    {
+        auto tem = arr;
+        for (int i=0;i<(int)tem.size();i++)
+        {
+            for (int j=0;j<(int)crr.size();j++)
+            {
+                if (crr[j]<arr[i]) 
+                {
+                    swap(arr[i],crr[j]);
+                    if (recur(1-cur)==false) return true;
+                    moves++;
+                    swap(arr[i],crr[j]);
+                }
+            }
+            crr.push_back(tem[i]);
+            arr.erase(arr.begin()+i);
+            if (recur(1-cur)==false) return true;
+            moves++;
+            arr.insert(arr.begin()+i,1,tem[i]);
+            crr.pop_back();
+        }
+    }
+    else
+    {
+        auto tem = brr;
+        for (int i=0;i<(int)tem.size();i++)
+        {
+            for (int j=0;j<(int)crr.size();j++)
+            {
+                if (crr[j]<brr[i]) 
+                {
+                    swap(brr[i],crr[j]);
+                    if (recur(1-cur)==false) return true;
+                    moves++;
+                    swap(brr[i],crr[j]);
+                }
+            }
+            crr.push_back(tem[i]);
+            brr.erase(brr.begin()+i);
+            
+            if (recur(1-cur)==false) return true;
+            moves++;
+            brr.insert(brr.begin()+i,1,tem[i]);
+            crr.pop_back();
+        }
+    }
+    // 
+    return false;
+}
+
 
 void solve() {
-    ll n,k,x,y;
-    cin >> n;
-    vector<ll> arr(n+1);
-    mpi.clear();
-    ll idx=0;
-    if (mpi.find(n)==mpi.end())
+    ll n=0,x=0,q=0,l=0,r=0,mid=0;
+    cin >> n >> q;
+    string s;
+    cin >> s;
+    vector<ll> ones(n+1,0),twos(n+1,0),dot;
+    for (int i=0;i<n;i++)
     {
-        mpi[n]=idx;
-        idt[idx]=n;
-        idx++;
+        ones[i+1]=ones[i]+(s[i]=='1');
+        if (s[i]=='/') dot.push_back(i);
     }
-    for (int i=1;i<=n;i++)
+    for (int i=n-1;i>=0;i--)
     {
-        cin >> arr[i];
-        arr[i]+=i-1;
-        if (mpi.find(arr[i])==mpi.end())
+        twos[i]=twos[i+1]+(s[i]=='2');
+    }
+    for (int i=0;i<q;i++)
+    {
+        cin >> l >> r;
+        l--;
+        r--;
+        ll li=l;
+        ll ri=r;
+        
+        l = upper_bound(dot.begin(),dot.end(),l)-dot.begin();
+        r = (upper_bound(dot.begin(),dot.end(),r)-dot.begin())-1;
+        // cout << l << " " << r;
+        x=0;
+        while(l<=r)
         {
-            mpi[arr[i]]=idx;
-            idt[idx]=arr[i];
-            idx++;
+            mid=(r+l)/2;
+            ll valo = ones[dot[mid]+1]-ones[li];
+            ll valt = twos[dot[mid]]-twos[ri+1];
+            // cout << li << " " << dot[mid] << " " << ri << " " << valo << valt;
+            if (valo>valt)
+            {
+                l=mid+1;
+            }
+            else
+            {
+                r=mid-1;
+            }
+            x=max(x,2*min(valo,valt)+1);
         }
-        if (mpi.find(arr[i]+i-1)==mpi.end())
+        for (ll mi: {l,r,mid})
         {
-            mpi[arr[i]+i-1]=idx;
-            idt[idx]=arr[i]+i-1;
-            idx++;
+            x=0;
+            if (mi<0 || mi>=dot.size()) continue;
+            ll valo = ones[dot[mi]+1]-ones[li];
+            ll valt = twos[dot[mi]]-twos[ri+1];
+            x=max(x,2*min(valo,valt)+1);
         }
-    }
-    for (int i=1;i<=n;i++)
-    {
-        adj[mpi[arr[i]]].push_back(mpi[arr[i]+i-1]);
-    }
-    res=0;
-    dfs(0);
-    cout << res << endl;
-    for (int i=0;i<=idx;i++)
-    {
-        adj[i].clear();
-        vis[i]=0;
+        cout << x << endl;
     }
 }
+
+
+
+
+
 
 int main() {
     ios_base::sync_with_stdio(0);
@@ -88,7 +153,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
