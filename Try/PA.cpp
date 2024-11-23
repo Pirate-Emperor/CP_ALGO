@@ -23,93 +23,55 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-vector<ll> arr,brr,crr;
-ll moves=0;
-ll func(ll cur, ll a, ll b)
-{
-    return (cur==0)?max(a,b):min(a,b);
-}
-bool recur(ll cur)
-{
-    // if (moves>=3) return 1-cur;
-    if (cur==0 && arr.size()==0) return false;
-    else if (cur==1 && brr.size()==0) return false;
-    if (cur==0)
-    {
-        auto tem = arr;
-        for (int i=0;i<(int)tem.size();i++)
-        {
-            for (int j=0;j<(int)crr.size();j++)
-            {
-                if (crr[j]<arr[i]) 
-                {
-                    swap(arr[i],crr[j]);
-                    if (recur(1-cur)==false) return true;
-                    moves++;
-                    swap(arr[i],crr[j]);
-                }
-            }
-            crr.push_back(tem[i]);
-            arr.erase(arr.begin()+i);
-            if (recur(1-cur)==false) return true;
-            moves++;
-            arr.insert(arr.begin()+i,1,tem[i]);
-            crr.pop_back();
-        }
-    }
-    else
-    {
-        auto tem = brr;
-        for (int i=0;i<(int)tem.size();i++)
-        {
-            for (int j=0;j<(int)crr.size();j++)
-            {
-                if (crr[j]<brr[i]) 
-                {
-                    swap(brr[i],crr[j]);
-                    if (recur(1-cur)==false) return true;
-                    moves++;
-                    swap(brr[i],crr[j]);
-                }
-            }
-            crr.push_back(tem[i]);
-            brr.erase(brr.begin()+i);
-            
-            if (recur(1-cur)==false) return true;
-            moves++;
-            brr.insert(brr.begin()+i,1,tem[i]);
-            crr.pop_back();
-        }
-    }
-    // 
-    return false;
-}
 
 
 void solve() {
-    ll n=0,m=0,l=0,x=0;
-    cin >> n;
-    string s;
-    cin >> s;
-    vector<ll> pref(n+1,0),suf(n+1,0);
-    for (int i=0;i<n;i++)
+    ll n=0,m=0,l=0,x=0,bi=0;
+    cin >> x >> m;
+    ll lg = log2(x)+1;
+    ll lgm = log2(m)+1;
+    ll tem = 1<<lg;
+    
+    // cout << lg << lgm << " ";
+    if (m>=tem)
     {
-        pref[i+1]=(s[i]!='1')?0:pref[i]+1;
-    }
-    for (int i=n-1;i>=0;i--)
-    {
-        suf[i]=(s[i]!='2')?0:suf[i+1]+1;
-    }
-    for (int i=0;i<n;i++)
-    {
-        
-        if (s[i]=='/')
+        ll base = m>>lg;
+        base<<=lg;
+        for (ll it=0;it<tem;it++)
         {
-            // cout << pref[i]+suf[i+1];
-            x = max(x,2LL*min(pref[i],suf[i+1])+1);
+            ll i = base+it;
+            if (i>m) break;
+            n=x^i;
+            if (n%x==0 || n%i==0)
+            {
+                l++;
+            }
+        }
+        for (ll i=1;i<tem;i++)
+        {
+            n=x^i;
+            if (n%i==0 && n%x!=0)
+            {
+                l++;
+            }
+        }
+        // base+=x;
+        // base-=1LL;
+        base-=1LL;
+        l+=base/x;
+    }
+    else
+    {
+        for (int i=1;i<=m;i++)
+        {
+            n=x^i;
+            if (n%x==0 || n%i==0)
+            {
+                l++;
+            }
         }
     }
-    cout << x << endl;
+    cout << l << endl;
 }
 
 
@@ -124,7 +86,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
