@@ -54,52 +54,63 @@ int read() {
 }
  
 void sol() {
-    ll n,a;
+    ll n,a=0;
     cin >> n;
-    vector<ll> arr(n),brr(n);
+    vector<ll> arr(n);
+    map<ll,ll> mpi;
+    stack<ll> st;
+    vector<pair<ll,ll>> res;
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
+        if (arr[i]==1) mpi[i]=1;
+        else if (arr[i]==2) st.push(i);
+        else a++;
     }
-    for (int i=0;i<n;i++)
+    if (n==1)
     {
-        cin >> brr[i];
+        cout << 0 << endl;
+        return;
     }
-    vector<ll> dp(n+1,-1);
-    priority_queue<ll> q;
-    q.push(1);
-    ll i=0;
-    dp[0]=0;
-    while(i<n && q.size()>0)
+    for (int i=n-1;i>=0;i--)
     {
-        a = q.top();
-        q.pop();
-        while(i<n && i<a)
+        while(arr[i]==2) 
         {
-            if (brr[i]>a)
-            { 
-                ll temp = dp[a-1]+arr[i];
-                if (dp[brr[i]-1]==-1)
-                {
-                    dp[brr[i]-1] = temp;
-                }
-                else dp[brr[i]-1] = min(dp[brr[i]-1],temp); 
-                q.push(brr[i]);
-            }
+            st.pop();
+            i--;
+        }
+        if (arr[i]==1)
+        {
+            
+            if (st.empty()) continue;
+            ll tem = st.top();
+            st.pop();
+            swap(arr[tem],arr[i]);
+            res.push_back({tem,i});
+            mpi.erase(i);
+            mpi[tem]=1;
+        }
+        else
+        {
+            
+            auto fir = mpi.begin();
+            ll tem = fir->first;
+            if (tem>i) break;
+            swap(arr[i],arr[tem]);
+            res.push_back({i,tem});
+            mpi.erase(tem);
+            mpi[i]=1;
             i++;
         }
     }
-    ll resu=0,sum=0;
-
-    for (int i=0;i<n;i++)
+    a = res.size();
+    cout << a << endl;
+    for (int i=0;i<res.size();i++)
     {
-        sum+=arr[i];
-        if (dp[i]!=-1)
-        {
-            resu = max(resu, sum-dp[i]);
-        }
+        ll l = res[i].first+1;
+        ll r = res[i].second+1;
+        cout << l << " " << r << endl;
     }
-    cout << resu << endl;
 }
 
 

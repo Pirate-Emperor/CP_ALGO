@@ -1,7 +1,5 @@
-// Sieve // Totient // Mobius
-// Generate the all primes <= n
-// Time complexity: O(nlog(logn)) for standard sieve, O(n) for linear sieve
-// Problem link: https://cses.fi/problemset/task/2417/ (using linear sieve to generate the mobius function)
+// Disjoint Set Union
+// Union by rank & Path compression
 
 #include <bits/stdc++.h>
 
@@ -10,107 +8,166 @@ using namespace std;
 #define ar array
 #define ll long long
 
-const int MAX_N = 4e5 + 5;
-const ll MOD = 1e9 + 7;
-const ll INF = 1e9;
+const int MAX_N = 5e5 + 5;
+const int MOD = 1e9 + 7;
+const int INF = 1e9;
+const ll LINF = 1e18;
+ 
+ll qexp(ll a, ll b, ll m) {
+    ll res = 1;
+    while (b) {
+        if (b % 2) res = res * a % m;
+        a = a * a % m;
+        b /= 2;
+    }
+    return res;
+}
 
-// vector<int> primes, is_prime, spf;
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
 
-// void sieve(int n) {
-//     primes.clear();
-//     is_prime.assign(n + 1, 1);
-//     spf.assign(n + 1, 0);
-//     is_prime[0] = is_prime[1] = false;
-//     for (ll i = 2; i <= n; i++) {
-//         if (is_prime[i]) {
-//             primes.push_back(i);
-//             spf[i] = i;
-//             for (ll j = i * i; j <= n; j += i) {
-//                 is_prime[j] = false;
-//                 spf[j] = i;
-//             }
-//         }
-//     }
-// }
+int n, m, vis[MAX_N];
+vector<int> adj[MAX_N];
+vector<int> radj[MAX_N];
 
-// Linear sieve including calculating the smallest prime factor (spf), Mobius function, and Euler's totient function
-vector<int> primes, is_prime, spf, mobius, phi;
-
-void sieve(int n) {
-    primes.clear();
-    is_prime.assign(n + 1, 1);
-    spf.assign(n + 1, 0);
-    mobius.assign(n + 1, 0);
-    phi.assign(n + 1, 0);
-    is_prime[0] = is_prime[1] = 0;
-    mobius[1] = phi[1] = 1;
-    for (ll i = 2; i <= n; i++) {
-        if (is_prime[i]) {
-            primes.push_back(i);
-            spf[i] = i;
-            mobius[i] = -1;
-            phi[i] = i - 1;
-        }
-        for (auto p : primes) {
-            if (i * p > n || p > spf[i]) break;
-            is_prime[i * p] = 0;
-            spf[i * p] = p;
-            mobius[i * p] = (spf[i] == p) ? 0 : -mobius[i];
-            phi[i * p] = (spf[i] == p) ? phi[i] * p : phi[i] * phi[p];
-        }
+void dfs(int u) {
+    vis[u] = 1;
+    for (int v : radj[u]) {
+        if (vis[v]) continue;
+        dfs(v);
     }
 }
 
 void solve() {
-    ll n,m; 
-    cin >> n >> m;
-    vector<ll> arr(m);
-    for (int i=0;i<m;i++)
+    ll ni=0,mi=0;
+    cin >> ni >> mi;
+    vector<string> mat(ni);
+    n=ni*mi;
+    for (int i=0;i<ni;i++)
     {
-        cin >> arr[i];
-    }
-    ll lgn=log2(n);
-    if (lgn>=m)
-    {
-        cout << -1 << endl;
-        return;
-    }
-    sort(arr.begin(),arr.end());
-    vector<ll> res(n+1);
-    for (int i=1;i<=n;i++)
-    {
-        if (i==1)
+        cin >> mat[i];
+        for (int j=0;j<mi;j++)
         {
-            res[i]=arr[m-1];
+            ll u=i*ni+j;
+            ll v=-1;
+            switch(mat[i][j])
+            {
+                case 'U':
+                v=(i>0)?(i-1)*ni+j:-1;
+                break;
+                case 'D':
+                v=(i<ni-1)?(i+1)*ni+j:-1;
+                break;
+                case 'L':
+                v=(j>0)?i*ni+j-1:-1;
+                break;
+                case 'R':
+                v=(j<mi-1)?(i-1)*ni+j+1:-1;
+                break;
+            }
+            if (v>=0) 
+            {
+                adj[u].push_back(v);
+                radj[v].push_back(u);
+            }
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        vis[i]=0;
+        adj[i].clear();
+        radj[i].clear();
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (vis[i]==1) continue; 
+        int r=i/mi;
+        int c=i%mi;
+        vector<char> chr = {'D','U','R','L'};
+        vector<char> ch = {'U','D','L','R'};
+        vector<int> rc = {-1,1,0,0};
+        vector<int> cc = {0,0,1,-1};
+        if (mat[r][c]=='?')
+        {
+            for (int j=0;j<4;j++)
+            {
+                int nr=r+rc[j];
+                int nc=c+cc[j];
+                if (nr>=0 && nr<ni && nc>=0 && nc<mi)
+                {
+                    if (ch[j]==mat[nr][nc])
+                    {
+                        mat[r][c] = chr[j];
+                    } 
+                    else if (vis[nr*mi+nc]==1) 
+                    {
+                        vis[i]=1;
+                        adj[i].push_back(nr*mi+nc);
+                        radj[nr*mi+nc].push_back(i);
+                    }
+                }
+            }
+            if (adj[i].size()==0)
+            {
+                int nr=r;
+                int nc=c;
+                if (c<mi-1)
+                {
+                    nr = r;
+                    nc = c+1;
+                }
+                else 
+                {
+                    nr=r+1;
+                    nc=c;
+                }
+                adj[i].push_back(nr*mi+nc);
+                radj[nr*mi+nc].push_back(i);
+            }   
+            if (radj[i].size()!=0) dfs(i);
         }
         else
         {
-            ll pos = lower_bound(arr.begin(),arr.end(),res[i/spf[i]])-arr.begin();
-            pos--;
-            // cout << pos << " ";
-            // if (pos>=m) 
-            // {
-            //     cout << -1 << endl;
-            //     return;
-            // }
-            res[i]=arr[pos];
+            for (int j=0;j<4;j++)
+            {
+                int nr=r+rc[j];
+                int nc=c+cc[j];
+                if (nr>=0 && nr<ni && nc>=0 && nc<mi)
+                {
+                    if (vis[nr*mi+nc]==1) 
+                    {
+                        if (chr[j]==mat[r][c]) vis[i]=1;
+                    }
+                }
+            }
         }
+        
+        // dfs(i);
     }
-    for (int i=1;i<=n;i++)
+    ll resu=0;
+    for (int i=0;i<n;i++)
     {
-        cout << res[i] << " ";
+        if (vis[i]==1) resu++;
     }
-    cout << "\n";
+    cout << resu << endl;
 }
+
+
+
+
+
 
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    sieve(MAX_N);
-    int tc = 1;
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
+
+    int tc; tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {
-        // cout << "Case #" << t << ": ";
+        // cout << "Case #" << t  << ": ";
         solve();
     }
 }

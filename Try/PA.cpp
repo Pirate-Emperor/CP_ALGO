@@ -23,55 +23,50 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
 
 void solve() {
-    ll n=0,m=0,l=0,x=0,bi=0;
-    cin >> x >> m;
-    ll lg = log2(x)+1;
-    ll lgm = log2(m)+1;
-    ll tem = 1<<lg;
-    
-    // cout << lg << lgm << " ";
-    if (m>=tem)
+    ll n=0,m=0,k=0,l=0,x=0,bi=0;
+    cin >> n >> m >> k;
+    string s;
+    cin >> s;
+    vector<ar<ll,2>> arr(n,{LINF,LINF});
+    for (int i=0;i<n;i++)
     {
-        ll base = m>>lg;
-        base<<=lg;
-        for (ll it=0;it<tem;it++)
+        int prem = i-m;
+        int prek = i-k;
+        if (s[i]=='0')
         {
-            ll i = base+it;
-            if (i>m) break;
-            n=x^i;
-            if (n%x==0 || n%i==0)
+            if (prem+1>=0)
             {
-                l++;
+                arr[i][0]=min(arr[i][0],arr[prem+1][1]);
             }
-        }
-        for (ll i=1;i<tem;i++)
-        {
-            n=x^i;
-            if (n%i==0 && n%x!=0)
+            else arr[i][0]=0;
+            if (prek>=0)
             {
-                l++;
+                arr[i][1]=min(arr[i][1],1+arr[prek][0]);
             }
+            else arr[i][1]=0;
         }
-        // base+=x;
-        // base-=1LL;
-        base-=1LL;
-        l+=base/x;
-    }
-    else
-    {
-        for (int i=1;i<=m;i++)
+        else
         {
-            n=x^i;
-            if (n%x==0 || n%i==0)
+            if (prem>=0)
             {
-                l++;
+                arr[i][1]=min(arr[i][1],arr[prem][1]);
+                arr[i][1]=min(arr[i][1],arr[prem][0]);
+                arr[i][0]=min(arr[i][0],arr[i][1]);
+            }
+            else 
+            {
+                arr[i][1]=0;
+                arr[i][0]=0;
             }
         }
     }
-    cout << l << endl;
+    ll res = min(arr[n-1][0],arr[n-1][1]);
+    cout << res << endl;
 }
 
 
