@@ -29,43 +29,33 @@ int gcd(int a, int b) {
 
 void solve() {
     ll n=0,m=0,k=0,l=0,x=0,bi=0;
-    cin >> n >> m >> k;
+    cin >> n >> k;
     string s;
     cin >> s;
-    vector<ar<ll,2>> arr(n,{LINF,LINF});
-    for (int i=0;i<n;i++)
+    vector<ll> arr(n);
+    ll l = 0;
+    ll r = n;
+    ll mid=0;
+    ll res=n;
+    while (l<=r)
     {
-        int prem = i-m;
-        int prek = i-k;
-        if (s[i]=='0')
+        mid = l+(r-l)/2;
+        bool check=true;
+        for (int i=0;i<n;i++)
         {
-            if (prem+1>=0)
-            {
-                arr[i][0]=min(arr[i][0],arr[prem+1][1]);
-            }
-            else arr[i][0]=0;
-            if (prek>=0)
-            {
-                arr[i][1]=min(arr[i][1],1+arr[prek][0]);
-            }
-            else arr[i][1]=0;
+
+        }
+        if (!check)
+        {
+            l=mid+1;
         }
         else
         {
-            if (prem>=0)
-            {
-                arr[i][1]=min(arr[i][1],arr[prem][1]);
-                arr[i][1]=min(arr[i][1],arr[prem][0]);
-                arr[i][0]=min(arr[i][0],arr[i][1]);
-            }
-            else 
-            {
-                arr[i][1]=0;
-                arr[i][0]=0;
-            }
+            res=min(res,mid);
+            r=mid-1;
         }
     }
-    ll res = min(arr[n-1][0],arr[n-1][1]);
+    
     cout << res << endl;
 }
 

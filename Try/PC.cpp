@@ -27,130 +27,69 @@ int gcd(int a, int b) {
     return b ? gcd(b, a % b) : a;
 }
 
-int n, m, vis[MAX_N];
-vector<int> adj[MAX_N];
-vector<int> radj[MAX_N];
-
-void dfs(int u) {
-    vis[u] = 1;
-    for (int v : radj[u]) {
-        if (vis[v]) continue;
-        dfs(v);
-    }
-}
 
 void solve() {
-    ll ni=0,mi=0;
-    cin >> ni >> mi;
-    vector<string> mat(ni);
-    n=ni*mi;
-    for (int i=0;i<ni;i++)
+    ll n=0,m=0;
+    cin >> n;
+    vector<ar<ll,2>> arr(n);
+    vector<ll> vis(n,0),res(n,0);
+    vector<pair<ll,pair<ll,ll>>> path;
+    map<pair<ll,ll>,vector<ll>> mpi;
+    for (int i=0;i<n;i++)
     {
-        cin >> mat[i];
-        for (int j=0;j<mi;j++)
+        cin >> arr[i][0] >> arr[i][1];
+        path.push_back({arr[i][0],make_pair(n-arr[i][0],i)});
+        path.push_back({arr[i][1],make_pair(n-arr[i][0],i)});
+        mpi[{arr[i][0],arr[i][1]}].push_back(i);
+    }
+    for (auto it: mpi)
+    {
+        if (it.second.size()>1)
         {
-            ll u=i*ni+j;
-            ll v=-1;
-            switch(mat[i][j])
+            for (auto i: it.second)
             {
-                case 'U':
-                v=(i>0)?(i-1)*ni+j:-1;
-                break;
-                case 'D':
-                v=(i<ni-1)?(i+1)*ni+j:-1;
-                break;
-                case 'L':
-                v=(j>0)?i*ni+j-1:-1;
-                break;
-                case 'R':
-                v=(j<mi-1)?(i-1)*ni+j+1:-1;
-                break;
-            }
-            if (v>=0) 
-            {
-                adj[u].push_back(v);
-                radj[v].push_back(u);
+                vis[i]=2;
             }
         }
     }
-    
-    for (int i = 0; i < n; i++) {
-        vis[i]=0;
-        adj[i].clear();
-        radj[i].clear();
-    }
-
-    for (int i = 0; i < n; i++) {
-        if (vis[i]==1) continue; 
-        int r=i/mi;
-        int c=i%mi;
-        vector<char> chr = {'D','U','R','L'};
-        vector<char> ch = {'U','D','L','R'};
-        vector<int> rc = {-1,1,0,0};
-        vector<int> cc = {0,0,1,-1};
-        if (mat[r][c]=='?')
+    sort(path.begin(),path.end());
+    map<pair<ll,pair<ll,ll>>,ll> smar;
+    map<pair<ll,pair<ll,ll>>,ll,greater<pair<ll,pair<ll,ll>>>> bigl;
+    for (int i=0;i<path.size();i++)
+    {
+        // cout << path[i].second.second << " ";
+        vis[path[i].second.second]++;
+        if (vis[path[i].second.second]>2) continue;
+        if (vis[path[i].second.second]==2)
         {
-            for (int j=0;j<4;j++)
+            bigl.erase({arr[path[i].second.second][0], make_pair(n-path[i].second.first,path[i].second.second)});
+            smar.erase({arr[path[i].second.second][1], make_pair(path[i].second.first, path[i].second.second)});
+            auto it = bigl.lower_bound({arr[path[i].second.second][0], make_pair(n-path[i].second.first,path[i].second.second)});
+            ll li=-1,ri=-1;
+            if (it!=bigl.end())
             {
-                int nr=r+rc[j];
-                int nc=c+cc[j];
-                if (nr>=0 && nr<ni && nc>=0 && nc<mi)
-                {
-                    if (ch[j]==mat[nr][nc])
-                    {
-                        mat[r][c] = chr[j];
-                    } 
-                    else if (vis[nr*mi+nc]==1) 
-                    {
-                        vis[i]=1;
-                        adj[i].push_back(nr*mi+nc);
-                        radj[nr*mi+nc].push_back(i);
-                    }
-                }
+                li=it->first.first;
             }
-            if (adj[i].size()==0)
+            else continue;
+            auto it2 = smar.lower_bound({arr[path[i].second.second][1], make_pair(path[i].second.first, path[i].second.second)});
+            if (it2!=smar.end())
             {
-                int nr=r;
-                int nc=c;
-                if (c<mi-1)
-                {
-                    nr = r;
-                    nc = c+1;
-                }
-                else 
-                {
-                    nr=r+1;
-                    nc=c;
-                }
-                adj[i].push_back(nr*mi+nc);
-                radj[nr*mi+nc].push_back(i);
-            }   
-            if (radj[i].size()!=0) dfs(i);
+                ri=it2->first.first;
+            }
+            else continue;
+            res[path[i].second.second]=ri-li-(arr[path[i].second.second][1]-arr[path[i].second.second][0]);
         }
         else
         {
-            for (int j=0;j<4;j++)
-            {
-                int nr=r+rc[j];
-                int nc=c+cc[j];
-                if (nr>=0 && nr<ni && nc>=0 && nc<mi)
-                {
-                    if (vis[nr*mi+nc]==1) 
-                    {
-                        if (chr[j]==mat[r][c]) vis[i]=1;
-                    }
-                }
-            }
+            bigl[{arr[path[i].second.second][0], make_pair(n-path[i].second.first,path[i].second.second)}]=i;
+            smar[{arr[path[i].second.second][1], make_pair(path[i].second.first,path[i].second.second)}]=i;
         }
-        
-        // dfs(i);
     }
-    ll resu=0;
     for (int i=0;i<n;i++)
     {
-        if (vis[i]==1) resu++;
+        cout << res[i] << endl;
     }
-    cout << resu << endl;
+    // cout << endl;
 }
 
 
