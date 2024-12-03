@@ -29,34 +29,60 @@ int gcd(int a, int b) {
 
 void solve() {
     ll n=0,m=0,k=0,l=0,x=0,bi=0;
-    cin >> n >> k;
-    string s;
-    cin >> s;
+    cin >> n;
+    ll res=0;
     vector<ll> arr(n);
-    ll l = 0;
-    ll r = n;
-    ll mid=0;
-    ll res=n;
-    while (l<=r)
+    map<pair<ll,ll>,ll> mpi; 
+    for (int i=0;i<n;i++)
     {
-        mid = l+(r-l)/2;
-        bool check=true;
-        for (int i=0;i<n;i++)
+        cin >> arr[i];
+        mpi[{arr[i],i}]=1;
+    }
+    x=0;
+    vector<ll> resu;
+    pair<ll,ll> tem={1,-1};
+    while(mpi.size()>1)
+    {
+        auto it = mpi.lower_bound(tem);
+        if (it!=mpi.end() && tem.first == it->first.first)
         {
-
-        }
-        if (!check)
-        {
-            l=mid+1;
+            tem = it->first;
+            resu.push_back(it->first.first+x);
+            cout << ")"<< it->first.second << endl;
         }
         else
         {
-            res=min(res,mid);
-            r=mid-1;
+            auto it0 = mpi.lower_bound({tem.first,tem.second});
+            it = mpi.lower_bound({tem.first+1,tem.second});
+            pair<ll,ll> tem2 = {tem.first,-1};
+            auto it2 = mpi.lower_bound({tem2});
+            if (it0==mpi.end() || it->first.first-1>it2->first.first)
+            {
+                x++;
+                tem = it2->first;
+                cout << "+" << it2->first.first << endl;
+                resu.push_back(it2->first.first+x);
+            }
+            else
+            {
+                tem = it->first;
+                cout << "="<< it->first.second << endl;
+                resu.push_back(it->first.first+x);
+            }
         }
+        if (tem.second!=-1) 
+        {
+            mpi.erase(tem);
+            cout << tem.second << " ";
+        }
+        
     }
-    
-    cout << res << endl;
+    resu.push_back(mpi.begin()->first.first+x);
+    for (int i=0;i<resu.size();i++)
+    {
+        cout << resu[i] << " ";
+    }
+    cout << endl;
 }
 
 
