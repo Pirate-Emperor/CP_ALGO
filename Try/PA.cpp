@@ -30,57 +30,68 @@ int gcd(int a, int b) {
 void solve() {
     ll n=0,m=0,k=0,l=0,x=0,bi=0;
     cin >> n;
-    ll res=0;
     vector<ll> arr(n);
-    map<pair<ll,ll>,ll> mpi; 
+    k = ceil(log2(n));
+    m = 1<<k;
+    // cout << k << " " << m << endl;
+    ll one = m-1;
+    vector<ll> brr(m,-1),crr(m);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
-        mpi[{arr[i],i}]=1;
+        brr[one^i]=arr[i];
     }
-    x=0;
-    vector<ll> resu;
-    pair<ll,ll> tem={1,-1};
-    while(mpi.size()>1)
+    for (int i=0;i<m;i++)
     {
-        auto it = mpi.lower_bound(tem);
-        if (it!=mpi.end() && tem.first == it->first.first)
+        crr[i^one]=max(brr[i],0LL);
+    }
+    for (int i=0;i<k;i++)
+    {
+        for (int j=0;j<m;j++)
         {
-            tem = it->first;
-            resu.push_back(it->first.first+x);
-            cout << ")"<< it->first.second << endl;
-        }
-        else
-        {
-            auto it0 = mpi.lower_bound({tem.first,tem.second});
-            it = mpi.lower_bound({tem.first+1,tem.second});
-            pair<ll,ll> tem2 = {tem.first,-1};
-            auto it2 = mpi.lower_bound({tem2});
-            if (it0==mpi.end() || it->first.first-1>it2->first.first)
+            if ((j&(1<<i))!=0)
             {
-                x++;
-                tem = it2->first;
-                cout << "+" << it2->first.first << endl;
-                resu.push_back(it2->first.first+x);
-            }
-            else
-            {
-                tem = it->first;
-                cout << "="<< it->first.second << endl;
-                resu.push_back(it->first.first+x);
+                crr[j]^=crr[j^(1<<i)];
             }
         }
-        if (tem.second!=-1) 
-        {
-            mpi.erase(tem);
-            cout << tem.second << " ";
-        }
-        
     }
-    resu.push_back(mpi.begin()->first.first+x);
-    for (int i=0;i<resu.size();i++)
+    for (int i=0;i<m;i++)
     {
-        cout << resu[i] << " ";
+        if (brr[i]==-1)
+        {
+            crr[i^one] = 0;
+        }
+    }
+    for (int i=0;i<k;i++)
+    {
+        for (int j=0;j<m;j++)
+        {
+            if ((j&(1<<i))!=0)
+            {
+                crr[j]^=crr[j^(1<<i)];
+            }
+        }
+    }
+    for (int i=0;i<m;i++)
+    {
+        if (brr[i]==-1)
+        {
+            brr[i] = crr[i^one];
+        }
+    }
+    for (int i=0;i<k;i++)
+    {
+        for (int j=0;j<m;j++)
+        {
+            if ((j&(1<<i))!=0)
+            {
+                brr[j]^=brr[j^(1<<i)];
+            }
+        }
+    }
+    for (int i=n-1;i>=0;i--)
+    {
+        cout << brr[i] << " ";
     }
     cout << endl;
 }
@@ -97,7 +108,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
