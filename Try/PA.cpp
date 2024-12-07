@@ -27,73 +27,117 @@ int gcd(int a, int b) {
     return b ? gcd(b, a % b) : a;
 }
 
+int i_query(string s)
+{
+    int k;
+    cout << s << endl; 
+    cout.flush();
+    cin >> k;
+    return k;
+}
+char rev(char c)
+{
+    char resu = (c=='T')?'F':'T';
+    return resu;
+}
 void solve() {
-    ll n=0,m=0,k=0,l=0,x=0,bi=0;
+    ll n=0,l=0,x=0,r=0;
     cin >> n;
-    vector<ll> arr(n);
-    k = ceil(log2(n));
-    m = 1<<k;
-    // cout << k << " " << m << endl;
-    ll one = m-1;
-    vector<ll> brr(m,-1),crr(m);
+    string s,t,res;
+    s.append(n,'T');
+    t.append(n,'T');
+    res.append(n,'T');
     for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
-        brr[one^i]=arr[i];
+        s[i]='T';
+        t[i]=(i%2==0)?'T':'F';
     }
-    for (int i=0;i<m;i++)
+    l = i_query(s);
+    r = i_query(t);
+    for (int i=0;i<n;i+=2)
     {
-        crr[i^one]=max(brr[i],0LL);
-    }
-    for (int i=0;i<k;i++)
-    {
-        for (int j=0;j<m;j++)
+        if (i==n-1)
         {
-            if ((j&(1<<i))!=0)
+            s[i]='F';
+            x = i_query(s);
+            if (x-l==1) res[i]=s[i];
+            else res[i]=rev(s[i]);
+            l=x;
+        }
+        else
+        {
+            s[i]='F';
+            s[i+1]='F';
+            x = i_query(s);
+            if (x-l==2) 
             {
-                crr[j]^=crr[j^(1<<i)];
+                res[i]=s[i];
+                res[i+1]=s[i+1];
             }
-        }
-    }
-    for (int i=0;i<m;i++)
-    {
-        if (brr[i]==-1)
-        {
-            crr[i^one] = 0;
-        }
-    }
-    for (int i=0;i<k;i++)
-    {
-        for (int j=0;j<m;j++)
-        {
-            if ((j&(1<<i))!=0)
+            else if (x-l==-2) 
             {
-                crr[j]^=crr[j^(1<<i)];
+                res[i]=rev(s[i]);
+                res[i+1]=rev(s[i+1]);
             }
-        }
-    }
-    for (int i=0;i<m;i++)
-    {
-        if (brr[i]==-1)
-        {
-            brr[i] = crr[i^one];
-        }
-    }
-    for (int i=0;i<k;i++)
-    {
-        for (int j=0;j<m;j++)
-        {
-            if ((j&(1<<i))!=0)
+            else
             {
-                brr[j]^=brr[j^(1<<i)];
+                if (i==n-2)
+                {
+                    s[i]='T';
+                    x = i_query(s);
+                    if (x-l==1) 
+                    {
+                        res[i]=s[i];
+                        res[i+1]=s[i+1];
+                    }
+                    else if (x-l==-1) 
+                    {
+                        res[i]=rev(s[i]);
+                        res[i+1]=rev(s[i+1]);
+                    }
+                }
+                else
+                {
+                    t[i]=rev(t[i]);
+                    t[i+1]=rev(t[i+1]);
+                    t[i+2]=rev(t[i+2]);
+                    ll y = i_query(t);
+                    if (y-r==3)
+                    {
+                        res[i]=t[i];
+                        res[i+1]=t[i+1];
+                        res[i+2]=t[i+2];
+                    }
+                    else if (y-r==-1)
+                    {
+                        res[i]=rev(t[i]);
+                        res[i+1]=rev(t[i+1]);
+                        res[i+2]=t[i+2];
+                    }
+                    else if (y-r==1)
+                    {
+                        res[i]=t[i];
+                        res[i+1]=t[i+1];
+                        res[i+2]=rev(t[i+2]);
+                    }
+                    else if (y-r==-3)
+                    {
+                        res[i]=rev(t[i]);
+                        res[i+1]=rev(t[i+1]);
+                        res[i+2]=rev(t[i+2]);
+                    }
+                    r=y;
+                    i++;
+                }
             }
+            l=x;
         }
     }
-    for (int i=n-1;i>=0;i--)
+    int resu = i_query(res);
+    if (resu<n)
     {
-        cout << brr[i] << " ";
+        cout << "Error" << endl;
     }
-    cout << endl;
 }
 
 
