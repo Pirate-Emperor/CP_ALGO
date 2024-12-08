@@ -8,7 +8,7 @@ using namespace std;
 #define ar array
 #define ll long long
 
-const int MAX_N = 5e5 + 5;
+const int MAX_N = 2e3 + 5;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
@@ -40,105 +40,90 @@ char rev(char c)
     char resu = (c=='T')?'F':'T';
     return resu;
 }
+
+int n, m, vis[MAX_N], cnt[MAX_N];
+map<pair<ll,ll>,ll> mpi;
+vector<int> adj[MAX_N];
+vector<pair<ll,ll>> path;
+vector<pair<int,int>> que[MAX_N];
+
+void dfs(int u) {
+    vis[u] = 1;
+    
+    for (int v : adj[u]) {
+        if (vis[v]) continue;
+        int i=0;
+        vector<ll> tem;
+        ll x=0;
+        mpi.clear();
+        for (int i=path.size()-1;i>=0;i-=2)
+        {
+            mpi[path[i]]=2;
+        }
+        for (auto it: mpi)
+        {
+            x+=it.first.first;
+            tem.push_back(x);
+        }
+        ll ni = tem.size();
+        for (auto it: que[v])
+        {
+            ll x = max(ni - it.first,0LL);
+            ll ex = path.size() - ni;
+            // ex-=ex%2;
+            if (x==0) cnt[it.second] = min(ni,(ll)it.first)+1;
+            else cnt[it.second] = 2*tem[x-1]+it.first;
+            cnt[it.second]+=ex;
+        }
+        if (v!=0)
+        {
+            mpi[{adj[v].size(),v}]=1;
+            path.push_back({adj[v].size(),v});
+        }
+        
+        dfs(v);
+        if (v!=0)
+        {
+            mpi.erase(make_pair(adj[v].size(),v));
+            path.pop_back();
+        }
+    }
+    
+}
 void solve() {
-    ll n=0,l=0,x=0,r=0;
-    cin >> n;
-    string s,t,res;
-    s.append(n,'T');
-    t.append(n,'T');
-    res.append(n,'T');
-    for (int i=0;i<n;i++)
+    ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
+    cin >> n >> q;
+    for (int i=0;i<=q;i++) cnt[i]=0;
+    mpi.clear();
+    path.clear();
+    for (int i=0;i<=n;i++)
     {
-        s[i]='T';
-        t[i]=(i%2==0)?'T':'F';
+        vis[i]=0;
+        adj[i].clear();
     }
-    l = i_query(s);
-    r = i_query(t);
-    for (int i=0;i<n;i+=2)
+    vector<ll> res(n,0);
+    for (int i=0;i<n-1;i++)
     {
-        if (i==n-1)
-        {
-            s[i]='F';
-            x = i_query(s);
-            if (x-l==1) res[i]=s[i];
-            else res[i]=rev(s[i]);
-            l=x;
-        }
-        else
-        {
-            s[i]='F';
-            s[i+1]='F';
-            x = i_query(s);
-            if (x-l==2) 
-            {
-                res[i]=s[i];
-                res[i+1]=s[i+1];
-            }
-            else if (x-l==-2) 
-            {
-                res[i]=rev(s[i]);
-                res[i+1]=rev(s[i+1]);
-            }
-            else
-            {
-                if (i==n-2)
-                {
-                    s[i]='T';
-                    x = i_query(s);
-                    if (x-l==1) 
-                    {
-                        res[i]=s[i];
-                        res[i+1]=s[i+1];
-                    }
-                    else if (x-l==-1) 
-                    {
-                        res[i]=rev(s[i]);
-                        res[i+1]=rev(s[i+1]);
-                    }
-                }
-                else
-                {
-                    t[i]=rev(t[i]);
-                    t[i+1]=rev(t[i+1]);
-                    t[i+2]=rev(t[i+2]);
-                    ll y = i_query(t);
-                    if (y-r==3)
-                    {
-                        res[i]=t[i];
-                        res[i+1]=t[i+1];
-                        res[i+2]=t[i+2];
-                    }
-                    else if (y-r==-1)
-                    {
-                        res[i]=rev(t[i]);
-                        res[i+1]=rev(t[i+1]);
-                        res[i+2]=t[i+2];
-                    }
-                    else if (y-r==1)
-                    {
-                        res[i]=t[i];
-                        res[i+1]=t[i+1];
-                        res[i+2]=rev(t[i+2]);
-                    }
-                    else if (y-r==-3)
-                    {
-                        res[i]=rev(t[i]);
-                        res[i+1]=rev(t[i+1]);
-                        res[i+2]=rev(t[i+2]);
-                    }
-                    r=y;
-                    i++;
-                }
-            }
-            l=x;
-        }
+        cin >> x >> y;
+        x--;
+        y--;
+        adj[x].push_back(y);
+        adj[y].push_back(x);
     }
-    int resu = i_query(res);
-    if (resu<n)
+    for (int i=0;i<q;i++)
     {
-        cout << "Error" << endl;
+        cin >> l >> r;
+        l--;
+        que[l].push_back({r,i});
+    }
+    ll s = 0;
+    dfs(s);
+    for (int i=0;i<q;i++)
+    {
+        cout << cnt[i] << endl;
     }
 }
+
 
 
 
@@ -152,7 +137,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
