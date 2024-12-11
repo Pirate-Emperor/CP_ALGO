@@ -94,34 +94,7 @@ void solve() {
     ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
     cin >> n >> q;
     for (int i=0;i<=q;i++) cnt[i]=0;
-    mpi.clear();
-    path.clear();
-    for (int i=0;i<=n;i++)
-    {
-        vis[i]=0;
-        adj[i].clear();
-    }
-    vector<ll> res(n,0);
-    for (int i=0;i<n-1;i++)
-    {
-        cin >> x >> y;
-        x--;
-        y--;
-        adj[x].push_back(y);
-        adj[y].push_back(x);
-    }
-    for (int i=0;i<q;i++)
-    {
-        cin >> l >> r;
-        l--;
-        que[l].push_back({r,i});
-    }
-    ll s = 0;
-    dfs(s);
-    for (int i=0;i<q;i++)
-    {
-        cout << cnt[i] << endl;
-    }
+    
 }
 
 
