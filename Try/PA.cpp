@@ -12,7 +12,7 @@ using namespace std;
 #define all(x) (x).begin(), (x).end()
 #define sz(x) (int)(x).size()
 
-const int MAX_N = 2e3 + 5;
+const int MAX_N = 4e5 + 5;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
@@ -45,109 +45,93 @@ char rev(char c)
     return resu;
 }
 
-int n;
-int mod;
- 
-int mul(int i, int j) {
-    int res = 0;
-    rep(x, 0, n - 1) {
-        if (i & (1LL << x)) res ^= j;
-        j <<= 1;
-        if (j & (1LL << (n - 1))) j ^= mod;
+struct cmp {
+    bool operator()(pair<ll,string> a, pair<ll,string> b) const 
+    {
+        if (a.first==b.first) return a.second<b.second;  
+        else return a.first > b.first; 
     }
-    return res;
-}
- 
-int pow(int i) {
-    int res = 1;
-    int b = 2;
-    while (i) {
-        if (i & 1) res = mul(res, b);
-        b = mul(b, b);
-        i >>= 1;
-    }
-    return res;
-}
-
-
-
+};
 
 void solve() {
-    ll l=0,x=0,y=0,k=0,r=0,q=0;
-    string s;
-    cin >> s;
-    n=s.size();
-    vector<ll> pos;
-    ll m=0;
-    for (int i=0;i<n;i++)
+    ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
+    ll h=0,w=0;
+    cin >> h >> w >> k;
+    cin >> x >> y;
+    n=h*w;
+    vector<ll> arr(n+2000);
+    vector<vector<ar<int,2>>> adj(n+2000);
+    for (int i=0;i<h;i++)
     {
-        if (s[i]=='1') 
+        for (int j=0;j<w;j++)
         {
-            pos.push_back(i); 
-            // m|=(1LL << i);
+            int it = i*w+j;
+            cin >> arr[it];
         }
     }
-    if (pos.size()==0)
-    {
-        cout << -1 << endl;
-        return;
-    }
-    else if (pos.size()==1)
-    {
-        cout << pos[0]+1 << " " << pos[0]+2 << endl;
-        return;
-    }
-    else if (pos.size()==2)
-    {
-        cout << pos[0]+1 << " " << pos[1]+1 << endl;
-        return;
-    }
-    s.erase(s.find_last_not_of("0") + 1);
-    int offset = s.find_first_not_of("0");
-    s.erase(0, offset);
-    n=s.size();
-    rep(x, 0, sz(s)) if (s[x] == '1') mod |= (1LL << x);
-    m = mod;
 
-    int h = (n + 1) / 2;
- 
-    int val = mod;
-    int prod = 1;
-    rep(x, 3LL, 1 << h) if (x & 1) {
-        int num = 0;
-        while (true) {
-            int curr = val;
-            int other = 0;
-            rep(bit, 0, n) if (curr & (1LL << bit)) {
-                curr ^= x << bit;
-                other ^= 1LL << bit;
+    for (int i=0;i<h;i++)
+    {
+        for (int j=0;j<w;j++)
+        {
+            int it = i*w+j;
+            vector<ll> col = {0,0,-1,1};
+            vector<ll> row = {-1,1,0,0};
+            for (int ci=0;ci<4;ci++)
+            {
+                int vi = i+row[ci];
+                int vj = j+col[ci];
+                if (vi>=0 && vi<h && vj>=0 && vj<w)
+                {
+                    int cit = vi*w+vj;
+                    adj[it].push_back({cit, arr[cit]});
+                }
             }
-            if (curr == 0) {
-                val = other;
-                num++;
-            } else
-                break;
-        }
-
-        if (num) {
-            prod *= (1LL << (63 - __builtin_clzll(x))) - 1;
-            rep(y, 1, num) prod *= 1LL << (63 - __builtin_clzll(x));
         }
     }
-    if (val > 1) prod *= (1LL << (63 - __builtin_clzll(val))) - 1;
-
-    int ans = 1LL << 60;
-    for (int x = 1; x * x <= prod; x++) {
-        if (prod % x == 0) {
-            if (pow(x) == 1) ans = min(ans, x);
-            if (pow(prod / x) == 1) ans = min(ans, prod / x);
-        }
-    }
-    y=ans;
-    x=pos[0]+1;
-    y+=x;
-    cout << x << " " << y << endl;
     
+
+
+    vector<ll> vis(n,0);
+    priority_queue<ar<ll,2>, vector<ar<ll,2>>, greater<ar<ll,2>>> pq;
+    x--;
+    y--;
+    int pi = x*w + y;
+    ll cur = arr[pi];
+    ll s = pi;
+    // pq.push({cur, s});
+    vis[s]=1;
+    for (auto [v, w] : adj[s]) {
+        if (vis[v]==0) {
+            pq.push({w, v});  
+        }
+    }
+    while (pq.size()) {
+        auto [d, u] = pq.top(); 
+        pq.pop();
+        if (vis[u]==1)
+        {
+            continue;
+        }
+        bool check=false;
+        if ((cur%k==0 && (cur/k) > d) || (cur%k!=0 && (cur/k) >= d)) 
+        {
+            if (vis[u]==0)
+            {
+                // cout << cur << " " << d << endl;
+                vis[u]=1;
+                cur+=d;
+                for (auto [v, w] : adj[u]) {
+                    if (vis[v]==0) {
+                        pq.push({w, v});  
+                    }
+                }
+            }
+            continue;
+        }
+        break;
+    } 
+    cout << cur << endl;
 }
 
 
