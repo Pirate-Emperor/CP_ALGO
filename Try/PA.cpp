@@ -56,82 +56,58 @@ struct cmp {
 void solve() {
     ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
     ll h=0,w=0;
-    cin >> h >> w >> k;
-    cin >> x >> y;
-    n=h*w;
-    vector<ll> arr(n+2000);
-    vector<vector<ar<int,2>>> adj(n+2000);
-    for (int i=0;i<h;i++)
+    cin >> n;
+    vector<ll> arr(n),brr(n),vis(n,0);
+    vector<vector<ar<ll,2>>> adj(n);
+    for (int i=0;i<n;i++)
     {
-        for (int j=0;j<w;j++)
-        {
-            int it = i*w+j;
-            cin >> arr[it];
-        }
+        cin >> arr[i];
     }
-
-    for (int i=0;i<h;i++)
+    for (int i=0;i<n;i++)
     {
-        for (int j=0;j<w;j++)
+        cin >> brr[i];
+    }
+    if (arr[0]!=brr[0] || arr[n-1]!=brr[n-1])
+    {
+        cout << "NO\n";
+        return;
+    }
+    for (int i=0;i<n-1;i++)
+    {
+        adj[arr[i]].push_back({arr[i+1],i+1});
+        adj[arr[i+1]].push_back({arr[i],i});
+    }
+    ar<ll,3> start = {arr[0],0,1};
+    vis[0]=1;
+    vector<ar<ll,2>> path;
+    for (int i=0;i<n;i++)
+    {
+        for (auto it: adj[start[0]])
         {
-            int it = i*w+j;
-            vector<ll> col = {0,0,-1,1};
-            vector<ll> row = {-1,1,0,0};
-            for (int ci=0;ci<4;ci++)
+            if (vis[it[1]]==0)
             {
-                int vi = i+row[ci];
-                int vj = j+col[ci];
-                if (vi>=0 && vi<h && vj>=0 && vj<w)
+                if (it[0]==brr[i])
                 {
-                    int cit = vi*w+vj;
-                    adj[it].push_back({cit, arr[cit]});
-                }
-            }
-        }
-    }
-    
-
-
-    vector<ll> vis(n,0);
-    priority_queue<ar<ll,2>, vector<ar<ll,2>>, greater<ar<ll,2>>> pq;
-    x--;
-    y--;
-    int pi = x*w + y;
-    ll cur = arr[pi];
-    ll s = pi;
-    // pq.push({cur, s});
-    vis[s]=1;
-    for (auto [v, w] : adj[s]) {
-        if (vis[v]==0) {
-            pq.push({w, v});  
-        }
-    }
-    while (pq.size()) {
-        auto [d, u] = pq.top(); 
-        pq.pop();
-        if (vis[u]==1)
-        {
-            continue;
-        }
-        bool check=false;
-        if ((cur%k==0 && (cur/k) > d) || (cur%k!=0 && (cur/k) >= d)) 
-        {
-            if (vis[u]==0)
-            {
-                // cout << cur << " " << d << endl;
-                vis[u]=1;
-                cur+=d;
-                for (auto [v, w] : adj[u]) {
-                    if (vis[v]==0) {
-                        pq.push({w, v});  
+                    if (it[1]!=start[1]+start[2])
+                    {
+                        for (int j=start[1];j<n && j>=0;i-=start[2])
+                        {
+                            ll ij = it[1]+start[2]*(j-start[1]+start[2]);
+                            if (ij>=0 && ij<n && arr[j]==arr[ij])
+                            {
+                                path.push_back({})
+                            }
+                        }
+                        
+                        start={it[0],it[1],-start[2]};
                     }
+                    vis[it[1]]=0;
+                    start={it[0],it[1],start[2]};
+                    break;
                 }
             }
-            continue;
         }
-        break;
-    } 
-    cout << cur << endl;
+    }
 }
 
 
@@ -147,7 +123,7 @@ signed main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
