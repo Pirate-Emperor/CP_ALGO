@@ -57,57 +57,12 @@ void solve() {
     ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
     ll h=0,w=0;
     cin >> n;
-    vector<ll> arr(n),brr(n),vis(n,0);
-    vector<vector<ar<ll,2>>> adj(n);
+    vector<ll> arr(n);
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
     }
-    for (int i=0;i<n;i++)
-    {
-        cin >> brr[i];
-    }
-    if (arr[0]!=brr[0] || arr[n-1]!=brr[n-1])
-    {
-        cout << "NO\n";
-        return;
-    }
-    for (int i=0;i<n-1;i++)
-    {
-        adj[arr[i]].push_back({arr[i+1],i+1});
-        adj[arr[i+1]].push_back({arr[i],i});
-    }
-    ar<ll,3> start = {arr[0],0,1};
-    vis[0]=1;
-    vector<ar<ll,2>> path;
-    for (int i=0;i<n;i++)
-    {
-        for (auto it: adj[start[0]])
-        {
-            if (vis[it[1]]==0)
-            {
-                if (it[0]==brr[i])
-                {
-                    if (it[1]!=start[1]+start[2])
-                    {
-                        for (int j=start[1];j<n && j>=0;i-=start[2])
-                        {
-                            ll ij = it[1]+start[2]*(j-start[1]+start[2]);
-                            if (ij>=0 && ij<n && arr[j]==arr[ij])
-                            {
-                                path.push_back({})
-                            }
-                        }
-                        
-                        start={it[0],it[1],-start[2]};
-                    }
-                    vis[it[1]]=0;
-                    start={it[0],it[1],start[2]};
-                    break;
-                }
-            }
-        }
-    }
+    
 }
 
 
