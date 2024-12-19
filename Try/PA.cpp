@@ -55,14 +55,23 @@ struct cmp {
 
 void solve() {
     ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
-    ll h=0,w=0;
-    cin >> n;
-    vector<ll> arr(n);
-    for (int i=0;i<n;i++)
+    ll h=0,w=0,m=0;
+    cin >> n >> m;
+    if (n<m)
     {
-        cin >> arr[i];
+        cout << "NO\n";
+        return;
     }
-    
+    cout << "YES\n";
+    for (int i=0;i<2*n;i++)
+    {
+        for (int j=1;j<=m;j++)
+        {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+
 }
 
 
