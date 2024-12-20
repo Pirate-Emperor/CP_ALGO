@@ -15,7 +15,7 @@ const ll LINF = 1e18;
 ll query(ll l, ll r)
 {
     ll res;
-    cout << "? "  << l << " " << r;
+    cout << "? "  << l << " " << r << endl;
     cout.flush();
     cin >> res;
     return res; 
@@ -46,7 +46,7 @@ void solve() {
                     k+=i;
                 }
             }
-            cout << "! " << k;
+            
         }
         else
         {
@@ -73,7 +73,7 @@ void solve() {
                     k+=i;
                 }
             }
-            cout << "! " << k;
+            
             
         }
     }
@@ -94,7 +94,7 @@ void solve() {
                     k+=i;
                 }
             }
-            cout << "! " << k;
+            
         }
         else
         {
@@ -121,9 +121,10 @@ void solve() {
                     k+=i;
                 }
             }
-            cout << "! " << k;
+            
         }
     }
+    cout << "! " << k << endl;
     cout.flush();
 }
 
