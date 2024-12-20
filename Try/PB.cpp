@@ -16,7 +16,7 @@ ll query(ll l, ll r)
 {
     ll res;
     cout << "? "  << l << " " << r;
-    cout.flush()
+    cout.flush();
     cin >> res;
     return res; 
 }
@@ -124,7 +124,7 @@ void solve() {
             cout << "! " << k;
         }
     }
-    cout.flush()
+    cout.flush();
 }
 
 int main() {
