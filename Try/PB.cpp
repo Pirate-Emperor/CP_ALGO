@@ -53,18 +53,22 @@ void solve() {
             ll i = n/2;
             ll k=i;
             ll ti = query(i+1,4*m);
+            ll r=4*m;
+            ll check=0;
             if (ti==1)
             {
                 k=k/2;
                 i=i/2;
+                r=2*m;
+                check=1;
             }
             while(i>1)
             {
                 i/=2;
-                ll r=4*m;
+                
                 ll l=r-k-i+1;
                 ll ti = query(l,r);
-                if (ti==0)
+                if (ti==check)
                 {
                     k+=i;
                 }
@@ -97,18 +101,22 @@ void solve() {
             ll i = n/2;
             ll k=i;
             ll ti = query(1,i);
+            ll l=1;
+            ll check=0;
             if (ti==1)
             {
                 k=k/2;
                 i=i/2;
+                l=2*m+1;
+                check=1;
             }
             while(i>1)
             {
                 i/=2;
-                ll l=1;
+                
                 ll r=l+k+i-1;
                 ll ti = query(l,r);
-                if (ti==0)
+                if (ti==check)
                 {
                     k+=i;
                 }
