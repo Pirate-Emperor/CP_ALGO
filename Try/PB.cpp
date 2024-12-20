@@ -12,98 +12,111 @@ const int MAX_N = 1<<22;
 const int MOD = 1e9 + 7;
 const int INF = 1e9;
 const ll LINF = 1e18;
-
-int n, par[MAX_N], sz[MAX_N], num_grp;
-vector<pair<ll,ll>> bm;
-
-int find(int u) {
-    return u == par[u] ? u : par[u] = find(par[u]);
-}
- 
-void merge(int u, int v) {
-    u = find(u), v = find(v);
-    if (u == v) return;
-    if (sz[u] > sz[v]) swap(u, v);
-    par[u] = v;
-    sz[v] += sz[u];
-    num_grp--;
-}
-void upd(ll it, ll val)
+ll query(ll l, ll r)
 {
-    if (bm[it].first==-1) bm[it].first=val;
-    else if (bm[it].second==-1)
-    {
-        if (bm[it].first==val) return;
-        else 
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-            if (bm[it].second < bm[it].first)
-            {
-                swap(bm[it].first,bm[it].second);
-            }
-        }
-    }
-    else 
-    {
-        if (bm[it].second < val)
-        {
-            bm[it].second = bm[it].first;
-            bm[it].first = val;
-        }
-        else if (bm[it].second != val)
-        {   
-            bm[it].first = max(bm[it].first,val);
-        }
-    }
+    ll res;
+    cout << "? "  << l << " " << r;
+    cout.flush()
+    cin >> res;
+    return res; 
 }
+
 void solve() {
-    ll m, resu=0;
+    ll n;
     cin >> n;
-    m = 22;
-    vector<ll> arr(n);
-    bm.resize(MAX_N);
-    for(int i=0;i<MAX_N;i++)
+    ll m = n/4;
+    ll a = query(1,m);
+    ll b = query(m+1,2*m);
+    ll c = query(2*m+1,3*m);
+    ll d = query(3*m+1,4*m);
+    if (a==b)
     {
-        bm[i]=make_pair(-1,-1);
-    }
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-        upd(arr[i],i);
-        m = max((int)m,(int)log2(arr[i]));
-    }
-    for (int j=0;j<m;j++)
-    {
-        for (int i=0;i<(1<<m);i++)
+        if (a==1)
         {
-            if (i&(1<<j))
+            ll i = n/2;
+            ll k=n/2;
+            while(i>1)
             {
-                ll ind = i^(1<<j);
-                if (bm[i].first!=-1) upd(ind,bm[i].first);
-                if (bm[i].second!=-1) upd(ind,bm[i].second);
-            }
-        }
-    }
-    for (int i=0;i<n;i++)
-    {
-        ll cur = arr[i];
-        ll opt=0;
-        bool check=false;
-        for (int j=m-1;j>=0;j--)
-        {
-            if (((cur>>j)&1)==0)
-            {
-                if (bm[opt^(1<<j)].second!=-1 && bm[opt^(1<<j)].first>i)
+                i/=2;
+                ll l=1;
+                ll r=l+k-i-1;
+                ll ti = query(l,r);
+                if (ti==0)
                 {
-                    check=true;
-                    opt^=(1<<j);
+                    k-=i;
                 }
             }
+            cout << "! " << k;
         }
-        if (bm[opt].second!=-1 && bm[opt].first>i) resu = max(resu,arr[i]^opt);
+        else
+        {
+            ll i = n/2;
+            ll k=i;
+            ll ti = query(i+1,4*m);
+            if (ti==1)
+            {
+                k=k/2;
+                i=i/2;
+            }
+            while(i>1)
+            {
+                i/=2;
+                ll r=4*m;
+                ll l=r-k-i+1;
+                ll ti = query(l,r);
+                if (ti==0)
+                {
+                    k+=i;
+                }
+            }
+            cout << "! " << k;
+            
+        }
     }
-    cout << resu << endl;
+    else
+    {
+        if (c==1)
+        {
+            ll i = n/2;
+            ll k=n/2;
+            while(i>1)
+            {
+                i/=2;
+                ll l=2*m;
+                ll r=l+k-i-1;
+                ll ti = query(l,r);
+                if (ti==0)
+                {
+                    k-=i;
+                }
+            }
+            cout << "! " << k;
+        }
+        else
+        {
+            ll i = n/2;
+            ll k=i;
+            ll ti = query(1,i);
+            if (ti==1)
+            {
+                k=k/2;
+                i=i/2;
+            }
+            while(i>1)
+            {
+                i/=2;
+                ll l=1;
+                ll r=l+k+i-1;
+                ll ti = query(l,r);
+                if (ti==0)
+                {
+                    k+=i;
+                }
+            }
+            cout << "! " << k;
+        }
+    }
+    cout.flush()
 }
 
 int main() {
@@ -113,7 +126,7 @@ int main() {
     // freopen("output.txt", "w", stdout);
 
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

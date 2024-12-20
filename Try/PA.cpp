@@ -56,22 +56,33 @@ struct cmp {
 void solve() {
     ll n=0,l=0,x=0,y=0,k=0,r=0,q=0;
     ll h=0,w=0,m=0;
-    cin >> n >> m;
-    if (n<m)
+    cin >> n >> m >> k;
+    vector<vector<ll>> mat(n,vector<ll>(m,0));
+    vector<vector<ll>> dp(m,vector<ll>(n*m,LINF));
+    for (int i=0;i<n;i++)
     {
-        cout << "NO\n";
-        return;
+        cin >> mat[i][j];
     }
-    cout << "YES\n";
-    for (int i=0;i<2*n;i++)
+    for (int i=0;i<n;i++)
     {
-        for (int j=1;j<=m;j++)
+        vector<vector<ll>> dp2(m,vector<ll>(n*m,LINF));
+        for (int j=0;j<m;j++)
         {
-            cout << j << " ";
+            for (int ki=0;ki<=(i)*(m-1);ki++)
+            {
+                for (int ik=0;ik<=m-i;ik++)
+                {
+                    dp2[j][ki+ik] = min(dp2[j][ki+ik],dp[j][ki]+mat[i][(j+ik)%m]);
+                    if (j!=0) 
+                    {
+                        dp2[j][ki+ik] = min(dp2[j][ki+ik],dp2[j-1][ki]+mat[i][(j+ik)%m]);
+                    }
+                }
+            }
         }
-        cout << endl;
+        dp = dp2;
     }
-
+    return;
 }
 
 
