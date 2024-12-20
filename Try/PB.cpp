@@ -34,16 +34,16 @@ void solve() {
         if (a==1)
         {
             ll i = n/2;
-            ll k=n/2;
+            ll k=0;
             while(i>1)
             {
                 i/=2;
                 ll l=1;
-                ll r=l+k-i-1;
+                ll r=l+k+i-1;
                 ll ti = query(l,r);
-                if (ti==0)
+                if (ti==1)
                 {
-                    k-=i;
+                    k+=i;
                 }
             }
             cout << "! " << k;
@@ -78,16 +78,16 @@ void solve() {
         if (c==1)
         {
             ll i = n/2;
-            ll k=n/2;
+            ll k=0;
             while(i>1)
             {
                 i/=2;
                 ll l=2*m;
-                ll r=l+k-i-1;
+                ll r=l+k+i-1;
                 ll ti = query(l,r);
-                if (ti==0)
+                if (ti==1)
                 {
-                    k-=i;
+                    k+=i;
                 }
             }
             cout << "! " << k;
