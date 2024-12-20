@@ -29,12 +29,13 @@ void solve() {
     ll b = query(m+1,2*m);
     ll c = query(2*m+1,3*m);
     ll d = query(3*m+1,4*m);
+    ll k=0;
     if (a==b)
     {
         if (a==1)
         {
             ll i = n/2;
-            ll k=0;
+            k=0;
             while(i>1)
             {
                 i/=2;
@@ -51,7 +52,7 @@ void solve() {
         else
         {
             ll i = n/2;
-            ll k=i;
+            k=i;
             ll ti = query(i+1,4*m);
             ll r=4*m;
             ll check=0;
@@ -82,7 +83,7 @@ void solve() {
         if (c==1)
         {
             ll i = n/2;
-            ll k=0;
+            k=0;
             while(i>1)
             {
                 i/=2;
@@ -99,7 +100,7 @@ void solve() {
         else
         {
             ll i = n/2;
-            ll k=i;
+            k=i;
             ll ti = query(1,i);
             ll l=1;
             ll check=0;
