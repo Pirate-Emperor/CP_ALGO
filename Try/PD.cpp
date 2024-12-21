@@ -1,133 +1,88 @@
-// https://codeforces.com/problemset/problem/580/E
+// Consider N points given on a plane
+// the objective is to generate a convex hull, i.e. the smallest convex polygon that contains all the given points.
 
 #include <bits/stdc++.h>
+
 using namespace std;
 
-
-mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<long long> rnd(0,LLONG_MAX);
-// Use rnd(gen) for random number generation
-
+#define ar array
 #define ll long long
-#define TxtIO   freopen("input.txt","r",stdin); freopen("output.txt","w",stdout);
 
-const int MAXN = 3e6 + 5; 
-const int MAX_N = 405;
-ll MOD = 998244353;
-const ll MOD2 = 1073676287;
-const ll MOD3 = 998244353;
+const int MAX_N = 1e5 + 5;
+const ll MOD = 1e9 + 7;
 const ll INF = 1e9;
-const ll LINF = 1e18;
 
-ll qexp(ll a, ll b, ll m) {
-    ll res = 1;
-    while (b) {
-        if (b % 2) res = res * a % m;
-        a = a * a % m;
-        b /= 2;
-    }
-    return res;
+// Graham's scan Algorithm -> Polar Angle Sorting and Orientation Comparison to finding the convex hull
+struct pt {
+    long long x, y;
+    pt() {}
+    pt(long long _x, long long _y) : x(_x), y(_y) {}
+    
+    friend std::ostream& operator<<(std::ostream& out, const pt& p) { return out << "(" << p.x << "," << p.y << ")"; }
+    friend std::istream& operator>>(std::istream& in, pt& p) { return in >> p.x >> p.y; }
+
+    pt operator+(const pt &p) const { return pt(x + p.x, y + p.y); }
+    pt operator-(const pt &p) const { return pt(x - p.x, y - p.y); }
+    long long cross(const pt &p) const { return x * p.y - y * p.x; }
+    long long dot(const pt &p) const { return x * p.x + y * p.y; }
+    long long cross(const pt &a, const pt &b) const { return (a - *this).cross(b - *this); }
+    long long dot(const pt &a, const pt &b) const { return (a - *this).dot(b - *this); }
+    long long sqrLen() const { return this->dot(*this); }
+};
+
+int orientation(pt a, pt b, pt c) {
+    double v = a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y);
+    if (v < 0) return -1; // clockwise
+    if (v > 0) return +1; // counter-clockwise
+    return 0;
 }
 
-vector<ll> fact, invf;
+bool cw(pt a, pt b, pt c, bool include_collinear) {
+    int o = orientation(a, b, c);
+    return o < 0 || (include_collinear && o == 0);
+}
+bool collinear(pt a, pt b, pt c) { return orientation(a, b, c) == 0; }
 
-void precompute(int n) {
-    fact.assign(n + 1, 1); 
-    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i % MOD;
-    invf.assign(n + 1, 1);
-    invf[n] = qexp(fact[n], MOD - 2, MOD);
-    for (int i = n - 1; i > 0; i--) invf[i] = invf[i + 1] * (i + 1) % MOD;
+void convex_hull(vector<pt>& a, bool include_collinear = false) {
+    pt p0 = *min_element(a.begin(), a.end(), [](pt a, pt b) {
+        return make_pair(a.y, a.x) < make_pair(b.y, b.x);
+    });
+    sort(a.begin(), a.end(), [&p0](const pt& a, const pt& b) {
+        int o = orientation(p0, a, b);
+        if (o == 0)
+            return (p0.x-a.x)*(p0.x-a.x) + (p0.y-a.y)*(p0.y-a.y)
+                < (p0.x-b.x)*(p0.x-b.x) + (p0.y-b.y)*(p0.y-b.y);
+        return o < 0;
+    });
+    if (include_collinear) {
+        int i = (int)a.size()-1;
+        while (i >= 0 && collinear(p0, a[i], a.back())) i--;
+        reverse(a.begin()+i+1, a.end());
+    }
+
+    vector<pt> st;
+    for (int i = 0; i < (int)a.size(); i++) {
+        while (st.size() > 1 && !cw(st[st.size()-2], st.back(), a[i], include_collinear))
+            st.pop_back();
+        st.push_back(a[i]);
+    }
+
+    a = st;
 }
 
-ll nCk(int n, int k) {
-    if (k < 0 || k > n) return 0;
-    return fact[n] * invf[k] % MOD * invf[n - k] % MOD;
-    // return fact[n] * qexp(fact[k], MOD - 2, MOD) % MOD * qexp(fact[n - k], MOD - 2, MOD) % MOD;
+void solve() {
+    int n; cin >> n;
+    vector<pt> a(n);
+    for (pt &p : a) cin >> p;
 }
-
-int read() {
-	char c = getchar();
-	while (c < '0' || c > '9') c = getchar();
-	int ret = 0;
-	while (c >= '0' && c <= '9') ret = ret*10 + (c - '0'), c = getchar();
-	return ret;
-}
- 
-void sol() {
-    ll n,a=0;
-    cin >> n;
-    vector<ll> arr(n);
-    map<ll,ll> mpi;
-    stack<ll> st;
-    vector<pair<ll,ll>> res;
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-        if (arr[i]==1) mpi[i]=1;
-        else if (arr[i]==2) st.push(i);
-        else a++;
-    }
-    if (n==1)
-    {
-        cout << 0 << endl;
-        return;
-    }
-    for (int i=n-1;i>=0;i--)
-    {
-        while(arr[i]==2) 
-        {
-            st.pop();
-            i--;
-        }
-        if (arr[i]==1)
-        {
-            
-            if (st.empty()) continue;
-            ll tem = st.top();
-            st.pop();
-            swap(arr[tem],arr[i]);
-            res.push_back({tem,i});
-            mpi.erase(i);
-            mpi[tem]=1;
-        }
-        else
-        {
-            
-            auto fir = mpi.begin();
-            ll tem = fir->first;
-            if (tem>i) break;
-            swap(arr[i],arr[tem]);
-            res.push_back({i,tem});
-            mpi.erase(tem);
-            mpi[i]=1;
-            i++;
-        }
-    }
-    a = res.size();
-    cout << a << endl;
-    for (int i=0;i<res.size();i++)
-    {
-        ll l = res[i].first+1;
-        ll r = res[i].second+1;
-        cout << l << " " << r << endl;
-    }
-}
-
 
 int main() {
-
-    // ios_base::sync_with_stdio(0);
-    // cin.tie(0); cout.tie(0);
-    
-    // precompute(2e5+10);
-    // TxtIO;
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
-        sol();
- 
+        solve();
     }
-    // cout.flush();
-    return 0;
 }
