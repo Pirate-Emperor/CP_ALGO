@@ -30,11 +30,6 @@ void solve() {
     }
     arr.resize(unique(all(arr))-arr.begin());
     n = arr.size();
-    if (n<=1)
-    {
-        cout << 0 << endl;
-        return;
-    }
     set<st> s;
     vector<vector<ll>> ed(2e6+10);
     for (int i=1;i<n;i++)
@@ -53,7 +48,7 @@ void solve() {
             auto R = next(it);
             if (L!=s.end() && L->t && R!=s.end() && R->t)
             {
-                L->len+=i+R->id;
+                L->len+=i+R->len;
                 s.erase(it);
                 s.erase(R);
             }
@@ -64,16 +59,15 @@ void solve() {
             }
             else if (R!=s.end() && R->t)
             {
-                L->len+=R->id;
+                R->len+=i;
                 s.erase(it);
-                s.erase(R);
             }
             else
             {
                 it->t=1;
             }
         }
-        if (arr[0]<i*(i+1))
+        if (arr[0]<=i*(i+1))
         {
             ll L = max(arr[0],i*i);
             ll R = i*(i+1);
