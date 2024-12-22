@@ -30,6 +30,11 @@ void solve() {
     }
     arr.resize(unique(all(arr))-arr.begin());
     n = arr.size();
+    if (n<=1)
+    {
+        cout << 0 << endl;
+        return;
+    }
     set<st> s;
     vector<vector<ll>> ed(2e6+10);
     for (int i=1;i<n;i++)
