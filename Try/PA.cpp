@@ -45,20 +45,34 @@ void solve() {
         cout << "-1 -1\n";
         return;
     }
+    x=-1;
+    y=-1;
     w=-1;
-    if (gcd(a, b) == 1) {
-        w=b-a;
+    z=0;
+    for (int i=a;i<=b-z;i++)
+    {
+        for (int j=b;j>=z+i;j--)
+        {
+            if (gcd(i,j)==1)
+            {
+                ll temp = j-i;
+                if (temp>w)
+                {
+                    w=temp;
+                    x=i;
+                    y=j;
+                    z=max(z,w);
+                }
+            }
+        }
     }
-    else w=b-a-1LL;
     if (w<0)
     {
         cout << "-1 -1\n";
         return;
     }
-    if (gcd(a,(ll)a+w)!=1) a++; 
-    b=a+w;
-    a=a*g;
-    b=b*g;
+    a=x*g;
+    b=y*g;
     cout << a << " " << b << endl;
     
 
