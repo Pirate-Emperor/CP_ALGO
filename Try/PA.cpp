@@ -13,6 +13,7 @@ using namespace std;
 const int MAX_N = 1e5 + 5;
 const ll MOD = 1e9 + 7;
 const ll INF = 1e9;
+const ll LINF = 1e18;
 
 struct st{
     ll id;
@@ -20,83 +21,56 @@ struct st{
     bool operator < (const st &A) const { return id<A.id;} 
 };
 
+ll gcd(ll a, ll b) {
+    return b ? gcd(b, a % b) : a;
+}
+
 void solve() {
-    ll n=0,m=0,l=0,r=0,x=0,k=0;
-    cin >> n;
-    vector<ll> arr(n);
-    for (int i=0;i<n;i++)
+    ll n=0,m=0,l=0,r=0,k=0;
+    ll w=0,x=0,y=0,z=0;
+    ll a=0,b=0,c=0,d=0;
+    ll g=0;
+    cin >> l >> r >> g;
+    if (g>r)
     {
-        cin >> arr[i];
-    }
-    arr.resize(unique(all(arr))-arr.begin());
-    n = arr.size();
-    set<st> s;
-    vector<vector<ll>> ed(2e6+10);
-    for (int i=1;i<n;i++)
-    {
-        s.insert({i,arr[i]-arr[i-1],0});
-        ed[arr[i]-arr[i-1]].push_back(i);
+        cout << "-1 -1\n";
+        return;
     }
 
-    for (int i=1;;i++)
+    a = l/g;
+    if ((ll)(a*g)<l) a++;
+    b = r/g;
+    if (a>b) 
     {
-        for (auto x: ed[i])
-        {
-            auto it = s.find({x,i,0});
-            assert(it!=s.end());
-            auto L = (it==s.begin())?s.end():prev(it);
-            auto R = next(it);
-            if (L!=s.end() && L->t && R!=s.end() && R->t)
-            {
-                L->len+=i+R->len;
-                s.erase(it);
-                s.erase(R);
-            }
-            else if (L!=s.end() && L->t)
-            {
-                L->len+=i;
-                s.erase(it);
-            }
-            else if (R!=s.end() && R->t)
-            {
-                R->len+=i;
-                s.erase(it);
-            }
-            else
-            {
-                it->t=1;
-            }
-        }
-        if (arr[0]<=i*(i+1))
-        {
-            ll L = max(arr[0],i*i);
-            ll R = i*(i+1);
-            ll si = i;
-            for (auto it: s)
-            {
-                L+=it.len;
-                if (it.t==0)
-                {
-                    si = ceil((sqrt(1+4*L)-1)/2.0);
-                    L=max(L,si*si);
-                }
-                R=min(R+it.len,si*(si+1));
-                if (L>R) break;
-            }
-            if (L<=R)
-            {
-                cout << L-arr[n-1] << endl;
-                return;
-            }
-        }
+        cout << "-1 -1\n";
+        return;
     }
+    w=-1;
+    if (gcd(a, b) == 1) {
+        w=b-a;
+    }
+    else w=b-a-1LL;
+    if (w<0)
+    {
+        cout << "-1 -1\n";
+        return;
+    }
+    if (gcd(a,(ll)a+w)!=1) a++; 
+    b=a+w;
+    a=a*g;
+    b=b*g;
+    cout << a << " " << b << endl;
+    
+
+
+    
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
