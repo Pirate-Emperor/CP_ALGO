@@ -30,50 +30,12 @@ void solve() {
     ll w=0,x=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0;
-    cin >> l >> r >> g;
-    if (g>r)
+    cin >> n;
+    vector<ll> arr(n);
+    for (int i=0;i<n;i++) 
     {
-        cout << "-1 -1\n";
-        return;
+        cin >> arr[i];
     }
-
-    a = l/g;
-    if ((ll)(a*g)<l) a++;
-    b = r/g;
-    if (a>b) 
-    {
-        cout << "-1 -1\n";
-        return;
-    }
-    x=-1;
-    y=-1;
-    w=-1;
-    z=0;
-    for (int i=a;i<=b-z;i++)
-    {
-        for (int j=b;j>=z+i;j--)
-        {
-            if (gcd(i,j)==1)
-            {
-                ll temp = j-i;
-                if (temp>w)
-                {
-                    w=temp;
-                    x=i;
-                    y=j;
-                    z=max(z,w);
-                }
-            }
-        }
-    }
-    if (w<0)
-    {
-        cout << "-1 -1\n";
-        return;
-    }
-    a=x*g;
-    b=y*g;
-    cout << a << " " << b << endl;
     
 
 
