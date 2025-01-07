@@ -6,7 +6,7 @@
 using namespace std;
 
 #define all(x) (x).begin(),(x).end()
-#define ari array
+#define ar array
 #define ll long long
 #define int long long
 
@@ -43,54 +43,101 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0;
     cin >> n;
-    vector<map<int,int>> adj(n);
-    for (int i=1;i<n;i++)
-    {
-        cin >> x >> y;
-        x--;
-        y--;
-        adj[x][y]=1;
-        adj[y][x]=1;
-    }    
-    vector<int> temp;
-    vector<int> up(n);
+    vector<vector<int>> arr(n,vector<int> (n,0));
     for (int i=0;i<n;i++)
     {
-        if (adj[i].size()==1) 
+        for (int j=0;j<n;j++)
         {
-            temp.push_back(i);
-            up[i]=adj[i].begin()->first;
+            cin >> x;
+            arr[i][x-1]++;
         }
     }
-    int id=0;
-    vector<ar<int,2>> cnt(n,{0,0});
-    while(!temp.empty())
+    int i=0;
+    vector<ar<int,100>> res;
+    bool ev = true;
+    while(i<n)
     {
-        vector<int> temp2;
-        for (int u:temp)
+        ev = true;
+        while(ev && i<n)
         {
-            vis[u]=1;
-            cnt[up[u]][id]++;
-            adj[up[u]].erase(u);
+            for (int ij=0;ij<n;ij++)
+            {
+                if (arr[i][ij]>1) 
+                {
+                    ev = false;
+                    break;
+                }
+            }
+            if (ev) i++;
         }
-        for (int u:temp)
+        if (i==n) break;
+        ar<int,100> temp;
+        for (int j=i;j<n;j++)
         {
-            if (vis[up[u]]==0) temp2.push_back(up[u]);
-            vis[up[u]]=1;
-            if (adj[up[u]].size()==1) up[up[u]]=adj[up[u]].begin()->first;
+            for (int k=0;k<n;k++)
+            {
+                if (arr[j][k]>1)
+                {
+                    arr[j][k]--;
+                    arr[(j+1)%n][k]++;
+                    temp[j]=k;
+                    break;
+                }
+            }
         }
-        temp = temp2;
-        id=1-id;
+        for (int j=0;j<i;j++)
+        {
+            for (int k=0;k<n;k++)
+            {
+                if (arr[j][k]>1)
+                {
+                    arr[j][k]--;
+                    arr[(j+1)%n][k]++;
+                    temp[j]=k;
+                    break;
+                }
+            }
+        }
+        res.push_back(temp);
     }
-
-    
+    vector<ar<int,100>> st;
+    ar<int,100> temp;
+    for (int i=0;i<n;i++)
+    {
+        temp[i]=i;
+    }
+    st.push_back(temp);
+    for (int k=1;k<n;k++)
+    {
+        ar<int,100> temp;
+        int la = st.size()-1;
+        for (int i=0;i<n;i++)
+        {
+            temp[i] = st[la][(i+1)%n];
+        }
+        st.push_back(temp);
+        for (int i=st.size()-1;i>0;i--)
+        {
+            res.push_back(st[i]);
+        }
+    }
+    m = res.size();
+    cout << m << endl;
+    for (int i=0;i<m;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            cout << res[i][j]+1 << " ";
+        }
+        cout << endl;
+    }
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
