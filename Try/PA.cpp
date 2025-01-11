@@ -42,95 +42,84 @@ void solve() {
     ll w=0,x=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0;
-    cin >> n;
-    vector<vector<int>> arr(n,vector<int> (n,0));
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<n;j++)
-        {
-            cin >> x;
-            arr[i][x-1]++;
-        }
-    }
-    int i=0;
-    vector<ar<int,100>> res;
-    bool ev = true;
-    while(i<n)
-    {
-        ev = true;
-        while(ev && i<n)
-        {
-            for (int ij=0;ij<n;ij++)
-            {
-                if (arr[i][ij]>1) 
-                {
-                    ev = false;
-                    break;
-                }
-            }
-            if (ev) i++;
-        }
-        if (i==n) break;
-        ar<int,100> temp;
-        for (int j=i;j<n;j++)
-        {
-            for (int k=0;k<n;k++)
-            {
-                if (arr[j][k]>1)
-                {
-                    arr[j][k]--;
-                    arr[(j+1)%n][k]++;
-                    temp[j]=k;
-                    break;
-                }
-            }
-        }
-        for (int j=0;j<i;j++)
-        {
-            for (int k=0;k<n;k++)
-            {
-                if (arr[j][k]>1)
-                {
-                    arr[j][k]--;
-                    arr[(j+1)%n][k]++;
-                    temp[j]=k;
-                    break;
-                }
-            }
-        }
-        res.push_back(temp);
-    }
-    vector<ar<int,100>> st;
-    ar<int,100> temp;
-    for (int i=0;i<n;i++)
-    {
-        temp[i]=i;
-    }
-    st.push_back(temp);
-    for (int k=1;k<n;k++)
-    {
-        ar<int,100> temp;
-        int la = st.size()-1;
-        for (int i=0;i<n;i++)
-        {
-            temp[i] = st[la][(i+1)%n];
-        }
-        st.push_back(temp);
-        for (int i=st.size()-1;i>0;i--)
-        {
-            res.push_back(st[i]);
-        }
-    }
-    m = res.size();
-    cout << m << endl;
+    cin >> n >> m >> a >> b;
+    vector<int> arr;
+    map<int,int> mpi, bad;
+    bool check=true;
     for (int i=0;i<m;i++)
     {
-        for (int j=0;j<n;j++)
+        cin >> x >> y;
+        if (y-x+1>20)
         {
-            cout << res[i][j]+1 << " ";
+            check=false;
         }
-        cout << endl;
+        else
+        {
+            for (int j=x;j<=y;j++)
+            {
+                bad[j]=1;
+                
+            }
+        }
     }
+    if (check==false)
+    {
+        cout << "No\n";
+        return;
+    }
+    for (auto it: bad)
+    {
+        arr.push_back(it.first);
+    }
+    mpi[n]=1;
+    while(true)
+    {
+        // cout << mpi.begin()->first << " ";
+        map<int,int> tmp;
+        for (auto it: mpi)
+        {
+            int fit = max(1LL,it.first-a);
+            int lit = max(1LL,it.first-b);
+            for (int i=lit;i<=fit;i++) 
+            {
+                if (bad.find(i)==bad.end()) tmp[i]=1;
+            }
+        }
+        mpi.clear();
+        for (auto it: tmp)
+        {
+            mpi[it.first]=1;
+            if (mpi.size()>=20) break;
+        }
+        if (mpi.size()==0) 
+        {
+            check=false;
+            break;
+        }
+        if (mpi.begin()->first==1) break;
+        if (mpi.begin()->first+19 == mpi.rbegin()->first)
+        {
+            int temp = mpi.begin()->first;
+            int val = temp-1;
+            int fir = upper_bound(arr.begin(),arr.end(),val) - arr.begin();
+            if (fir==0) return;
+            fir--;
+            if (temp-arr[fir]>20) 
+            {
+                auto tm = mpi;
+                mpi.clear();
+                for (int ji=0;ji<20;ji++)
+                {
+                    mpi[arr[fir]+ji+1]=1;
+                }
+            }
+        }
+        
+        
+    }
+    if (check) cout << "Yes\n";
+    else cout << "No\n";
+    
 }
 
 signed main() {
