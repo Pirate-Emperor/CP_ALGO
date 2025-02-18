@@ -36,50 +36,49 @@ ll qexp(ll a, ll b, ll m) {
 }
 
 void solve() {
-    ll n=0,m=0,l=0,r=0,k=0;
+    ll n=0,m=0,l=0,r=0;
     ll w=0,x=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0;
-    string s, t;
-    cin >> s >> t;
-    n = s.size();
-    ll res=0;
-    vector<ar<int,2>> arr,brr;
+    cin >> n >> m;
+    vector<vector<int>> arr(n,vector<int>(m,0));
+    map<int,int> mpi;
     for (int i=0;i<n;i++)
     {
-        a+=s[i]=='0';
-        b+=t[i]=='0';
-    }
-    if (a!=b)
-    {
-        cout << -1 << endl;
-        return;
-    }
-    chat ct = s[0];
-    c=1;
-    for (int i=1;i<n;i++)
-    {
-        if (ct!=s[i])
+        for (int j=0;j<m;j++)
         {
-            arr.push_back({c,ct-'0'});
-            c=1;
+            cin >> arr[i][j];
+            mpi[arr[i][j]]=1;
         }
-        c++;
     }
-    ct = t[0];
-    c=1;
-    for (int i=1;i<n;i++)
+    a=1;
+    for (int i=0;i<n;i++)
     {
-        if (ct!=t[i])
+        for (int j=0;j<m;j++)
         {
-            brr.push_back({c,ct-'0'});
-            c=1;
+            if (i>0 && arr[i][j]==arr[i-1][j]) 
+            {
+                mpi[arr[i][j]]=2;
+            }
+            if (i<n-1 && arr[i][j]==arr[i+1][j]) 
+            {
+                mpi[arr[i][j]]=2;
+            }
+            if (j>0 && arr[i][j]==arr[i][j-1]) 
+            {
+                mpi[arr[i][j]]=2;
+            }
+            if (j<m-1 && arr[i][j]==arr[i][j+1]) 
+            {
+                mpi[arr[i][j]]=2;
+            }
+            if (mpi[arr[i][j]]==2) a=2;
         }
-        c++;
     }
-    
+    for (auto it: mpi) b+=it.second;
+    b-=a;
+    cout << b << endl;
     return;
-    
 }
 
 signed main() {

@@ -95,38 +95,24 @@ void sieve(int n) {
 
 void solve() {
     int n, m, k, l, resu=0;
-    cin >> n >> k;
-    root_1 = qexp(root,mod-2,mod);
-    for (int i=1;i<=n;i++)
+    cin >> n;
+    vector<int> arr(n);
+    for (int i=0;i<n;i++) cin >> arr[i];
+    int a=0;
+    int b=0;
+    int c=0;
+    for (int i=0;i<n;i++)
     {
-        int b = ceil(n/i); // n
-        int c = min(b,k); // k
-        vector<int> p(c+1,1),q(c+1,1), res(2*c+1,0);
-        int fac=1;
-        for (int j=1;j<=c;j++)
+        if (arr[i]==1) 
         {
-            int jinv = qexp(j,MOD-2,MOD);
-            fac=(fac*jinv)%MOD;
-            p[j]=((MOD-p[j-1])*jinv)%MOD;
-            q[j] = (qexp(j,b,MOD)*fac)%MOD;
+            a++;
         }
-        int si = p.size() + q.size() - 1;
-        int B = 32 - __builtin_clz(si);
-	    int ns = 1 << B;
-        p.resize(ns);
-        q.resize(ns);
-        res.resize(ns);
-        fft(p,false);
-        fft(q,false);
-        for (int j=0;j<ns;j++)
+        if (arr[i]==2) c=((c*2)%MOD+a)%MOD;
+        if (arr[i]==3)
         {
-            res[j]=(p[j]*q[j])%MOD;
+            resu=(resu+c)%MOD;
         }
-        fft(res,true);
-        int sum=0;
-        for (int j=2;j<=c;j++) sum=(sum+res[j])%MOD;
-        resu=(resu + ((sum*mobius[i])%MOD+MOD)%MOD)%MOD;
-
+        
     }
     cout << resu << endl;
 }
@@ -136,9 +122,9 @@ signed main() {
     cin.tie(0); cout.tie(0);
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
-    sieve(MAX_N);
+    // sieve(MAX_N);
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
