@@ -39,44 +39,58 @@ void solve() {
     ll n=0,m=0,l=0,r=0;
     ll w=0,x=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0;
-    cin >> n >> m;
-    vector<vector<int>> arr(n,vector<int>(m,0));
-    map<int,int> mpi;
+    ll g=0,q=0,k=0;
+    cin >> n >> l >> r;
+    vector<ar<int,2>> arr(n);
+    vector<int> brr(n+5,0);
     for (int i=0;i<n;i++)
     {
-        for (int j=0;j<m;j++)
-        {
-            cin >> arr[i][j];
-            mpi[arr[i][j]]=1;
-        }
+        cin >> x;
+        arr[i]={x,i+1};
     }
-    a=1;
-    for (int i=0;i<n;i++)
+    
+    a=0;
+    for (int i=0;i<(n+1)/2;i++) 
     {
-        for (int j=0;j<m;j++)
-        {
-            if (i>0 && arr[i][j]==arr[i-1][j]) 
-            {
-                mpi[arr[i][j]]=2;
-            }
-            if (i<n-1 && arr[i][j]==arr[i+1][j]) 
-            {
-                mpi[arr[i][j]]=2;
-            }
-            if (j>0 && arr[i][j]==arr[i][j-1]) 
-            {
-                mpi[arr[i][j]]=2;
-            }
-            if (j<m-1 && arr[i][j]==arr[i][j+1]) 
-            {
-                mpi[arr[i][j]]=2;
-            }
-            if (mpi[arr[i][j]]==2) a=2;
-        }
+        a^=arr[i][0];
     }
-    for (auto it: mpi) b+=it.second;
-    b-=a;
+    if (n%2==0) arr.push_back({a,1});
+    n=arr.size();
+    c=0;
+    for (int i=0;i<n;i++) 
+    {
+        c^=arr[i][0];
+        brr[i]=c;
+        // cout << brr[i] << " ";
+    }
+
+    b=0;
+    // cout << "-";
+    while(l>n)
+    {
+        l>>=1;
+        if (l<=0) break;
+        if (l<=n) 
+        {
+            b^=brr[l-1];
+            l=-1;
+            break;
+        }
+        else
+        {
+            b^=brr[n-1];
+            if (l%2==1) 
+            {
+                l=-1;
+                break;
+            }
+        }
+        // cout << l << " ";
+    }
+    if (l>0)
+    {
+        b^=arr[l-1][0];
+    }
     cout << b << endl;
     return;
 }
