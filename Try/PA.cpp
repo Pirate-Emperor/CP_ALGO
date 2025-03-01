@@ -10,7 +10,7 @@ using namespace std;
 #define ll long long
 #define int long long
 
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 3e5 + 5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
@@ -35,63 +35,66 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-void solve() {
-    ll n=0,m=0,l=0,r=0;
-    ll w=0,x=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin >> n >> l >> r;
-    vector<ar<int,2>> arr(n);
-    vector<int> brr(n+5,0);
-    for (int i=0;i<n;i++)
-    {
-        cin >> x;
-        arr[i]={x,i+1};
-    }
-    
-    a=0;
-    for (int i=0;i<(n+1)/2;i++) 
-    {
-        a^=arr[i][0];
-    }
-    if (n%2==0) arr.push_back({a,1});
-    n=arr.size();
-    c=0;
-    for (int i=0;i<n;i++) 
-    {
-        c^=arr[i][0];
-        brr[i]=c;
-        // cout << brr[i] << " ";
-    }
+int n, m, x;
+vector<int> adj[MAX_N];
+vector<int> radj[MAX_N];
+vector<ll> dist;
 
-    b=0;
-    // cout << "-";
-    while(l>n)
-    {
-        l>>=1;
-        if (l<=0) break;
-        if (l<=n) 
+void dijkstra(int s) {
+    dist.assign(n + 1, LINF);
+    priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
+    dist[s] = 0; pq.push({0,0,s});
+    while (pq.size()) {
+        auto [d, di, u] = pq.top(); pq.pop();
+        if (d > dist[u]) continue;
+        if (di%2==1)
         {
-            b^=brr[l-1];
-            l=-1;
-            break;
+            for (auto v : radj[u]) {
+                if (dist[v] > dist[u]+1LL) {
+                    dist[v] = dist[u]+1LL;
+                    pq.push({dist[v], di, v});
+                }
+            }
+            for (auto v : adj[u]) {
+                if (dist[v] > dist[u]+x+1LL) {
+                    dist[v] = dist[u]+x+1LL;
+                    pq.push({dist[v], di+1LL, v});
+                }
+            }
         }
         else
         {
-            b^=brr[n-1];
-            if (l%2==1) 
-            {
-                l=-1;
-                break;
+            for (auto v : adj[u]) {
+                if (dist[v] > dist[u]+1LL) {
+                    dist[v] = dist[u]+1LL;
+                    pq.push({dist[v], di, v});
+                }
+            }
+            for (auto v : radj[u]) {
+                if (dist[v] > dist[u]+x+1LL) {
+                    dist[v] = dist[u]+x+1LL;
+                    pq.push({dist[v], di+1LL, v});
+                }
             }
         }
-        // cout << l << " ";
+        
+    } 
+}
+
+void solve() {
+    ll l=0,r=0;
+    ll w=0,y=0,z=0;
+    ll a=0,b=0,c=0,d=0;
+    ll g=0,q=0,k=0;
+    cin >> n >> m >> x;
+    for (int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        adj[u].push_back(v);
+        radj[v].push_back(u);
     }
-    if (l>0)
-    {
-        b^=arr[l-1][0];
-    }
-    cout << b << endl;
+    dijkstra(1);
+    ll res = dist[n];
+    cout << res << " ";
     return;
 }
 
@@ -99,7 +102,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
