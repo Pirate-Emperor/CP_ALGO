@@ -5,78 +5,203 @@
 
 using namespace std;
 
+#define all(x) (x).begin(),(x).end()
 #define ar array
 #define ll long long
+#define int long long
 
-const int MAX_N = 1e5 + 5;
-const ll MOD = 1e9 + 7;
+const int MAX_N = 1e3 + 5;
+const ll MOD = 998244353;
 const ll INF = 1e9;
-
-// Graham's scan Algorithm -> Polar Angle Sorting and Orientation Comparison to finding the convex hull
-struct pt {
-    long long x, y;
-    pt() {}
-    pt(long long _x, long long _y) : x(_x), y(_y) {}
-    
-    friend std::ostream& operator<<(std::ostream& out, const pt& p) { return out << "(" << p.x << "," << p.y << ")"; }
-    friend std::istream& operator>>(std::istream& in, pt& p) { return in >> p.x >> p.y; }
-
-    pt operator+(const pt &p) const { return pt(x + p.x, y + p.y); }
-    pt operator-(const pt &p) const { return pt(x - p.x, y - p.y); }
-    long long cross(const pt &p) const { return x * p.y - y * p.x; }
-    long long dot(const pt &p) const { return x * p.x + y * p.y; }
-    long long cross(const pt &a, const pt &b) const { return (a - *this).cross(b - *this); }
-    long long dot(const pt &a, const pt &b) const { return (a - *this).dot(b - *this); }
-    long long sqrLen() const { return this->dot(*this); }
+const ll LINF = 1e18;
+const int K = 11;
+struct st{
+    ll id;
+    mutable ll len,t;
+    bool operator < (const st &A) const { return id<A.id;} 
 };
 
-int orientation(pt a, pt b, pt c) {
-    double v = a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y);
-    if (v < 0) return -1; // clockwise
-    if (v > 0) return +1; // counter-clockwise
-    return 0;
+ll gcd(ll a, ll b) {
+    return b ? gcd(b, a % b) : a;
 }
 
-bool cw(pt a, pt b, pt c, bool include_collinear) {
-    int o = orientation(a, b, c);
-    return o < 0 || (include_collinear && o == 0);
+ll qexp(ll a, ll b, ll m) {
+    ll res = 1;
+    while (b) {
+        if (b % 2) res = res * a % m;
+        a = a * a % m;
+        b /= 2;
+    }
+    return res;
 }
-bool collinear(pt a, pt b, pt c) { return orientation(a, b, c) == 0; }
 
-void convex_hull(vector<pt>& a, bool include_collinear = false) {
-    pt p0 = *min_element(a.begin(), a.end(), [](pt a, pt b) {
-        return make_pair(a.y, a.x) < make_pair(b.y, b.x);
-    });
-    sort(a.begin(), a.end(), [&p0](const pt& a, const pt& b) {
-        int o = orientation(p0, a, b);
-        if (o == 0)
-            return (p0.x-a.x)*(p0.x-a.x) + (p0.y-a.y)*(p0.y-a.y)
-                < (p0.x-b.x)*(p0.x-b.x) + (p0.y-b.y)*(p0.y-b.y);
-        return o < 0;
-    });
-    if (include_collinear) {
-        int i = (int)a.size()-1;
-        while (i >= 0 && collinear(p0, a[i], a.back())) i--;
-        reverse(a.begin()+i+1, a.end());
+int n, m, x;
+vector<array<int,2>> adj[MAX_N];
+vector<array<int,2>> radj[MAX_N];
+vector<ll> dist;
+vector<ll> vis;
+array<int,K> basis[MAX_N];
+
+// void dijkstra(int s) {
+//     dist.assign(n + 1, LINF);
+//     priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
+//     dist[s] = 0; pq.push({0,0,s});
+//     while (pq.size()) {
+//         auto [d, di, u] = pq.top(); pq.pop();
+//         if (d > dist[u]) continue;
+//         if (di%2==1)
+//         {
+//             for (auto v : radj[u]) {
+//                 if (dist[v] > dist[u]+1LL) {
+//                     dist[v] = dist[u]+1LL;
+//                     pq.push({dist[v], di, v});
+//                 }
+//             }
+//             for (auto v : adj[u]) {
+//                 if (dist[v] > dist[u]+x+1LL) {
+//                     dist[v] = dist[u]+x+1LL;
+//                     pq.push({dist[v], di+1LL, v});
+//                 }
+//             }
+//         }
+//         else
+//         {
+//             for (auto v : adj[u]) {
+//                 if (dist[v] > dist[u]+1LL) {
+//                     dist[v] = dist[u]+1LL;
+//                     pq.push({dist[v], di, v});
+//                 }
+//             }
+//             for (auto v : radj[u]) {
+//                 if (dist[v] > dist[u]+x+1LL) {
+//                     dist[v] = dist[u]+x+1LL;
+//                     pq.push({dist[v], di+1LL, v});
+//                 }
+//             }
+//         }
+        
+//     } 
+// }
+
+int reduce(array<int, K> &b, int x) {  // reducing x using basis vectors b
+	for (int i = K - 1; i >= 0; i--) {
+		if (x & (1 << i)) {  // check if the ith bit is set
+			x ^= b[i];
+		}
+	}
+	return x;
+}
+
+bool add(array<int, K> &b, int x) {
+	x = reduce(b, x);  // reduce x using current basis
+	if (x != 0) {
+		for (int i = K - 1; i >= 0; i--) {
+			if (x & (1 << i)) {
+				b[i] = x;  // add x to the basis if it is independent
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool check(array<int, K> &b, int x) {
+	return (reduce(b, x) ==
+	        0);  // if x reduces to 0, it can be represented by the basis
+}
+
+bool basis_check(array<int, K> &b, array<int, K> &c, int w)
+{
+    bool chec = false;
+    for (auto it: c)
+    {
+        if (add(b,it^w)) chec=true;
     }
+    return chec;
+}
 
-    vector<pt> st;
-    for (int i = 0; i < (int)a.size(); i++) {
-        while (st.size() > 1 && !cw(st[st.size()-2], st.back(), a[i], include_collinear))
-            st.pop_back();
-        st.push_back(a[i]);
+int min_val_from_basis(array<int, K> b, int mask)
+{
+    int mi = LINF;
+    for (int i=0;i<K;i++)
+    {
+        if ((1<<i) & mask==0) 
+        {
+            mi = min(mi,b[i]);
+            mask = mask|(1<<i);
+            for (int j=0;j<K;j++)
+            {
+                if ((1<<j)&mask ==0)
+                {
+                    mi = min(mi,b[j]);
+                    b[j]^=b[i];
+                    mi = min(mi,b[j]);
+                }
+            }
+            mi = min(mi,min_val_from_basis(b, mask));
+        }
     }
+    return mi;
+}
 
-    a = st;
+void recur(int st)
+{
+    vis[st]=1;
+    for (auto it: adj[st])
+    {
+        if (basis_check(basis[it[0]], basis[st], it[1])) recur(it[0]);
+    }
+    return;
 }
 
 void solve() {
-    int n; cin >> n;
-    vector<pt> a(n);
-    for (pt &p : a) cin >> p;
+    ll l=0,r=0;
+    ll w=0,y=0,z=0;
+    ll a=LINF,b=0,c=LINF,d=0;
+    ll g=0,q=0,k=0;
+    cin >> n >> m;
+    string s,t;
+    cin >> s >> t;
+    vector<array<ll,2>> range(m);
+    vector<int> vis(m,0);
+    map<array<ll,2>,ll> cor;
+    vector<array<ll,3>> cord;
+    for (int i=0;i<m;i++)
+    {
+        cin >> a >> b;
+        --a;
+        --b;
+        range[i]={a,b};
+        cor[{a,0}]++;
+        cor[{b,1}]++;
+    }
+    for (auto it: cor)
+    {
+        cord.push_back({it.first[0],it.first[1],it.second});
+    }
+    int j=0;
+    ll cur=0;
+    for (int i=0;i<n;i++)
+    {
+        if (j<cord.size() && cord[j][0]==i && cord[j][1]==0)
+        {
+            if (cord[j][2]%2==1) cur=1-cur;
+            vis[cord[j][2]]=1;
+            j++;
+        }
+        if (cur==1) s[i]=t[i];
+        if (j<cord.size() && cord[j][0]==i && cord[j][1]==1)
+        {
+            if (cord[j][2]%2==1) cur=1-cur;
+            vis[cord[j][2]]=2;
+            j++;
+        }
+    }
+    cout << s << endl;
+    return;
 }
 
-int main() {
+signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;

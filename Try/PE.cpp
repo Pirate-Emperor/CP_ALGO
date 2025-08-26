@@ -1,87 +1,191 @@
-// Disjoint Set Union
-// Union by rank & Path compression
+// Consider N points given on a plane
+// the objective is to generate a convex hull, i.e. the smallest convex polygon that contains all the given points.
 
 #include <bits/stdc++.h>
 
 using namespace std;
 
+#define all(x) (x).begin(),(x).end()
 #define ar array
 #define ll long long
 #define int long long
 
-const int MAX_N = 2e5+100;
-const int MOD = 1e9 + 7;
-const int INF = 1e9;
+const int MAX_N = 1e3 + 5;
+const ll MOD = 998244353;
+const ll INF = 1e9;
 const ll LINF = 1e18;
+const int K = 11;
+struct st{
+    ll id;
+    mutable ll len,t;
+    bool operator < (const st &A) const { return id<A.id;} 
+};
 
-int n, m, vis[MAX_N];
-vector<int> adj[MAX_N];
+ll gcd(ll a, ll b) {
+    return b ? gcd(b, a % b) : a;
+}
 
-void dfs(int u) {
-    vis[u] = 1;
-    for (int v : adj[u]) {
-        if (vis[v]) continue;
-        dfs(v);
+ll qexp(ll a, ll b, ll m) {
+    ll res = 1;
+    while (b) {
+        if (b % 2) res = res * a % m;
+        a = a * a % m;
+        b /= 2;
     }
+    return res;
+}
+
+int n, m, x;
+vector<array<int,2>> adj[MAX_N];
+vector<array<int,2>> radj[MAX_N];
+vector<ll> dist;
+vector<ll> vis;
+array<int,K> basis[MAX_N];
+
+// void dijkstra(int s) {
+//     dist.assign(n + 1, LINF);
+//     priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
+//     dist[s] = 0; pq.push({0,0,s});
+//     while (pq.size()) {
+//         auto [d, di, u] = pq.top(); pq.pop();
+//         if (d > dist[u]) continue;
+//         if (di%2==1)
+//         {
+//             for (auto v : radj[u]) {
+//                 if (dist[v] > dist[u]+1LL) {
+//                     dist[v] = dist[u]+1LL;
+//                     pq.push({dist[v], di, v});
+//                 }
+//             }
+//             for (auto v : adj[u]) {
+//                 if (dist[v] > dist[u]+x+1LL) {
+//                     dist[v] = dist[u]+x+1LL;
+//                     pq.push({dist[v], di+1LL, v});
+//                 }
+//             }
+//         }
+//         else
+//         {
+//             for (auto v : adj[u]) {
+//                 if (dist[v] > dist[u]+1LL) {
+//                     dist[v] = dist[u]+1LL;
+//                     pq.push({dist[v], di, v});
+//                 }
+//             }
+//             for (auto v : radj[u]) {
+//                 if (dist[v] > dist[u]+x+1LL) {
+//                     dist[v] = dist[u]+x+1LL;
+//                     pq.push({dist[v], di+1LL, v});
+//                 }
+//             }
+//         }
+        
+//     } 
+// }
+
+int reduce(array<int, K> &b, int x) {  // reducing x using basis vectors b
+	for (int i = K - 1; i >= 0; i--) {
+		if (x & (1 << i)) {  // check if the ith bit is set
+			x ^= b[i];
+		}
+	}
+	return x;
+}
+
+bool add(array<int, K> &b, int x) {
+	x = reduce(b, x);  // reduce x using current basis
+	if (x != 0) {
+		for (int i = K - 1; i >= 0; i--) {
+			if (x & (1 << i)) {
+				b[i] = x;  // add x to the basis if it is independent
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool check(array<int, K> &b, int x) {
+	return (reduce(b, x) ==
+	        0);  // if x reduces to 0, it can be represented by the basis
+}
+
+bool basis_check(array<int, K> &b, array<int, K> &c, int w)
+{
+    bool chec = false;
+    for (auto it: c)
+    {
+        if (add(b,it^w)) chec=true;
+    }
+    return chec;
+}
+
+int min_val_from_basis(array<int, K> b, int mask)
+{
+    int mi = LINF;
+    for (int i=0;i<K;i++)
+    {
+        if ((1<<i) & mask==0) 
+        {
+            mi = min(mi,b[i]);
+            mask = mask|(1<<i);
+            for (int j=0;j<K;j++)
+            {
+                if ((1<<j)&mask ==0)
+                {
+                    mi = min(mi,b[j]);
+                    b[j]^=b[i];
+                    mi = min(mi,b[j]);
+                }
+            }
+            mi = min(mi,min_val_from_basis(b, mask));
+        }
+    }
+    return mi;
+}
+
+void recur(int st)
+{
+    vis[st]=1;
+    for (auto it: adj[st])
+    {
+        if (basis_check(basis[it[0]], basis[st], it[1])) recur(it[0]);
+    }
+    return;
 }
 
 void solve() {
-    cin >> n;
-    m=n-1;
-    vector<pair<ll,ll>> edges;
-    for (int i = 1; i <= n; i++) 
+    ll l=0,r=0;
+    ll w=0,y=0,z=0;
+    ll a=0,b=0,c=0,d=0;
+    ll g=0,q=0,k=0;
+    cin >> n >> m >> l;
+    vector<ll> arr(n);
+    vector<vector<ll>> dp(n-l+1,vector<ll>(m,0));
+    for (int i=0;i<n;i++)
     {
-        adj[i].clear();
+        cin >> arr[i];
     }
-    for (int i = 0; i < m; i++) {
-        int u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-        edges.push_back({u,v});
-        edges.push_back({v,u});
-    }
-    vector<ll> leafs;
-    map<ll,ll> lef,deg1;
-    for (int i = 1; i <= n; i++) {
-        if (adj[i].size()==1) 
+    for (int i=0;i<n;i++)
+    {
+        for (int k=0;k<m;k++)
         {
-            leafs.push_back(i);
-            lef[i]=1;
-            if (adj[adj[i][0]].size()!=1) deg1[adj[i][0]]=1;
+            for (int j=max(0,i-l-1);j<=min(i,n-l);j++)
+            {
+                
+            }
         }
-        // adj[i].clear();
     }
-    // for (auto it: edges) {
-    //     int u = it.first;
-    //     int v = it.second;
-    //     if (lef.find(u)!=lef.end()) continue;
-    //     if (lef.find(v)!=lef.end()) continue;
-
-    //     adj[u].push_back(v);
-    //     adj[v].push_back(u);
-    // }
-    
-    ll temp = leafs.size();
-    ll res = temp*(n-temp);
-    n-=temp;
-    ll temp2 = deg1.size();
-    cout << temp << " " << temp2 << " ";
-    res += temp2*(n-temp2);
-    cout << res << endl;    
-
+    return;
 }
-
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    // freopen("input.txt", "r", stdin);
-    // freopen("output.txt", "w", stdout);
-
-    int tc; tc = 1;
-    cin >> tc;
+    int tc = 1;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
-        // cout << "Case #" << t  << ": ";
+        // cout << "Case #" << t << ": ";
         solve();
     }
 }
