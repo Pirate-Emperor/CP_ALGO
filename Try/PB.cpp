@@ -160,29 +160,37 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n >> k;
-    vector<int> arr(n);
+    string s;
+    cin >> s;
+    int ptr = -1;
+    vector<int> res(n,-1);
+    int id = n;
     for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
-        if (k%2==1 && arr[i]%2==1)
+        if (s[i]=='0')
         {
-            arr[i]+=k;
-        }
-        else if (k%2==0)
-        {
-            if (k%3==0)
+            if (ptr<i && i-ptr<=k)
             {
-                arr[i]+=(arr[i]%(k+1))*k;
+                ptr=i;
+                res[i]=id--;
             }
-            else
+            else if (ptr<i && i-ptr>k) 
             {
-                if  (arr[i]%3==1) arr[i]+=(k%3==2)?k:2*k;
-                else if (arr[i]%3==2) arr[i]+=(k%3==1)?k:2*k;
+                cout << "NO\n";
+                return;
             }
-            
         }
     }
-    for (int i=0;i<n;i++) cout << arr[i] << " ";
+    if (ptr<n && n-ptr>k) {
+        cout << "NO\n";
+        return;
+    }
+    cout << "YES\n";
+    for (int i=0;i<n;i++)
+    {
+        if (res[i]==-1) res[i]=id--;
+        cout << res[i] << " ";
+    }
     cout << endl;
     return;
 }

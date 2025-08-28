@@ -157,55 +157,59 @@ void recur(int st)
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
-    ll a=LINF,b=0,c=LINF,d=0;
+    ll a=-LINF,b=0,c=-LINF,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m;
-    string s,t;
-    cin >> s >> t;
-    vector<array<ll,2>> range(m);
-    vector<int> vis(m,0);
-    map<array<ll,2>,ll> cor;
-    vector<array<ll,3>> cord;
-    for (int i=0;i<m;i++)
-    {
-        cin >> a >> b;
-        --a;
-        --b;
-        range[i]={a,b};
-        cor[{a,0}]++;
-        cor[{b,1}]++;
-    }
-    for (auto it: cor)
-    {
-        cord.push_back({it.first[0],it.first[1],it.second});
-    }
-    int j=0;
-    ll cur=0;
+    cin >> n;
+    vector<array<ll,2>> arr(n);
+
     for (int i=0;i<n;i++)
     {
-        if (j<cord.size() && cord[j][0]==i && cord[j][1]==0)
-        {
-            if (cord[j][2]%2==1) cur=1-cur;
-            vis[cord[j][2]]=1;
-            j++;
-        }
-        if (cur==1) s[i]=t[i];
-        if (j<cord.size() && cord[j][0]==i && cord[j][1]==1)
-        {
-            if (cord[j][2]%2==1) cur=1-cur;
-            vis[cord[j][2]]=2;
-            j++;
-        }
+        cin >> arr[i][0] >> arr[i][1];
+        a=max(a,arr[i][0]+arr[i][1]);
+        c=max(c,arr[i][0]-arr[i][1]);
     }
-    cout << s << endl;
+    ll mxl = 1e9;
+    cout << "? U " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? U " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? R " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? R " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+
+    b = x+a-4*mxl;
+
+    cout << "? D " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? D " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? D " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+    cout << "? D " << mxl << "\n";
+    cout.flush();
+    cin >> x;
+
+    d = x+c-4*mxl;
+    l = (b+d)>>1;
+    r = b-l;
+    cout << "! " << l << " " << r << "\n";
+    cout.flush();
     return;
 }
 
 signed main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+    // ios_base::sync_with_stdio(0);
+    // cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

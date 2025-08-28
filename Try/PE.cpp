@@ -10,7 +10,7 @@ using namespace std;
 #define ll long long
 #define int long long
 
-const int MAX_N = 1e3 + 5;
+const int MAX_N = 1e5 + 5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
@@ -35,123 +35,47 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-int n, m, x;
-vector<array<int,2>> adj[MAX_N];
-vector<array<int,2>> radj[MAX_N];
-vector<ll> dist;
-vector<ll> vis;
-array<int,K> basis[MAX_N];
-
-// void dijkstra(int s) {
-//     dist.assign(n + 1, LINF);
-//     priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
-//     dist[s] = 0; pq.push({0,0,s});
-//     while (pq.size()) {
-//         auto [d, di, u] = pq.top(); pq.pop();
-//         if (d > dist[u]) continue;
-//         if (di%2==1)
-//         {
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-        
-//     } 
-// }
-
-int reduce(array<int, K> &b, int x) {  // reducing x using basis vectors b
-	for (int i = K - 1; i >= 0; i--) {
-		if (x & (1 << i)) {  // check if the ith bit is set
-			x ^= b[i];
-		}
-	}
-	return x;
-}
-
-bool add(array<int, K> &b, int x) {
-	x = reduce(b, x);  // reduce x using current basis
-	if (x != 0) {
-		for (int i = K - 1; i >= 0; i--) {
-			if (x & (1 << i)) {
-				b[i] = x;  // add x to the basis if it is independent
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-bool check(array<int, K> &b, int x) {
-	return (reduce(b, x) ==
-	        0);  // if x reduces to 0, it can be represented by the basis
-}
-
-bool basis_check(array<int, K> &b, array<int, K> &c, int w)
+vector<int> briarr;
+void briCnt(int v)
 {
-    bool chec = false;
-    for (auto it: c)
-    {
-        if (add(b,it^w)) chec=true;
-    }
-    return chec;
+    briarr.push_back(v);
 }
+int n;
+vector<int> adj[MAX_N];
 
-int min_val_from_basis(array<int, K> b, int mask)
-{
-    int mi = LINF;
-    for (int i=0;i<K;i++)
-    {
-        if ((1<<i) & mask==0) 
-        {
-            mi = min(mi,b[i]);
-            mask = mask|(1<<i);
-            for (int j=0;j<K;j++)
-            {
-                if ((1<<j)&mask ==0)
-                {
-                    mi = min(mi,b[j]);
-                    b[j]^=b[i];
-                    mi = min(mi,b[j]);
-                }
-            }
-            mi = min(mi,min_val_from_basis(b, mask));
+vector<bool> visited;
+vector<int> tin, low;
+int timer;
+
+void dfs(int v, int p = -1) {
+    visited[v] = true;
+    tin[v] = low[v] = timer++;
+    int children=0;
+    for (int to : adj[v]) {
+        if (to == p) continue;
+        if (visited[to]) {
+            low[v] = min(low[v], tin[to]);
+        } else {
+            dfs(to, v);
+            low[v] = min(low[v], low[to]);
+            if (low[to] >= tin[v] && p!=-1)
+                briCnt(v);
+            ++children;
         }
     }
-    return mi;
+    if(p == -1 && children > 1)
+        briCnt(v);
 }
 
-void recur(int st)
-{
-    vis[st]=1;
-    for (auto it: adj[st])
-    {
-        if (basis_check(basis[it[0]], basis[st], it[1])) recur(it[0]);
+void find_art() {
+    timer = 0;
+    visited.assign(n, false);
+    tin.assign(n, -1);
+    low.assign(n, -1);
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i])
+            dfs (i);
     }
-    return;
 }
 
 void solve() {
@@ -159,23 +83,55 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m >> l;
+    ll v=0,m=0;
+    cin >> n >> m >> v;
     vector<ll> arr(n);
-    vector<vector<ll>> dp(n-l+1,vector<ll>(m,0));
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
     }
     for (int i=0;i<n;i++)
     {
-        for (int k=0;k<m;k++)
-        {
-            for (int j=max(0,i-l-1);j<=min(i,n-l);j++)
-            {
-                
-            }
-        }
+        adj[i].clear();
     }
+    for (int i=0;i<m;i++)
+    {
+        cin >> z >> y;
+        z--;
+        y--;
+        adj[z].push_back(y);
+        adj[y].push_back(z);
+    }
+    briarr.clear();
+    find_art();
+    map<int,int> mpi;
+    for (int i=0;i<n;i++)
+    {
+        if (adj[i].size()==1) mpi[i]=1;
+    }
+    // cout << briarr.size() << " ";
+    vector<ll> vis(n,-1);
+    for (auto it: briarr)
+    {
+        mpi[it]=1;
+        vis[it]=0;
+    }
+    for (auto it : mpi)
+    {
+        vis[it.first]=0;
+    }
+    ll res=0;
+    for (int i=0;i<n;i++)
+    {
+        if (arr[i]>0 && vis[i]==-1)
+        {
+            cout << 0 << endl;
+            return;
+        }
+        else if (arr[i]==-1 && vis[i]==0) res++;
+    }
+    res = qexp(v,res,MOD);
+    cout << res << endl;
     return;
 }
 
@@ -183,9 +139,10 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
+        
     }
 }

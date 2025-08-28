@@ -160,79 +160,41 @@ void solve() {
     ll a=LINF,b=0,c=LINF,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    vector<ll> arr(n),brr(n);
+    vector<ll> arr(n),dp(n,0);
     for (int i=0;i<n;i++)
     {
       cin >> arr[i];
-      brr[i]=arr[i];
     }
-    ll res=0;
-    for (int i=1;i<n;i+=2)
+    vector<vector<ll>> mpi(n);
+    for (int i=0;i<n;i++)
     {
-        if (i==n-1)
+        int curlen = arr[i]-1;
+        mpi[curlen].push_back(i);
+        int ni = mpi[curlen].size();
+        if (ni<arr[i]) 
         {
-            if (arr[i]<arr[i-1])
-            {
-                res+=arr[i-1]-arr[i];
-                arr[i-1]=arr[i];
-            }
+            if (i!=0) dp[i]=dp[i-1];
         }
         else
         {
-            if (arr[i]<arr[i-1]+arr[i+1])
+            int nt = mpi[curlen][ni-arr[i]];
+            if (nt==0) 
             {
-                ll lef = (arr[i-1]+arr[i+1])-arr[i];
-                ll sub = min(lef,arr[i+1]);
-                res+=sub;
-                arr[i+1]-=sub;
-                lef-=sub;
-
-                if (lef>0)
+                if (i!=0) dp[i]=max(dp[i-1],arr[i]);
+                else dp[i]=arr[i];
+            }
+            else 
+            {
+                if (i!=0) 
                 {
-                    sub=min(lef,arr[i-1]);
-                    res+=sub;
-                    arr[i-1]-=sub;
-                    lef-=sub;
+                    dp[i]=max(dp[i-1],dp[nt-1]+arr[i]);
+                    // cout << dp[i] << "t";
                 }
+                else dp[i]=dp[nt-1]+arr[i];
             }
         }
     }
-    ll res0 = res;
-    res=0;
-    arr = brr;
-    for (int i=n-2+((n+1)%2);i>0;i-=2)
-    {
-        if (i==n-1)
-        {
-            if (arr[i]<arr[i-1])
-            {
-                res+=arr[i-1]-arr[i];
-                arr[i-1]=arr[i];
-            }
-        }
-        else
-        {
-            if (arr[i]<arr[i-1]+arr[i+1])
-            {
-                ll lef = (arr[i-1]+arr[i+1])-arr[i];
-                ll sub = min(lef,arr[i-1]);
-                res+=sub;
-                arr[i-1]-=sub;
-                lef-=sub;
-
-                if (lef>0)
-                {
-                    sub=min(lef,arr[i+1]);
-                    res+=sub;
-                    arr[i+1]-=sub;
-                    lef-=sub;
-                }
-            }
-        }
-    }
-    res = min(res,res0);
-    cout << res << endl;
-
+    cout << dp[n-1] << endl;
     return;
 }
 

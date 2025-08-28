@@ -156,22 +156,25 @@ void recur(int st)
 
 void solve() {
     ll l=0,r=0;
-    ll w=0,y=0,z=0;
+    ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> a >> b;
-    if ((n-b)%2==1) 
+    cin >> a >> b >> c >> d;
+    x = max(a,b);
+    y = min(a,b);
+    if (x>2*(y+1)) 
     {
         cout << "NO\n"; 
         return;
     }
-    if (a>b)
+    c-=a;
+    d-=b;
+    x = max(c,d);
+    y = min(c,d);
+    if (x>2*(y+1)) 
     {
-        if ((n-a)%2==1) 
-        {
-            cout << "NO\n"; 
-            return;
-        }
+        cout << "NO\n"; 
+        return;
     }
     cout << "YES\n";
 }
