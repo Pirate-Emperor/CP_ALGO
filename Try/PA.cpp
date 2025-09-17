@@ -159,24 +159,42 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b >> c >> d;
-    x = max(a,b);
-    y = min(a,b);
-    if (x>2*(y+1)) 
+    cin >> n;
+    vector<ll> arr(n);
+    a = 0;
+    for (int i=0;i<n;i++)
     {
-        cout << "NO\n"; 
-        return;
+        cin >> arr[i];
+        if (i!=0 && arr[i]>arr[a]) a = i;
     }
-    c-=a;
-    d-=b;
-    x = max(c,d);
-    y = min(c,d);
-    if (x>2*(y+1)) 
+    l = a;
+    r = a;
+    b = n-1;
+    while(l>=0 || r<n)
     {
-        cout << "NO\n"; 
-        return;
+        bool chk =false;
+        if (l>0 && arr[l-1]==b) 
+        {
+            l--;
+            b--;
+            chk = true;
+            continue;
+        }
+        if (r<n-1 && arr[r+1]==b)
+        {
+            r++;
+            b--;
+            chk =true;
+            continue;
+        }
+        if (l==0 && r==n-1)
+        {
+            cout << "YES\n";
+            return;
+        }
+        break;
     }
-    cout << "YES\n";
+    cout << "NO\n"; 
 }
 
 signed main() {

@@ -1,0 +1,1 @@
+{"name":"Local: PA_leet","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PA_leet.cpp","tests":[{"id":1757819531442,"input":"4 5\n4 3 2 4","output":"0 0 1 1"},{"id":1757819581860,"input":"5 3\n1 2 3 4 5","output":"1 1 1 1 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PA_leet.cpp","group":"local","local":true}
