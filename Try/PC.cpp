@@ -37,60 +37,20 @@ ll qexp(ll a, ll b, ll m) {
 
 int n, m, x;
 vector<array<int,3>> adj[MAX_N];
-// vector<array<int,4>> radj[MAX_N];
-vector<ll> siz;
 vector<ll> vis;
-vector<ll> lefcn;
-vector<ll> res;
 void recur(int st)
 {
-    int sz=1;
-    int lef=0;
     if (vis[st]==1) return;
     vis[st]=1;
     for (auto it: adj[st])
     {
         int v = it[0];
         if (vis[v]==1) continue;
-        int x = it[1];
-        int y = it[2];
         recur(v);
-        sz+=siz[v];
-        if (x>=y) lef+=siz[v];
     }
-    siz[st]=sz;
-    lefcn[st]=lef;
-    // cout << st << "->" << siz[st] << "-" << lefcn[st] << endl;
     return;
 }
 
-void resrecur(int st, int lefst)
-{
-    if (vis[st]==1) return;
-    vis[st]=1;
-    // cout << st << "->" << lefcn[st] << endl;
-    res[st]=lefst+lefcn[st];
-    int left = lefst;
-    int right = res[st]+1;
-    for (auto it: adj[st])
-    {
-        int v = it[0];
-        if (vis[v]==1) continue;
-        int x = it[1];
-        int y = it[2];
-        if (x>=y) 
-        {
-            resrecur(v,left);
-            left+=siz[v];
-        }
-        else
-        {
-            resrecur(v,right);
-            right+=siz[v];
-        }
-    }
-
-}
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
@@ -98,31 +58,33 @@ void solve() {
     ll g=0,q=0,k=0;
     cin >> n;
     vis.resize(n);
-    res.resize(n);
-    siz.resize(n);
-    lefcn.resize(n);
     for (int i=0;i<n;i++) 
     {
         vis[i]=0;
-        res[i]=0;
-        siz[i]=0;
         adj[i].clear();
     }
-    for (int i=0;i<n-1;i++)
-    {
-        cin >> a >> b >> c >> d;
-        adj[a-1].push_back({b-1,c,d});
-        adj[b-1].push_back({a-1,d,c});
-    }
-    for (int i=0;i<n;i++) vis[i]=0;
-    recur(0);
-    for (int i=0;i<n;i++) vis[i]=0;
-    resrecur(0,0);
+    vector<int> rootArr;
     for (int i=0;i<n;i++)
     {
-        cout << res[i]+1 << " ";
+        cin >> a >> b;
+        if (a==0 && b==0) rootArr.push_back(i);
+        else
+        {
+            adj[a-1].push_back({i,0,0});
+            adj[b-1].push_back({i,0,0});
+        }
     }
-    cout << endl;
+    for (int i=0;i<rootArr.size();i++)
+    {
+        recur(rootArr[i]);
+    }
+    int res=0;
+    for (int i=0;i<n;i++)
+    {
+        // cout << vis[i] << " ";
+        res+=(vis[i]!=0);
+    }
+    cout << res << endl;
     return;
 }
 
@@ -130,7 +92,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

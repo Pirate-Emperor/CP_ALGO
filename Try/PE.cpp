@@ -83,55 +83,44 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    ll v=0,m=0;
-    cin >> n >> m >> v;
+    ll v=0,m=0,x=0;
+    cin >> n >> k >> x;
     vector<ll> arr(n);
+    map<pair<long double, array<ll,2>>,int,greater<pair<long double, array<ll,2>>>> mpi;
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
     }
-    for (int i=0;i<n;i++)
+    sort(arr.begin(),arr.end());
+    for (int i=0;i<n;i++) mpi[{arr[i],{i,1}}]=1;
+    while(k>0)
     {
-        adj[i].clear();
-    }
-    for (int i=0;i<m;i++)
-    {
-        cin >> z >> y;
-        z--;
-        y--;
-        adj[z].push_back(y);
-        adj[y].push_back(z);
-    }
-    briarr.clear();
-    find_art();
-    map<int,int> mpi;
-    for (int i=0;i<n;i++)
-    {
-        if (adj[i].size()==1) mpi[i]=1;
-    }
-    // cout << briarr.size() << " ";
-    vector<ll> vis(n,-1);
-    for (auto it: briarr)
-    {
-        mpi[it]=1;
-        vis[it]=0;
-    }
-    for (auto it : mpi)
-    {
-        vis[it.first]=0;
-    }
-    ll res=0;
-    for (int i=0;i<n;i++)
-    {
-        if (arr[i]>0 && vis[i]==-1)
+        auto it = mpi.begin();
+        mpi.erase(it->first);
+        if (k>=it->first.second[1])
         {
-            cout << 0 << endl;
+            k-=it->first.second[1];
+            mpi[{(1.0*it->first.first)/2.0,{it->first.second[0],it->first.second[1]*2}}]=1;
+        }
+        else
+        {
+            mpi[{it->first.first ,{it->first.second[0],it->first.second[1]-k}}]=1;
+            mpi[{(1.0*it->first.first)/2.0,{it->first.second[0],k*2}}]=1;
+            k=0;
+        }
+    }
+    int idx = 0;
+    for (auto it: mpi)
+    {
+        idx+=it.first.second[1];
+        if (idx>=x) 
+        {
+            double res = it.first.first;
+            cout << fixed << setprecision(20) << res << endl;
             return;
         }
-        else if (arr[i]==-1 && vis[i]==0) res++;
     }
-    res = qexp(v,res,MOD);
-    cout << res << endl;
+    throw runtime_error("Error");
     return;
 }
 
