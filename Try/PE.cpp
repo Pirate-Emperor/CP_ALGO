@@ -84,43 +84,75 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     ll v=0,m=0,x=0;
-    cin >> n >> k >> x;
-    vector<ll> arr(n);
-    map<pair<long double, array<ll,2>>,int,greater<pair<long double, array<ll,2>>>> mpi;
-    for (int i=0;i<n;i++)
+    cin >> a >> b;
+    const int MAX_L = 5e3+100;
+    int brr[MAX_L];
+    vector<ll> prime;
+    memset(brr,0,sizeof(brr));
+    int sqrtn=(int)sqrt(MAX_L);
+    for(int i=3; i<=sqrtn; i+=2)
     {
-        cin >> arr[i];
-    }
-    sort(arr.begin(),arr.end());
-    for (int i=0;i<n;i++) mpi[{arr[i],{i,1}}]=1;
-    while(k>0)
-    {
-        auto it = mpi.begin();
-        mpi.erase(it->first);
-        if (k>=it->first.second[1])
-        {
-            k-=it->first.second[1];
-            mpi[{(1.0*it->first.first)/2.0,{it->first.second[0],it->first.second[1]*2}}]=1;
-        }
-        else
-        {
-            mpi[{it->first.first ,{it->first.second[0],it->first.second[1]-k}}]=1;
-            mpi[{(1.0*it->first.first)/2.0,{it->first.second[0],k*2}}]=1;
-            k=0;
+        if(brr[i]==0){
+            for(int j=i*i; j<MAX_L; j+=i+i){
+                brr[j]=1;
+            }
         }
     }
-    int idx = 0;
-    for (auto it: mpi)
-    {
-        idx+=it.first.second[1];
-        if (idx>=x) 
-        {
-            double res = it.first.first;
-            cout << fixed << setprecision(20) << res << endl;
-            return;
-        }
+    prime.push_back(2);
+    for(int i=3; i<MAX_L; i+=2){
+        if(brr[i]==0)
+            prime.push_back(i);
     }
-    throw runtime_error("Error");
+    while(a--)
+    {
+        cin >> n;
+        c=0;
+        vector<ll> arr(n);
+        map<int,int> mpi;
+        for (int i=0;i<n;i++)
+        {
+            cin >> arr[i];
+            c+=arr[i];
+            mpi[arr[i]]--;
+        }
+        mpi[c]++;
+        vector<ll> primset(prime.size());
+        for (auto it: mpi)
+        {
+            if (it.first>1)
+            {
+                // cout << it.first << " ";
+                for (int j=0;j<prime.size();j++)
+                {
+                    if (prime[j]>it.first) break;
+                    else 
+                    {
+                        ll temp=0;
+                        ll tem = prime[j];
+                        while(tem<=it.first)
+                        {
+                            temp+=it.first/tem;
+                            tem*=prime[j];
+                        }
+                        primset[j]+=temp*it.second;
+                    }
+                }
+            }
+        }
+        ll res=1;
+        for (int i=0;i<prime.size();i++)
+        {
+            if (primset[i]==0) continue;
+            else 
+            {
+                // cout << prime[i] << " " << primset[i] << endl;
+                res = (res*qexp(prime[i],abs(primset[i]),b))%b;
+            } 
+        }
+        cout << res << endl;
+    }
+    
+    
     return;
 }
 
@@ -128,7 +160,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

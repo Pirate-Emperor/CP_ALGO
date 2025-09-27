@@ -89,31 +89,64 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=-LINF,b=0,c=-LINF,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    vector<ll> arr(n);
-    map<ll,ll> mpi;
-    for (int i=0;i<n;i++)
+    cin >> a >> b;
+    vector<string> arr(a);
+    int res=0;
+    vector<int> curbl;
+    for (int i=0;i<a;i++)
     {
         cin >> arr[i];
-        mpi[arr[i]]++;
+        for (int j=0;j<b;j++)
+        {
+            if (arr[i][j]=='#') 
+            {
+                curbl.push_back(i*b+j);
+                res++;
+            }
+        }
     }
-    m = mpi.size();
-    vector<array<ll,2>> brr(m);
-    map<array<ll,2>,ll,greater<array<ll,2>>> map_occ;
-    map<ll,ll,greater<ll>> map_ele;
-    for (auto it: mpi)
+    while(true)
     {
-        brr[i]={it.first,it.second};
-        map_occ[{it.second,it.first}]=1;
-        map_ele[it.second];
+        vector<int> curwh;
+        for (int i=0;i<curbl.size();i++)
+        {
+            int x = curbl[i]/b;
+            int y = curbl[i]%b;
+            if (x>0 && arr[x-1][y]=='.') curwh.push_back((x-1)*b+y);
+            if (x<a-1 && arr[x+1][y]=='.') curwh.push_back((x+1)*b+y);
+            if (y>0 && arr[x][y-1]=='.') curwh.push_back(x*b+y-1);
+            if (y<b-1 && arr[x][y+1]=='.') curwh.push_back(x*b+y+1);
+        }
+        curbl.clear();
+        for (int i=0;i<curwh.size();i++)
+        {
+            int x = curwh[i]/b;
+            int y = curwh[i]%b;
+            int blcnt=0;
+            if (x>0 && arr[x-1][y]=='#') blcnt++;
+            if (x<a-1 && arr[x+1][y]=='#') blcnt++;
+            if (y>0 && arr[x][y-1]=='#') blcnt++;
+            if (y<b-1 && arr[x][y+1]=='#') blcnt++;
+            if (blcnt==1)
+            {
+                curbl.push_back(x*b+y);
+                res++;
+            }
+        }
+        for (int i=0;i<curbl.size();i++)
+        {
+            int x = curbl[i]/b;
+            int y = curbl[i]%b;
+            arr[x][y]='#'; 
+        }
+        
+        if (curbl.size()==0) break;
     }
-    while(map_occ.begin()->first[0]>1)
-    {
-        auto it = map_occ.begin();
-        map_occ.erase(it->first);
-        auto it_el = map_ele.lower_bound(it->first[1]);
-        auto it_el_nsml = map_ele.lower_bound(it->first[1]+1);
-    }
+    cout << res << endl;
+    // for (int i=0;i<a;i++)
+    // {
+    //     cout << arr[i] << endl;
+    // }
     return;
 }
 
@@ -121,7 +154,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

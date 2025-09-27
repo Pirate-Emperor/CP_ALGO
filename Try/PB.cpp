@@ -160,19 +160,39 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    vector<int> arr(2*n);
-    for (int i=0;i<n-1;i++)
+    vector<int> arr(n),vis(n+1,0);
+    bool check=true;
+    for (int i=0;i<n;i++)
     {
-        arr[i]=n-i-1;
-        arr[2*n-2-i]=n-i-1;
+        cin >> arr[i];
+        if (arr[i]!=-1) 
+        {
+            if (vis[arr[i]]==1) check=false;
+            vis[arr[i]]=1;
+        }
     }
-    arr[n-1]=n;
-    arr[2*n-1]=n;
-    for (int i=0;i<2*n;i++)
-    {
-        cout << arr[i] << " ";
+    if (!check){
+        cout << "No\n";
+        return;
     }
-    cout << endl;
+    else{
+        cout << "Yes\n";
+        vector<int> lef;
+        for (int i=1;i<=n;i++)
+        {
+            if (vis[i]==0) lef.push_back(i);
+        }
+        int ind=0;
+        for (int i=0;i<n;i++)
+        {
+            if (arr[i]==-1)
+            {
+                arr[i]=lef[ind++];
+            }
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
     return;
 }
 
@@ -180,7 +200,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

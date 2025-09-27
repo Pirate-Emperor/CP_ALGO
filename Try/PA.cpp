@@ -159,24 +159,21 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b;
-    if (b>a)
+    cin >> a;
+    for (int i=0;i<a;i++)
     {
-        cout << 2 << endl;
+        c = (i+1)*(i+1)*(i+1);
+        if (i%2==0) b-=c;
+        else b+=c;
     }
-    else
-    {
-
-        if (b==1 || a-b<=1) cout << -1 << endl;
-        else cout << 3 << endl;
-    }
+    cout << b << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

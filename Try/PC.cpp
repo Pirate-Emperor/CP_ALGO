@@ -56,57 +56,41 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    string s;
-    cin >> s;
-    vector<int> br,cr;
-    vector<ar<int, 3>> arr;
+    cin >> n >> q;
+    vector<ll> arr(n),pref(n+1,0);
     for (int i=0;i<n;i++)
     {
-        if (s[i]=='1') 
-        {
-            arr.push_back({1,i,1});
-        }
-        else 
-        {
-            if (arr.size()>0){
-                auto it = arr.back();
-                array<int, 3> at = {0,i-1,it[2]};
-                if (it == at) 
-                {
-                    arr.pop_back();
-                    arr.push_back({0,i,it[2]+1});
-                }
-                else arr.push_back({0,i,1});
-            }
-            else arr.push_back({0,i,1});
-        }
+        cin >> arr[i];
+        if (i>0) pref[i+1]=pref[i]+arr[i];
+        else pref[1]=arr[0];
     }
-    m = arr.size();
-    vector<int> brr,crr;
-    // cout << n << " ";
-    for (int i=0;i<m;i++)
+    int ind=0;
+    while(q--)
     {
-        if (arr[i][0]==0)
+        cin >> a >> b;
+        if (a == 2)
         {
-            if (br.size()>0 && br.back()>=i-2) br.pop_back();
-            else if (i==0 || i==m-1) cr.push_back(i);
-            else if (cr.size()>0 && cr.back()>=i-2) cr.push_back(i);
+            cin >> c;
+            b--;
+            c--;
+            b=(b+ind)%n;
+            c=(c+ind)%n;
+            if (b<=c)
+            {
+                ll res = pref[c+1]-pref[b];
+                cout << res << endl;
+            }
             else
             {
-                while(cr.size()>0) cr.pop_back();
-                if (arr[i][2]>1) cr.push_back(i);
-                else br.push_back(i);
+                ll res = pref[n]-pref[b] + pref[c+1];
+                cout << res << endl;
             }
         }
+        else
+        {
+            ind=(ind+b)%n;
+        }
     }
-    if (br.size()>0 && cr.size()>0 && cr.back()==m-1 && br.back()>=cr.back()-2) br.pop_back();
-    if (br.size()>0) 
-    {
-        cout << "NO\n";
-        return;
-    }
-    cout << "YES\n";
     return;
 }
 
@@ -114,7 +98,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
