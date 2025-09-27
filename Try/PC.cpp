@@ -57,34 +57,56 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    vis.resize(n);
-    for (int i=0;i<n;i++) 
-    {
-        vis[i]=0;
-        adj[i].clear();
-    }
-    vector<int> rootArr;
+    string s;
+    cin >> s;
+    vector<int> br,cr;
+    vector<ar<int, 3>> arr;
     for (int i=0;i<n;i++)
     {
-        cin >> a >> b;
-        if (a==0 && b==0) rootArr.push_back(i);
-        else
+        if (s[i]=='1') 
         {
-            adj[a-1].push_back({i,0,0});
-            adj[b-1].push_back({i,0,0});
+            arr.push_back({1,i,1});
+        }
+        else 
+        {
+            if (arr.size()>0){
+                auto it = arr.back();
+                array<int, 3> at = {0,i-1,it[2]};
+                if (it == at) 
+                {
+                    arr.pop_back();
+                    arr.push_back({0,i,it[2]+1});
+                }
+                else arr.push_back({0,i,1});
+            }
+            else arr.push_back({0,i,1});
         }
     }
-    for (int i=0;i<rootArr.size();i++)
+    m = arr.size();
+    vector<int> brr,crr;
+    // cout << n << " ";
+    for (int i=0;i<m;i++)
     {
-        recur(rootArr[i]);
+        if (arr[i][0]==0)
+        {
+            if (br.size()>0 && br.back()>=i-2) br.pop_back();
+            else if (i==0 || i==m-1) cr.push_back(i);
+            else if (cr.size()>0 && cr.back()>=i-2) cr.push_back(i);
+            else
+            {
+                while(cr.size()>0) cr.pop_back();
+                if (arr[i][2]>1) cr.push_back(i);
+                else br.push_back(i);
+            }
+        }
     }
-    int res=0;
-    for (int i=0;i<n;i++)
+    if (br.size()>0 && cr.size()>0 && cr.back()==m-1 && br.back()>=cr.back()-2) br.pop_back();
+    if (br.size()>0) 
     {
-        // cout << vis[i] << " ";
-        res+=(vis[i]!=0);
+        cout << "NO\n";
+        return;
     }
-    cout << res << endl;
+    cout << "YES\n";
     return;
 }
 
@@ -92,7 +114,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

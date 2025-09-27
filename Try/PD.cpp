@@ -89,27 +89,31 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=-LINF,b=0,c=-LINF,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m;
-    vector<string> grid(n);
+    cin >> n;
+    vector<ll> arr(n);
+    map<ll,ll> mpi;
     for (int i=0;i<n;i++)
     {
-        cin >> grid[i];
+        cin >> arr[i];
+        mpi[arr[i]]++;
     }
-    if (checkGrid(grid)) 
+    m = mpi.size();
+    vector<array<ll,2>> brr(m);
+    map<array<ll,2>,ll,greater<array<ll,2>>> map_occ;
+    map<ll,ll,greater<ll>> map_ele;
+    for (auto it: mpi)
     {
-        cout << 0 << endl;
-        return;
+        brr[i]={it.first,it.second};
+        map_occ[{it.second,it.first}]=1;
+        map_ele[it.second];
     }
-    int mres = (((n-2)/2)+1)*(((m-2)/2)+1);
-    for (int i=1;i<mres;i++)
+    while(map_occ.begin()->first[0]>1)
     {
-        if (permute(grid, i)==true)
-        {
-            cout << i << endl;
-            return;
-        }
+        auto it = map_occ.begin();
+        map_occ.erase(it->first);
+        auto it_el = map_ele.lower_bound(it->first[1]);
+        auto it_el_nsml = map_ele.lower_bound(it->first[1]+1);
     }
-    cout << mres << endl;
     return;
 }
 
