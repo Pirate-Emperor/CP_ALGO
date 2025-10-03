@@ -160,20 +160,21 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> a;
+    map<int,int> mpi;
     for (int i=0;i<a;i++)
     {
-        c = (i+1)*(i+1)*(i+1);
-        if (i%2==0) b-=c;
-        else b+=c;
+        cin >> b;
+        mpi[b]++;
     }
-    cout << b << endl;
+    c = 2*mpi.size()-1;
+    cout << c << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

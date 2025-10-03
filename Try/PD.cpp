@@ -35,118 +35,44 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-int n, m, x;
-
-bool checkGrid(vector<string> grid)
-{
-    for (int i=0;i<grid.size();i++)
-    {
-        for (int j=0;j<grid[i].size();j++)
-        {
-            if (grid[i][j]=='.')
-            {
-                grid[i][j]='x';
-                if (i>0) grid[i-1][j]='x';
-                if (j>0) grid[i][j-1]='x';
-                if (i>0 && j>0) grid[i-1][j-1]='x';
-            }
-        }
-    }
-    for (int i=0;i<grid.size()-1;i++)
-    {
-        for (int j=0;j<grid[i].size()-1;j++)
-        {
-            if (grid[i][j]!='x') return false;
-        }
-    }
-    return true;
-}
-
-bool permute(vector<string> grid, int k)
-{
-    if (k==0)
-    {
-        return checkGrid(grid);
-    }
-    for (int i=1;i<grid.size()-1;i++)
-    {
-        for (int j=1;j<grid[i].size()-1;j++)
-        {
-            if (grid[i][j]=='#')
-            {
-                grid[i][j]='.';
-                if (permute(grid,k-1)) return true;
-                grid[i][j]='#';
-            }
-        }
-    }
-    
-    return false;
-
-}
+int n,m,x;
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
     ll a=-LINF,b=0,c=-LINF,d=0;
     ll g=0,q=0,k=0;
     cin >> a >> b;
-    vector<string> arr(a);
-    int res=0;
-    vector<int> curbl;
+    vector<ll> arr(a);
+    vector<ll> pref(a+1);
+    vector<ll> pre3(a+1);
+    pref[0]=0;
+    pre3[0]=0;
     for (int i=0;i<a;i++)
     {
         cin >> arr[i];
-        for (int j=0;j<b;j++)
+        ll temp=arr[i];
+        ll tem=0;
+        ll ch=0;
+        while (temp>0)
         {
-            if (arr[i][j]=='#') 
-            {
-                curbl.push_back(i*b+j);
-                res++;
-            }
+            // if (temp==3) ch=1;
+            temp/=2;
+            tem++;
         }
+        if (arr[i]==1<<(tem-1)) ch++;
+        pref[i+1]=pref[i]+tem-ch;
+        pre3[i+1]=pre3[i]+((arr[i]-1)==1<<(tem-1));
+        // cout << tem+ch-1 << " ";
+        // g=arr[i]^(1<<(tem-2));
+        // if (g < arr[i]) pref[i+1]++;
     }
-    while(true)
+    for (int j=0;j<b;j++)
     {
-        vector<int> curwh;
-        for (int i=0;i<curbl.size();i++)
-        {
-            int x = curbl[i]/b;
-            int y = curbl[i]%b;
-            if (x>0 && arr[x-1][y]=='.') curwh.push_back((x-1)*b+y);
-            if (x<a-1 && arr[x+1][y]=='.') curwh.push_back((x+1)*b+y);
-            if (y>0 && arr[x][y-1]=='.') curwh.push_back(x*b+y-1);
-            if (y<b-1 && arr[x][y+1]=='.') curwh.push_back(x*b+y+1);
-        }
-        curbl.clear();
-        for (int i=0;i<curwh.size();i++)
-        {
-            int x = curwh[i]/b;
-            int y = curwh[i]%b;
-            int blcnt=0;
-            if (x>0 && arr[x-1][y]=='#') blcnt++;
-            if (x<a-1 && arr[x+1][y]=='#') blcnt++;
-            if (y>0 && arr[x][y-1]=='#') blcnt++;
-            if (y<b-1 && arr[x][y+1]=='#') blcnt++;
-            if (blcnt==1)
-            {
-                curbl.push_back(x*b+y);
-                res++;
-            }
-        }
-        for (int i=0;i<curbl.size();i++)
-        {
-            int x = curbl[i]/b;
-            int y = curbl[i]%b;
-            arr[x][y]='#'; 
-        }
-        
-        if (curbl.size()==0) break;
+        cin >> l >> r;
+        ll res = pref[r]-pref[l-1] - (pre3[r]-pre3[l-1]+1)/2;
+        // if (pre3[r]-pre3[l-1]>0) res--;
+        cout << res << endl;
     }
-    cout << res << endl;
-    // for (int i=0;i<a;i++)
-    // {
-    //     cout << arr[i] << endl;
-    // }
     return;
 }
 
@@ -154,7 +80,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
