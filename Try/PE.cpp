@@ -84,75 +84,108 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     ll v=0,m=0,x=0;
-    cin >> a >> b;
-    const int MAX_L = 5e3+100;
-    int brr[MAX_L];
-    vector<ll> prime;
-    memset(brr,0,sizeof(brr));
-    int sqrtn=(int)sqrt(MAX_L);
-    for(int i=3; i<=sqrtn; i+=2)
+    long double eps = 1e-6;
+    long double sx1,sx2,sy1,sy2;
+    long double tx1,tx2,ty1,ty2;
+    cin >> sx1 >> sy1 >> tx1 >> ty1;
+    cin >> sx2 >> sy2 >> tx2 >> ty2;
+    long double dis1 = (tx1-sx1)*(tx1-sx1)+(ty1-sy1)*(ty1-sy1);
+    long double dis2 = (tx2-sx2)*(tx2-sx2)+(ty2-sy2)*(ty2-sy2);
+    if (dis1>dis2)
     {
-        if(brr[i]==0){
-            for(int j=i*i; j<MAX_L; j+=i+i){
-                brr[j]=1;
+        swap(dis1,dis2);
+        swap(sx1,sx2);
+        swap(sy1,sy2);
+        swap(tx1,tx2);
+        swap(ty1,ty2);
+    }
+    long double k1 = sqrt((tx1-sx1)*(tx1-sx1)+(ty1-sy1)*(ty1-sy1));
+    long double k2 = sqrt((tx2-sx2)*(tx2-sx2)+(ty2-sy2)*(ty2-sy2));
+    long double mx1,mx2,my1,my2;
+    mx1 = (tx1-sx1)/k1;
+    my1 = (ty1-sy1)/k1;
+    mx2 = (tx2-sx2)/k2;
+    my2 = (ty2-sy2)/k2;
+    
+    long double tc = (sx1-sx2)*(sx1-sx2) + (sy1-sy2)*(sy1-sy2);
+    long double ta = (mx1-mx2)*(mx1-mx2) + (my1-my2)*(my1-my2);
+    long double tb = (sx1-sx2)*(mx1-mx2) + (sy1-sy2)*(my1-my2);
+    tb*=2;
+    long double res=1000000.0;
+    long double dist = sqrt((sx1-sx2)*(sx1-sx2)+(sy1-sy2)*(sy1-sy2));
+    res=min(dist,res);
+    dist = sqrt((tx1-tx2)*(tx1-tx2)+(ty1-ty2)*(ty1-ty2));
+    res=min(dist,res);
+    if (abs(ta)<eps) 
+    {
+        // cout << res << endl;
+    }
+    else
+    {
+        long double temx1=sx1,temy1=sy1,temx2=sx2,temy2=sy2;
+        long double t = (-tb)/(2*ta);
+        // cout << temx1+t*mx1 << " ";
+        if (t>=eps && ((tx1>=sx1 && temx1+t*mx1<=tx1) || (tx1<sx1 && temx1+t*mx1>=tx1)) && ((ty1>=sy1 && temy1+t*my1<=ty1) || (ty1<sy1 && temy1+t*my1>=ty1))){
+            // cout << t << " ";
+            temx1+=t*mx1;
+            temy1+=t*my1;
+            temx2+=t*mx2;
+            temy2+=t*my2;
+            dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
+            res = min(dist,res);
+        }
+        long double ti = sqrt(dis1);
+        temx2=sx2+ti*mx2;
+        temy2=sy2+ti*my2;
+        long double tc = (tx1-temx2)*(tx1-temx2) + (ty1-temy2)*(ty1-temy2);
+        long double ta = (-mx2)*(-mx2) + (-my2)*(-my2);
+        long double tb = (tx1-temx2)*(-mx2) + (ty1-temy2)*(-my2);
+        if (abs(ta)>=eps) 
+        {
+            long double temx1=sx1,temy1=sy1;
+            long double t = (-tb)/(ta);
+            if (t>=eps){
+                temx1=tx1;
+                temy1=ty1;
+                temx2+=t*mx2;
+                temy2+=t*my2;
+                dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
+                res = min(dist,res);
             }
         }
     }
-    prime.push_back(2);
-    for(int i=3; i<MAX_L; i+=2){
-        if(brr[i]==0)
-            prime.push_back(i);
-    }
-    while(a--)
-    {
-        cin >> n;
-        c=0;
-        vector<ll> arr(n);
-        map<int,int> mpi;
-        for (int i=0;i<n;i++)
-        {
-            cin >> arr[i];
-            c+=arr[i];
-            mpi[arr[i]]--;
-        }
-        mpi[c]++;
-        vector<ll> primset(prime.size());
-        for (auto it: mpi)
-        {
-            if (it.first>1)
-            {
-                // cout << it.first << " ";
-                for (int j=0;j<prime.size();j++)
-                {
-                    if (prime[j]>it.first) break;
-                    else 
-                    {
-                        ll temp=0;
-                        ll tem = prime[j];
-                        while(tem<=it.first)
-                        {
-                            temp+=it.first/tem;
-                            tem*=prime[j];
-                        }
-                        primset[j]+=temp*it.second;
-                    }
-                }
-            }
-        }
-        ll res=1;
-        for (int i=0;i<prime.size();i++)
-        {
-            if (primset[i]==0) continue;
-            else 
-            {
-                // cout << prime[i] << " " << primset[i] << endl;
-                res = (res*qexp(prime[i],abs(primset[i]),b))%b;
-            } 
-        }
-        cout << res << endl;
-    }
-    
-    
+    // long double temx1=sx1,temy1=sy1,temx2=sx2,temy2=sy2;
+    // long double t=0;
+    // while ((temx1+t*mx1<=tx1) && (temx2+t*mx2<=tx2) && (temy1+t*my1<=ty1) && (temy2+t*my2<=ty2))
+    // {
+    //     temx1+=t*mx1;
+    //     temy1+=t*my1;
+    //     temx2+=t*mx2;
+    //     temy2+=t*my2;
+    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
+    //     cout << setprecision(2) << dist << " ";
+    //     res = min(dist,res);
+    //     t++;
+    // }
+    // while ((temx1+t*mx1<=tx1) && (temy1+t*my1<=ty1))
+    // {
+    //     temx1+=t*mx1;
+    //     temy1+=t*my1;
+    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
+    //     cout << setprecision(2) << dist << " ";
+    //     res = min(dist,res);
+    //     t++;
+    // }
+    // while ((temx2+t*mx2<=tx2) && (temy2+t*my2<=ty2))
+    // {
+    //     temx2+=t*mx2;
+    //     temy2+=t*my2;
+    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
+    //     cout << setprecision(2) << dist << " ";
+    //     res = min(dist,res);
+    //     t++;
+    // }
+    cout << fixed << setprecision(15) << res << endl;
     return;
 }
 
@@ -160,7 +193,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

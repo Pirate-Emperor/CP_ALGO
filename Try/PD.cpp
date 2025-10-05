@@ -39,40 +39,30 @@ int n,m,x;
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
-    ll a=-LINF,b=0,c=-LINF,d=0;
+    ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b;
-    vector<ll> arr(a);
-    vector<ll> pref(a+1);
-    vector<ll> pre3(a+1);
-    pref[0]=0;
-    pre3[0]=0;
-    for (int i=0;i<a;i++)
+    cin >> n;
+    string s;
+    cin >> s;
+    for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
-        ll temp=arr[i];
-        ll tem=0;
-        ll ch=0;
-        while (temp>0)
+        a+=s[i]=='0';
+        b+=s[i]=='1';
+        if (s[i]=='0')
         {
-            // if (temp==3) ch=1;
-            temp/=2;
-            tem++;
+            l++;
+            r=0;
+            c=max(l,c);
         }
-        if (arr[i]==1<<(tem-1)) ch++;
-        pref[i+1]=pref[i]+tem-ch;
-        pre3[i+1]=pre3[i]+((arr[i]-1)==1<<(tem-1));
-        // cout << tem+ch-1 << " ";
-        // g=arr[i]^(1<<(tem-2));
-        // if (g < arr[i]) pref[i+1]++;
+        else 
+        {
+            r++;
+            l=0;
+            d=max(r,d);
+        }
     }
-    for (int j=0;j<b;j++)
-    {
-        cin >> l >> r;
-        ll res = pref[r]-pref[l-1] - (pre3[r]-pre3[l-1]+1)/2;
-        // if (pre3[r]-pre3[l-1]>0) res--;
-        cout << res << endl;
-    }
+    g = n+min(a-2*c,b-2*d);
+    cout << g << endl;
     return;
 }
 

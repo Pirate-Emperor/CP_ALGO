@@ -58,34 +58,22 @@ void solve() {
     ll g=0,q=0,k=0;
     cin >> n >> q;
     vector<ll> arr(n);
-    vector<array<int,3>> pref(n+1);
-    vector<array<int,2>> prefalt(n+1);
-    pref[0]={0,0,0};
-    prefalt[0]={0,0};
-    prefalt[1]={0,0};
+    map<ll,ll> mpi;
     for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
-        pref[i+1][arr[i]]=pref[i][arr[i]]+1;
-        pref[i+1][1-arr[i]]=pref[i][1-arr[i]];
-        if (i>0) {
-            if (arr[i]!=arr[i-1]) pref[i+1][2]=pref[i][2]+1;
-            else pref[i+1][2]=pref[i][2];
-        }
-        else {
-            pref[i+1][2]=1;
-            prefalt[i+1]={0,0};
-        }
+        mpi[i+1]=1;
     }
     while(q--)
     {
-        cin >> l >> r;
-        if ((r-l+1)%3==0 && (pref[r][0]-pref[l-1][0])%3==0 && (pref[r][1]-pref[l-1][1])%3==0){
-            g = (r-l+1)/3;
-            if ((pref[r][2]-pref[l][2]+1) == (r-l+1) && (r-l+1)%6==0) g++;
-            cout << g << endl;
+        cin >> x >> y;
+        ll cnt=0;
+        while(mpi.size()>0 && mpi.begin()->first<=x)
+        {
+            cnt+=mpi.begin()->second;
+            mpi.erase(mpi.begin()->first);
         }
-        else cout << -1 << endl;
+        mpi[y]+=cnt;
+        cout << cnt << endl;
     }
     return;
 }
@@ -94,7 +82,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

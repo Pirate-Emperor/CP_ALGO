@@ -42,46 +42,6 @@ vector<ll> dist;
 vector<ll> vis;
 array<int,K> basis[MAX_N];
 
-// void dijkstra(int s) {
-//     dist.assign(n + 1, LINF);
-//     priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
-//     dist[s] = 0; pq.push({0,0,s});
-//     while (pq.size()) {
-//         auto [d, di, u] = pq.top(); pq.pop();
-//         if (d > dist[u]) continue;
-//         if (di%2==1)
-//         {
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-        
-//     } 
-// }
 
 int reduce(array<int, K> &b, int x) {  // reducing x using basis vectors b
 	for (int i = K - 1; i >= 0; i--) {
@@ -159,22 +119,19 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a;
-    map<int,int> mpi;
-    for (int i=0;i<a;i++)
-    {
-        cin >> b;
-        mpi[b]++;
-    }
-    c = 2*mpi.size()-1;
-    cout << c << endl;
+    string s,t;
+    cin >> s >> t;
+    if (s==t) cout << "Yes\n";
+    else if (s=="Lynx" || (t=="Serval" && s=="Lynx") || (t=="Ocelot" && s=="Serval")) cout << "Yes\n";
+    else cout << "No\n";
+    // cout << c << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

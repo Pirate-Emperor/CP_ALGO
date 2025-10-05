@@ -159,14 +159,22 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> a >> b >> c >> d;
-    if (a==c) g = 0;
-    else if (a>c) g = a-c+n-a;
-    else g = c-a+a;
-    if (b==d) g=max(g,0LL);
-    else if (b>d) g = max(g,n-d);
-    else g = max(g,d);
-    cout << g << endl;
+    string s;
+    cin >> s;
+    char s1=s[0];
+    char s2=s[0];
+    a=1;
+    b=0;
+    for (int i=1;i<s.size();i++)
+    {
+        if (s1==s[i]) a++;
+        else {
+            s2 = s[i];
+            b++;
+        }
+    }
+    if (a==1) cout << s1 << endl;
+    else cout << s2 << endl;
     return;
 }
 
@@ -174,7 +182,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
