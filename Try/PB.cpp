@@ -159,22 +159,62 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin >> s;
-    char s1=s[0];
-    char s2=s[0];
-    a=1;
-    b=0;
-    for (int i=1;i<s.size();i++)
+    cin >> n >> k;
+    if (n*n-k==1) cout << "NO\n";
+    else
     {
-        if (s1==s[i]) a++;
-        else {
-            s2 = s[i];
-            b++;
+        cout << "YES\n";
+        int ik=0;
+        int ind=-1;
+        vector<vector<char>> res(n,vector<char>(n,'.'));
+        for (int i=0;i<n;i++)
+        {
+            if (i%2==0){
+                for (int j=0;j<n;j++)
+                {
+                    if (ik<k)
+                    {
+                        res[i][j]='U';
+                    }
+                    else
+                    {
+                        if (j==n-1){
+                            if (i==n-1) res[i][j]='L';
+                            else res[i][j]='D';
+                        }
+                        else res[i][j]='R';
+                    }
+                    ik++;
+                }
+            }
+            else {
+                for (int j=n-1;j>=0;j--)
+                {
+                    if (ik<k)
+                    {
+                        res[i][j]='U';
+                    }
+                    else
+                    {
+                        if (j==0) 
+                        {
+                            if (i==n-1) res[i][j]='R';
+                            else res[i][j]='D';
+                        }
+                        else res[i][j]='L';
+                    }
+                    ik++;
+                }
+            }
+            // cout << endl;
         }
+        for (int i=0;i<n;i++)
+        {
+            for (int j=0;j<n;j++) cout << res[i][j];
+            cout << endl;
+        }
+        
     }
-    if (a==1) cout << s1 << endl;
-    else cout << s2 << endl;
     return;
 }
 
@@ -182,7 +222,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

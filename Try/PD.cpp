@@ -34,6 +34,8 @@ ll qexp(ll a, ll b, ll m) {
     }
     return res;
 }
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll rand(ll l, ll r) {return uniform_int_distribution(l, r)(rng);}
 
 int n,m,x;
 void solve() {
@@ -42,33 +44,22 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    string s;
-    cin >> s;
-    for (int i=0;i<n;i++)
+    while(true)
     {
-        a+=s[i]=='0';
-        b+=s[i]=='1';
-        if (s[i]=='0')
-        {
-            l++;
-            r=0;
-            c=max(l,c);
-        }
-        else 
-        {
-            r++;
-            l=0;
-            d=max(r,d);
-        }
+        a=1;
+        b=rand(1,n);
+        while(b==a) b=rand(1,n);
+        cout << a << " " << b;
+        cout.flush();
+        cin >> x;
+        if (x==-1 || x==1) return;
     }
-    g = n+min(a-2*c,b-2*d);
-    cout << g << endl;
     return;
 }
 
 signed main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+    // ios_base::sync_with_stdio(0);
+    // cin.tie(0); cout.tie(0);
     int tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

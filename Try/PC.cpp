@@ -56,25 +56,59 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> q;
-    vector<ll> arr(n);
-    map<ll,ll> mpi;
+    cin >> n;
+    vector<int> arr(n);
+    vector<array<int,2>> dp(n+1);
+    vector<array<int,2>> vis(n+1);
     for (int i=0;i<n;i++)
     {
-        mpi[i+1]=1;
-    }
-    while(q--)
-    {
-        cin >> x >> y;
-        ll cnt=0;
-        while(mpi.size()>0 && mpi.begin()->first<=x)
+        cin >> arr[i];
+        if (i==0) 
         {
-            cnt+=mpi.begin()->second;
-            mpi.erase(mpi.begin()->first);
+            dp[i] = {arr[i]-1,arr[i]-1};
+            vis[i] = {0,1};
         }
-        mpi[y]+=cnt;
-        cout << cnt << endl;
+        else
+        {
+            a=arr[i]-1;
+            dp[i]={-1,-1};
+            a-=vis[i-1][0];
+            if (dp[i-1][0]!=-1  && a<n-i)
+            {
+                if (a==dp[i-1][0])
+                {
+                    dp[i][1]=a;
+                    vis[i][1]=vis[i-1][0]+1;
+                }
+                else if (a+1==dp[i-1][0])
+                {
+                    dp[i][0]=a;
+                    vis[i][0]=vis[i-1][0];
+                }
+            } 
+            a+=vis[i-1][0];
+            a-=vis[i-1][1];
+            if (dp[i-1][1]!=-1  && a<n-i) 
+            {
+                
+                if (a==dp[i-1][1])
+                {
+                    dp[i][1]=a;
+                    vis[i][1]=vis[i-1][1]+1;
+                }
+                else if (a+1==dp[i-1][1])
+                {
+                    dp[i][0]=a;
+                    vis[i][0]=vis[i-1][1];
+                }
+            }
+            // cout << dp[i][0] << " " << dp[i][1] << "t";
+        }
+
     }
+    int res=0;
+    res += (dp[n-1][0]!=-1) + (dp[n-1][1]!=-1);
+    cout << res << endl;
     return;
 }
 
@@ -82,7 +116,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
