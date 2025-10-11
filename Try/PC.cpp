@@ -36,19 +36,26 @@ ll qexp(ll a, ll b, ll m) {
 }
 
 int n, m, x;
-vector<array<int,3>> adj[MAX_N];
+vector<array<int,2>> adj[MAX_N];
+vector<array<int,2>> edges;
 vector<ll> vis;
-void recur(int st)
+vector<ll> curS;
+int res=0;
+void recur(int N, int node, int cur)
 {
-    if (vis[st]==1) return;
-    vis[st]=1;
-    for (auto it: adj[st])
+    if (cur>(N-1)/2 || node>=N) return;
+    for (int i=node;i<N;i++)
     {
-        int v = it[0];
-        if (vis[v]==1) continue;
-        recur(v);
+        curS[i]=1;
+        int temp=0;
+        for (int j=0;j<m;j++)
+        {
+            temp+=curS[edges[j][0]]!=curS[edges[j][1]];
+        }
+        res=max(temp,res);
+        recur(N, i+1,cur+1);
+        curS[i]=0;
     }
-    return;
 }
 
 void solve() {
@@ -56,58 +63,25 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    vector<int> arr(n);
-    vector<array<int,2>> dp(n+1);
-    vector<array<int,2>> vis(n+1);
-    for (int i=0;i<n;i++)
+    cin >> n >> m;
+    curS.clear();
+    edges.clear();
+    for (int i=0;i<n;i++) 
     {
-        cin >> arr[i];
-        if (i==0) 
-        {
-            dp[i] = {arr[i]-1,arr[i]-1};
-            vis[i] = {0,1};
-        }
-        else
-        {
-            a=arr[i]-1;
-            dp[i]={-1,-1};
-            a-=vis[i-1][0];
-            if (dp[i-1][0]!=-1  && a<n-i)
-            {
-                if (a==dp[i-1][0])
-                {
-                    dp[i][1]=a;
-                    vis[i][1]=vis[i-1][0]+1;
-                }
-                else if (a+1==dp[i-1][0])
-                {
-                    dp[i][0]=a;
-                    vis[i][0]=vis[i-1][0];
-                }
-            } 
-            a+=vis[i-1][0];
-            a-=vis[i-1][1];
-            if (dp[i-1][1]!=-1  && a<n-i) 
-            {
-                
-                if (a==dp[i-1][1])
-                {
-                    dp[i][1]=a;
-                    vis[i][1]=vis[i-1][1]+1;
-                }
-                else if (a+1==dp[i-1][1])
-                {
-                    dp[i][0]=a;
-                    vis[i][0]=vis[i-1][1];
-                }
-            }
-            // cout << dp[i][0] << " " << dp[i][1] << "t";
-        }
-
+        curS.push_back(0);
+        adj[i].clear();
     }
-    int res=0;
-    res += (dp[n-1][0]!=-1) + (dp[n-1][1]!=-1);
+    for (int i=0;i<m;i++)
+    {
+        cin >> x >> y;
+        x--;
+        y--;
+        adj[x].push_back({y,0});
+        adj[y].push_back({x,0});
+        edges.push_back({x,y});
+    }
+    recur(n,0,0);
+    res=m-res;
     cout << res << endl;
     return;
 }
@@ -116,7 +90,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

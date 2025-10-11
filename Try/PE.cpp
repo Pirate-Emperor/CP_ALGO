@@ -84,108 +84,72 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     ll v=0,m=0,x=0;
-    long double eps = 1e-6;
-    long double sx1,sx2,sy1,sy2;
-    long double tx1,tx2,ty1,ty2;
-    cin >> sx1 >> sy1 >> tx1 >> ty1;
-    cin >> sx2 >> sy2 >> tx2 >> ty2;
-    long double dis1 = (tx1-sx1)*(tx1-sx1)+(ty1-sy1)*(ty1-sy1);
-    long double dis2 = (tx2-sx2)*(tx2-sx2)+(ty2-sy2)*(ty2-sy2);
-    if (dis1>dis2)
+    cin >> n >> m;
+    vector<string> grid(n),bgrid(3*n);
+    for (int i=0;i<n;i++)
     {
-        swap(dis1,dis2);
-        swap(sx1,sx2);
-        swap(sy1,sy2);
-        swap(tx1,tx2);
-        swap(ty1,ty2);
+        cin >> grid[i];
     }
-    long double k1 = sqrt((tx1-sx1)*(tx1-sx1)+(ty1-sy1)*(ty1-sy1));
-    long double k2 = sqrt((tx2-sx2)*(tx2-sx2)+(ty2-sy2)*(ty2-sy2));
-    long double mx1,mx2,my1,my2;
-    mx1 = (tx1-sx1)/k1;
-    my1 = (ty1-sy1)/k1;
-    mx2 = (tx2-sx2)/k2;
-    my2 = (ty2-sy2)/k2;
-    
-    long double tc = (sx1-sx2)*(sx1-sx2) + (sy1-sy2)*(sy1-sy2);
-    long double ta = (mx1-mx2)*(mx1-mx2) + (my1-my2)*(my1-my2);
-    long double tb = (sx1-sx2)*(mx1-mx2) + (sy1-sy2)*(my1-my2);
-    tb*=2;
-    long double res=1000000.0;
-    long double dist = sqrt((sx1-sx2)*(sx1-sx2)+(sy1-sy2)*(sy1-sy2));
-    res=min(dist,res);
-    dist = sqrt((tx1-tx2)*(tx1-tx2)+(ty1-ty2)*(ty1-ty2));
-    res=min(dist,res);
-    if (abs(ta)<eps) 
+    string st="";
+    for (int i=0;i<m;i++) st+=".";
+    for (int i=0;i<n;i++) bgrid[i]=st+st+st;
+    for (int i=n;i<2*n;i++) bgrid[i]=st+grid[i-n]+st;
+    for (int i=2*n;i<3*n;i++) bgrid[i]=st+st+st;
+    vector<array<int,2>> adj[100];
+    for (int i=n;i<3*n;i++)
     {
-        // cout << res << endl;
-    }
-    else
-    {
-        long double temx1=sx1,temy1=sy1,temx2=sx2,temy2=sy2;
-        long double t = (-tb)/(2*ta);
-        // cout << temx1+t*mx1 << " ";
-        if (t>=eps && ((tx1>=sx1 && temx1+t*mx1<=tx1) || (tx1<sx1 && temx1+t*mx1>=tx1)) && ((ty1>=sy1 && temy1+t*my1<=ty1) || (ty1<sy1 && temy1+t*my1>=ty1))){
-            // cout << t << " ";
-            temx1+=t*mx1;
-            temy1+=t*my1;
-            temx2+=t*mx2;
-            temy2+=t*my2;
-            dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
-            res = min(dist,res);
-        }
-        long double ti = sqrt(dis1);
-        temx2=sx2+ti*mx2;
-        temy2=sy2+ti*my2;
-        long double tc = (tx1-temx2)*(tx1-temx2) + (ty1-temy2)*(ty1-temy2);
-        long double ta = (-mx2)*(-mx2) + (-my2)*(-my2);
-        long double tb = (tx1-temx2)*(-mx2) + (ty1-temy2)*(-my2);
-        if (abs(ta)>=eps) 
+        for (int j=m;j<3*m;j++)
         {
-            long double temx1=sx1,temy1=sy1;
-            long double t = (-tb)/(ta);
-            if (t>=eps){
-                temx1=tx1;
-                temy1=ty1;
-                temx2+=t*mx2;
-                temy2+=t*my2;
-                dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
-                res = min(dist,res);
+            if (bgrid[i][j]=='T') {
+                a=i;
+                b=j;
+                break;
             }
         }
     }
-    // long double temx1=sx1,temy1=sy1,temx2=sx2,temy2=sy2;
-    // long double t=0;
-    // while ((temx1+t*mx1<=tx1) && (temx2+t*mx2<=tx2) && (temy1+t*my1<=ty1) && (temy2+t*my2<=ty2))
-    // {
-    //     temx1+=t*mx1;
-    //     temy1+=t*my1;
-    //     temx2+=t*mx2;
-    //     temy2+=t*my2;
-    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
-    //     cout << setprecision(2) << dist << " ";
-    //     res = min(dist,res);
-    //     t++;
-    // }
-    // while ((temx1+t*mx1<=tx1) && (temy1+t*my1<=ty1))
-    // {
-    //     temx1+=t*mx1;
-    //     temy1+=t*my1;
-    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
-    //     cout << setprecision(2) << dist << " ";
-    //     res = min(dist,res);
-    //     t++;
-    // }
-    // while ((temx2+t*mx2<=tx2) && (temy2+t*my2<=ty2))
-    // {
-    //     temx2+=t*mx2;
-    //     temy2+=t*my2;
-    //     long double dist = sqrt((temx1-temx2)*(temx1-temx2)+(temy1-temy2)*(temy1-temy2));
-    //     cout << setprecision(2) << dist << " ";
-    //     res = min(dist,res);
-    //     t++;
-    // }
-    cout << fixed << setprecision(15) << res << endl;
+    priority_queue<array<int,5>,vector<array<int,5>>,greater<array<int,5>>> pq;
+    pq.push({0,a,b,n,m});
+    int res=INF;
+    while(!pq.empty())
+    {
+        auto it = pq.top();
+        pq.pop();
+        int x=it[1];
+        int y=it[2];
+        bgrid[x][y]='x';
+        bool check=true;
+        for (int i=0;i<n;i++)
+        {
+            for (int j=0;j<m;j++)
+            {
+                if (bgrid[it[3]+i][it[4]+j]=='#') check=false;
+            }
+        }
+        if (check) 
+        {
+            // cout << it[1] << " " << it[2] << " " << it[3] << " " << it[4] << " ";
+            res=min(res,it[0]);
+            break;
+        }
+        if (it[3]-1>=0 && bgrid[x-1][y]=='.') 
+        {
+            pq.push({it[0]+1,x-1,y,it[3]-1,it[4]});
+        }
+        if (it[3]+n<3*n && bgrid[x+1][y]=='.') 
+        {
+            pq.push({it[0]+1,x+1,y,it[3]+1,it[4]});
+        }
+        if (it[4]-1>=0 && bgrid[x][y-1]=='.') 
+        {
+            pq.push({it[0]+1,x,y-1,it[3],it[4]-1});
+        }
+        if (it[4]+m<3*m && bgrid[x][y+1]=='.') 
+        {
+            pq.push({it[0]+1,x,y+1,it[3],it[4]+1});
+        }
+    }
+    if (res==INF) cout << -1 << endl;
+    else cout << res << endl;
     return;
 }
 
@@ -193,7 +157,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

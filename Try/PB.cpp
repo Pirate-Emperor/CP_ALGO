@@ -159,62 +159,18 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> k;
-    if (n*n-k==1) cout << "NO\n";
-    else
+    cin >> n;
+    int res=1;
+    for (int i=2;i<=n;i++)
     {
-        cout << "YES\n";
-        int ik=0;
-        int ind=-1;
-        vector<vector<char>> res(n,vector<char>(n,'.'));
-        for (int i=0;i<n;i++)
+        int tem=res;
+        while(tem>0)
         {
-            if (i%2==0){
-                for (int j=0;j<n;j++)
-                {
-                    if (ik<k)
-                    {
-                        res[i][j]='U';
-                    }
-                    else
-                    {
-                        if (j==n-1){
-                            if (i==n-1) res[i][j]='L';
-                            else res[i][j]='D';
-                        }
-                        else res[i][j]='R';
-                    }
-                    ik++;
-                }
-            }
-            else {
-                for (int j=n-1;j>=0;j--)
-                {
-                    if (ik<k)
-                    {
-                        res[i][j]='U';
-                    }
-                    else
-                    {
-                        if (j==0) 
-                        {
-                            if (i==n-1) res[i][j]='R';
-                            else res[i][j]='D';
-                        }
-                        else res[i][j]='L';
-                    }
-                    ik++;
-                }
-            }
-            // cout << endl;
+            res+=tem%10;
+            tem/=10;
         }
-        for (int i=0;i<n;i++)
-        {
-            for (int j=0;j<n;j++) cout << res[i][j];
-            cout << endl;
-        }
-        
     }
+    cout << res << endl;
     return;
 }
 
@@ -222,7 +178,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
