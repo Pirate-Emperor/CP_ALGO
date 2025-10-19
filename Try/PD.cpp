@@ -36,26 +36,24 @@ ll qexp(ll a, ll b, ll m) {
 }
 
 int n, m, x;
-vector<array<int,2>> adj[MAX_N];
+vector<int> adj[MAX_N];
 vector<array<int,2>> edges;
 vector<ll> vis;
-vector<ll> curS;
+vector<ll> dis;
+vector<ll> par;
 int res=0;
-void recur(int N, int node, int cur)
+void recur(int u, int dep)
 {
-    if (cur>(N-1)/2 || node>=N) return;
-    for (int i=node;i<N;i++)
+    vis[u]=1;
+    for (int it: adj[u])
     {
-        curS[i]=1;
-        int temp=0;
-        for (int j=0;j<m;j++)
+        if (vis[it]==0) 
         {
-            temp+=curS[edges[j][0]]!=curS[edges[j][1]];
+            par[it]=u;
+            recur(it, dep+1);
         }
-        res=max(temp,res);
-        recur(N, i+1,cur+1);
-        curS[i]=0;
     }
+    dis[u]=dep;
 }
 
 void solve() {
@@ -63,43 +61,101 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m >> k;
-    string s;
-    cin >> s;
-    curS.clear();
+    cin >> n;
     edges.clear();
+    vis.clear();
+    dis.clear();
+    par.clear();
     for (int i=0;i<n;i++) 
     {
-        curS.push_back(0);
         adj[i].clear();
     }
-    for (int i=0;i<m;i++)
+    vis.push_back(0);
+    dis.push_back(-1);
+    par.push_back(-1);
+    for (int i=0;i<n-1;i++)
     {
-        cin >> x >> y;
-        x--;
-        y--;
-        adj[x].push_back({y,0});
-        edges.push_back({x,y});
+        vis.push_back(0);
+        dis.push_back(-1);
+        par.push_back(-1);
+        cin >> l >> r;
+        l--;
+        r--;
+        adj[l].push_back(r);
+        adj[r].push_back(l);
     }
-    vector<vector<int>> dp(2*k+1,vector<int>(n,0));
+    recur(0,0);
+    priority_queue<array<ll,2>,vector<array<ll,2>>,greater<array<ll,2>>> odd,eve;
     for (int i=0;i<n;i++)
     {
-        dp[2*k][i]=(s[i]=='B');
-    }
-    for (int i=2*k-1;i>=0;i--)
-    {
-        for (int j=0;j<n;j++)
+        if (adj[i].size()==1)
         {
-            if (i%2==0) dp[i][j]=1;
-            for (auto it: adj[j])
-            {
-                if (i%2==1 && dp[i+1][it[0]]==1) dp[i][j]=1;
-                if (i%2==0 && dp[i+1][it[0]]==0) dp[i][j]=0;
-            }
+            ll val=0;
+            if (i==0) val+=n;
+            if (i==n-1) continue;
+            if (dis[i]%2==0) eve.push({val+i,i});
+            else odd.push({val+i,i});
         }
     }
-    if (dp[0][0]==1) cout << "Bob\n";
-    else cout << "Alice\n";
+    vector<array<ll,2>> ans;
+    ll res=0;
+    int it=0;
+    while(!odd.empty() || !eve.empty())
+    {
+        if (it%2==0)
+        {
+            if (!odd.empty()) 
+            {
+                auto tem = odd.top();
+                odd.pop();
+                adj[par[tem[1]]].pop_back();
+                if (adj[par[tem[1]]].size()==1) 
+                {
+                    int i = par[tem[1]];
+                    ll val=0;
+                    if (i==0) val+=n;
+                    if (i==n-1) continue;
+                    if (dis[i]%2==0) eve.push({val+i,i});
+                    else odd.push({val+i,i});
+                }
+                ans.push_back({2,tem[1]});
+                ans.push_back({1,-1});
+                res++;
+            }
+            else ans.push_back({1,-1});
+        }
+        else
+        {
+            if (!eve.empty()) 
+            {
+                auto tem = eve.top();
+                eve.pop();
+                adj[par[tem[1]]].pop_back();
+                if (adj[par[tem[1]]].size()==1) 
+                {
+                    int i = par[tem[1]];
+                    ll val=0;
+                    if (i==0) val+=n;
+                    if (i==n-1) continue;
+                    if (dis[i]%2==0) eve.push({val+i,i});
+                    else odd.push({val+i,i});
+                }
+                ans.push_back({2,tem[1]});
+                ans.push_back({1,-1});
+                res++;
+            }
+            else ans.push_back({1,-1});
+        }
+        it++;
+        res++;
+    }
+    cout << ans.size() << endl;
+    for (int i=0;i<ans.size();i++)
+    {
+        if (ans[i][0]==1) cout << 1 << endl;
+        else cout << ans[i][0] << " " << ans[i][1]+1 << endl;
+    }
+    cout << endl;
     return;
 }
 
