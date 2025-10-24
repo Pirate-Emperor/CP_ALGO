@@ -119,18 +119,16 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin >> s;
-    n = s.size();
-    string t = s.substr(0,n/2)+s.substr(n/2+1,n);
-    cout << t << endl;
+    cin >> a;
+    a = ((a+1)/2)-1;
+    cout << a << endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

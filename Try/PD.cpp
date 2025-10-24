@@ -1,15 +1,12 @@
-// Consider N points given on a plane
-// the objective is to generate a convex hull, i.e. the smallest convex polygon that contains all the given points.
-
 #include <bits/stdc++.h>
-
+ 
 using namespace std;
-
+ 
 #define all(x) (x).begin(),(x).end()
 #define ar array
 #define ll long long
 #define int long long
-
+ 
 const int MAX_N = 2e5 + 5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -20,11 +17,11 @@ struct st{
     mutable ll len,t;
     bool operator < (const st &A) const { return id<A.id;} 
 };
-
+ 
 ll gcd(ll a, ll b) {
     return b ? gcd(b, a % b) : a;
 }
-
+ 
 ll qexp(ll a, ll b, ll m) {
     ll res = 1;
     while (b) {
@@ -34,7 +31,7 @@ ll qexp(ll a, ll b, ll m) {
     }
     return res;
 }
-
+ 
 int n, m, x;
 vector<int> adj[MAX_N];
 vector<array<int,2>> edges;
@@ -55,113 +52,64 @@ void recur(int u, int dep)
     }
     dis[u]=dep;
 }
-
+ 
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    edges.clear();
-    vis.clear();
-    dis.clear();
-    par.clear();
-    for (int i=0;i<n;i++) 
-    {
-        adj[i].clear();
-    }
-    vis.push_back(0);
-    dis.push_back(-1);
-    par.push_back(-1);
-    for (int i=0;i<n-1;i++)
-    {
-        vis.push_back(0);
-        dis.push_back(-1);
-        par.push_back(-1);
-        cin >> l >> r;
-        l--;
-        r--;
-        adj[l].push_back(r);
-        adj[r].push_back(l);
-    }
-    recur(0,0);
-    priority_queue<array<ll,2>,vector<array<ll,2>>,greater<array<ll,2>>> odd,eve;
-    for (int i=0;i<n;i++)
-    {
-        if (adj[i].size()==1)
-        {
-            ll val=0;
-            if (i==0) val+=n;
-            if (i==n-1) continue;
-            if (dis[i]%2==0) eve.push({val+i,i});
-            else odd.push({val+i,i});
-        }
-    }
-    vector<array<ll,2>> ans;
+    vector<int> arr;
+    for (int i=1;i<n;i++) arr.push_back(i);
     ll res=0;
-    int it=0;
-    while(!odd.empty() || !eve.empty())
+    a=0;
+    int j=0;
+    while(true)
     {
-        if (it%2==0)
+        vector<int> odd;
+        vector<int> even;
+        if (arr.size()==0) break;
+        for (int it: arr)
         {
-            if (!odd.empty()) 
+            int tem = 1<<j;
+            cout << "? " << it << " " << tem << "\n";
+            cout.flush();
+            cin >> b;
+            if (b==0) even.push_back(it);
+            else odd.push_back(it); 
+            a++;
+            if (a==2*n)
             {
-                auto tem = odd.top();
-                odd.pop();
-                adj[par[tem[1]]].pop_back();
-                if (adj[par[tem[1]]].size()==1) 
-                {
-                    int i = par[tem[1]];
-                    ll val=0;
-                    if (i==0) val+=n;
-                    if (i==n-1) continue;
-                    if (dis[i]%2==0) eve.push({val+i,i});
-                    else odd.push({val+i,i});
-                }
-                ans.push_back({2,tem[1]});
-                ans.push_back({1,-1});
-                res++;
+                cout << "! " << res << "\n";
+                cout.flush();
+                return;
             }
-            else ans.push_back({1,-1});
         }
-        else
+        if (odd.size()==even.size()) 
         {
-            if (!eve.empty()) 
-            {
-                auto tem = eve.top();
-                eve.pop();
-                adj[par[tem[1]]].pop_back();
-                if (adj[par[tem[1]]].size()==1) 
-                {
-                    int i = par[tem[1]];
-                    ll val=0;
-                    if (i==0) val+=n;
-                    if (i==n-1) continue;
-                    if (dis[i]%2==0) eve.push({val+i,i});
-                    else odd.push({val+i,i});
-                }
-                ans.push_back({2,tem[1]});
-                ans.push_back({1,-1});
-                res++;
-            }
-            else ans.push_back({1,-1});
+            arr=odd;
+            res+=1<<j;
         }
-        it++;
-        res++;
+        else 
+        {
+            if (even.size()<odd.size()) arr=even;
+            else 
+            {
+                arr=odd;
+                res+=1<<j;
+            }
+        }
+        j++;
     }
-    cout << ans.size() << endl;
-    for (int i=0;i<ans.size();i++)
-    {
-        if (ans[i][0]==1) cout << 1 << endl;
-        else cout << ans[i][0] << " " << ans[i][1]+1 << endl;
-    }
-    cout << endl;
+    
+    cout << "! " << res << "\n";
+    cout.flush();
     return;
 }
-
+ 
 signed main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+    // ios_base::sync_with_stdio(0);
+    // cin.tie(0); cout.tie(0);
     int tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

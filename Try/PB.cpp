@@ -159,18 +159,52 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    int res=1;
-    for (int i=2;i<=n;i++)
+    cin >> n >> q;
+    string s;
+    cin >> s;
+    vector<int> arr;
+    for (int i=0;i<n;i++)
     {
-        int tem=res;
-        while(tem>0)
+        if (s[i]=='A') a++;
+        else 
         {
-            res+=tem%10;
-            tem/=10;
+            if (a!=0) arr.push_back(a);
+            a=0;
+            arr.push_back(-1);
         }
     }
-    cout << res << endl;
+    if (a!=0) arr.push_back(a);
+    while(q--)
+    {
+        cin >> x;   
+        ll res=0;
+        if (a==n)
+        {
+            res=x;
+        }
+        else 
+        {
+            int ind=0;
+            m = arr.size();
+            while(x>0)
+            {
+                if (arr[ind]==-1) 
+                {
+                    x/=2;
+                    res++;
+                }
+                else 
+                {
+                    res+=min(arr[ind],x);
+                    x-=min(arr[ind],x);
+                    
+                }
+                ind=(ind+1)%m;
+                // cout << x << " ";
+            }
+        }
+        cout << res << endl;
+    }
     return;
 }
 
@@ -178,7 +212,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
