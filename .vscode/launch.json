@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/Projects/CP_ALGO/Try/output",
-      "program": "d:/Projects/CP_ALGO/Try/output/build/Debug/outDebug",
+      "cwd": "d:/Z_CONTEST/CP_ALGO/Try",
+      "program": "d:/Z_CONTEST/CP_ALGO/Try/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

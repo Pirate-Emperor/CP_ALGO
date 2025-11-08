@@ -63,31 +63,27 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> k;
-    vector<int> arr(n);
-    vector<int> cnt(n+1,0);
-    vector<int> prec(n+1,0);
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-        cnt[arr[i]]++;
-    }
-    for (int i=1;i<=n;i++)
-    {
-        prec[i]=prec[i-1]+cnt[i];
-    }
+    cin >> n >> m >> k;
+    vector<ll> arr(n),brr(m);
+    for (int i=0;i<n;i++) cin >> arr[i];
+    for (int i=0;i<m;i++) cin >> brr[i];
+    sort(arr.begin(),arr.end());
+    sort(brr.begin(),brr.end());
+    int i=0;
+    int j=0;
     int res=0;
-    for (int i=1;i<=n;i++)
-    {
-        int tem=0;
-        for (int j=i;j<=min(4*i,n);j+=i)
-        {
-            tem+=cnt[j];
+    while(i<n && j<m){
+        if (brr[j]>=arr[i]){
+            j++;
+            i++;
+            res++;
         }
-        tem=prec[min(4*i,n)]-tem;
-        if (tem<=k) res=max(i,res);
+        else {
+            j++;
+        }
     }
-    cout << res << endl;
+    if (res>=k) cout << "Yes\n";
+    else cout << "No\n";
     return;
 }
 
@@ -95,7 +91,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

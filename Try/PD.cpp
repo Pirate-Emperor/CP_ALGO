@@ -59,59 +59,41 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    vector<int> arr;
-    for (int i=1;i<n;i++) arr.push_back(i);
-    ll res=0;
-    a=0;
-    int j=0;
-    while(true)
+    vector<array<ll,3>> arr(n);
+    for (int i=0;i<n;i++)
     {
-        vector<int> odd;
-        vector<int> even;
-        if (arr.size()==0) break;
-        for (int it: arr)
-        {
-            int tem = 1<<j;
-            cout << "? " << it << " " << tem << "\n";
-            cout.flush();
-            cin >> b;
-            if (b==0) even.push_back(it);
-            else odd.push_back(it); 
-            a++;
-            if (a==2*n)
-            {
-                cout << "! " << res << "\n";
-                cout.flush();
-                return;
-            }
-        }
-        if (odd.size()==even.size()) 
-        {
-            arr=odd;
-            res+=1<<j;
-        }
-        else 
-        {
-            if (even.size()<odd.size()) arr=even;
-            else 
-            {
-                arr=odd;
-                res+=1<<j;
-            }
-        }
-        j++;
+        cin >> x >> y >> z;
+        arr[i]={x,y,z};
+        a+=x;
+        b+=z;
     }
-    
-    cout << "! " << res << "\n";
-    cout.flush();
+    a/=2;
+    vector<ll> dp(a+1,-1);
+    dp[0]=0;
+    ll res=0;
+    for (int i=0;i<n;i++){
+        ll x = arr[i][0];
+        ll y = arr[i][1];
+        ll z = arr[i][2];
+        if (y-z<=0) continue;
+        for (int j=a-x;j>=0;j--)
+        {
+            if (j+x>a) break;
+            if (dp[j]==-1) continue;
+            dp[j+x]=max(dp[j+x],dp[j]+y-z);
+            res=max(res,dp[j+x]);
+        }
+    }
+    res+=b;
+    cout << res << endl;
     return;
 }
  
 signed main() {
-    // ios_base::sync_with_stdio(0);
-    // cin.tie(0); cout.tie(0);
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

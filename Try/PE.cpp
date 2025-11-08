@@ -85,71 +85,84 @@ void solve() {
     ll g=0,q=0,k=0;
     ll v=0,m=0,x=0;
     cin >> n >> m;
-    vector<string> grid(n),bgrid(3*n);
+    vector<string> arr(n);
     for (int i=0;i<n;i++)
     {
-        cin >> grid[i];
+        cin >> arr[i];
     }
-    string st="";
-    for (int i=0;i<m;i++) st+=".";
-    for (int i=0;i<n;i++) bgrid[i]=st+st+st;
-    for (int i=n;i<2*n;i++) bgrid[i]=st+grid[i-n]+st;
-    for (int i=2*n;i<3*n;i++) bgrid[i]=st+st+st;
-    vector<array<int,2>> adj[100];
-    for (int i=n;i<3*n;i++)
-    {
-        for (int j=m;j<3*m;j++)
-        {
-            if (bgrid[i][j]=='T') {
-                a=i;
-                b=j;
-                break;
-            }
-        }
-    }
+    vector<array<ll,1>> dp((n+1)*(m+1),{INF});
     priority_queue<array<int,5>,vector<array<int,5>>,greater<array<int,5>>> pq;
-    pq.push({0,a,b,n,m});
-    int res=INF;
+    pq.push({0,0,-1,0,0});
+    int res=n*m;
     while(!pq.empty())
     {
         auto it = pq.top();
         pq.pop();
-        int x=it[1];
-        int y=it[2];
-        bgrid[x][y]='x';
-        bool check=true;
-        for (int i=0;i<n;i++)
-        {
-            for (int j=0;j<m;j++)
-            {
-                if (bgrid[it[3]+i][it[4]+j]=='#') check=false;
+        int val=it[0];
+        int px=it[1];
+        int py=it[2];
+        int x=it[3];
+        int y=it[4];
+        int nx=x,ny=y;
+        int nval=val;
+        // cout << val << " " << x << " " << y << endl;
+        if (x==n-1 && y==m) {
+            res=val;
+            cout << res << endl;
+            return;
+        }
+        else if (x<0 || y<0 || x>=n || y>=m) continue;
+        dp[x][y]=min(dp[x][y],val);
+        if (x==px){
+            int vi = -1;
+            if (py<y) vi=1;
+            for (char it: {'A','B','C'}){
+                nx=x;
+                ny=y;
+                if (it=='A') ny=y+vi;
+                else if (it=='B') nx=x+vi;
+                else if (it=='C') nx=x-vi;
+
+                nval = val+(arr[x][y]!=it);
+                // if (nx==n-1 && ny==m) {
+                //     res=nval;
+                //     break;
+                // }
+                if (nx<0 || ny<0 || nx>=n || ny>m) continue;
+                if (dp[nx][ny]>=nval) {
+                    // dp[x][y]=nval;
+                    // cout << nval << " " << x << " " << y << " " << nx << " " << ny << endl;
+                    pq.push({nval,x,y,nx,ny});
+                }
             }
         }
-        if (check) 
-        {
-            // cout << it[1] << " " << it[2] << " " << it[3] << " " << it[4] << " ";
-            res=min(res,it[0]);
-            break;
+        else if (y==py){
+            int vi = -1;
+            if (px<x) vi=1;
+            for (char it: {'A','B','C'}){
+                nx=x;
+                ny=y;
+                if (it=='A') nx=x+vi;
+                else if (it=='B') ny=y+vi;
+                else if (it=='C') ny=y-vi;
+
+                nval = val+(arr[x][y]!=it);
+                // if (nx==n-1 && ny==m) {
+                //     res=nval;
+                //     break;
+                // }
+                if (nx<0 || ny<0 || nx>=n || ny>m) continue;
+                if (dp[nx][ny]>=nval) {
+                    // dp[x][y]=nval;
+                    // cout << val << " " << x << " " << y << " " << nx << " " << ny << endl;
+                    
+                    pq.push({nval,x,y,nx,ny});
+                }
+            }
         }
-        if (it[3]-1>=0 && bgrid[x-1][y]=='.') 
-        {
-            pq.push({it[0]+1,x-1,y,it[3]-1,it[4]});
-        }
-        if (it[3]+n<3*n && bgrid[x+1][y]=='.') 
-        {
-            pq.push({it[0]+1,x+1,y,it[3]+1,it[4]});
-        }
-        if (it[4]-1>=0 && bgrid[x][y-1]=='.') 
-        {
-            pq.push({it[0]+1,x,y-1,it[3],it[4]-1});
-        }
-        if (it[4]+m<3*m && bgrid[x][y+1]=='.') 
-        {
-            pq.push({it[0]+1,x,y+1,it[3],it[4]+1});
-        }
+        
     }
-    if (res==INF) cout << -1 << endl;
-    else cout << res << endl;
+    cout << "T" << res << endl;
     return;
 }
 
@@ -157,7 +170,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
