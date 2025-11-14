@@ -58,34 +58,16 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    vector<array<ll,3>> arr(n);
-    for (int i=0;i<n;i++)
-    {
-        cin >> x >> y >> z;
-        arr[i]={x,y,z};
-        a+=x;
-        b+=z;
+    cin >> x >> y >> k;
+    if (k<y) {
+        cout << k << endl;
+        return;
     }
-    a/=2;
-    vector<ll> dp(a+1,-1);
-    dp[0]=0;
-    ll res=0;
-    for (int i=0;i<n;i++){
-        ll x = arr[i][0];
-        ll y = arr[i][1];
-        ll z = arr[i][2];
-        if (y-z<=0) continue;
-        for (int j=a-x;j>=0;j--)
-        {
-            if (j+x>a) break;
-            if (dp[j]==-1) continue;
-            dp[j+x]=max(dp[j+x],dp[j]+y-z);
-            res=max(res,dp[j+x]);
-        }
+    if (x+y>=1e12){
+        cout << -1 << endl;
     }
-    res+=b;
-    cout << res << endl;
+    l = y+x;
+    r = 
     return;
 }
  

@@ -159,20 +159,28 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> x >> n;
-    vector<int> arr(n),vis(n,0);
+    cin >> n;
+    vector<int> arr(n);
+    int ind1=-1;
+    int indn=-1;
     for (int i=0;i<n;i++){
         cin >> arr[i];
+        if (arr[i]==1) ind1=i+1;
+        else if (arr[i]==n) indn=i+1;
     }
-    cin >> q;
-    ll res=x;
-    while(q--){
-        cin >> l;
-        l--;
-        if (vis[l]==0) res+=arr[l];
-        else res-=arr[l];
-        vis[l]=1-vis[l];
-        cout << res << endl;
+    string s;
+    cin >> s;
+    if (s[0]=='1' || s[n-1]=='1' || s[ind1-1]=='1' || s[indn-1]=='1') cout << -1 << endl;
+    else{
+        if (ind1>indn) {
+            swap(ind1,indn);
+        }
+        cout << 5 << endl;
+        cout << 1 << " " << ind1 << endl;
+        cout << 1 << " " << indn << endl;
+        cout << ind1 << " " << indn << endl;
+        cout << ind1 << " " << n << endl;
+        cout << indn << " " << n << endl;
     }
     return;
 }
@@ -181,7 +189,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

@@ -119,16 +119,29 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b;
-    a = max(0LL,a-b);
-    cout << a << endl;
+    cin >> n >> a;
+    vector<int> arr(n,0);
+    for (int i=0;i<n;i++){
+        cin >> arr[i];
+        b+=(arr[i]<a);
+        c+=(arr[i]==a);
+    }
+    if (b<(n/2) && b+c>=(n/2)){
+        if (b>(n-b-c)) cout << a-1 << endl;
+        else cout << a+1 << endl;
+    }
+    else if (b>=n/2){
+        cout << a-1 << endl;
+    }
+    else cout << a+1 << endl;
+    return;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
