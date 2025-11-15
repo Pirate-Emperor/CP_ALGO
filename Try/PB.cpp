@@ -42,46 +42,6 @@ vector<ll> dist;
 vector<ll> vis;
 array<int,K> basis[MAX_N];
 
-// void dijkstra(int s) {
-//     dist.assign(n + 1, LINF);
-//     priority_queue<ar<ll,3>, vector<ar<ll,3>>, greater<ar<ll,3>>> pq;
-//     dist[s] = 0; pq.push({0,0,s});
-//     while (pq.size()) {
-//         auto [d, di, u] = pq.top(); pq.pop();
-//         if (d > dist[u]) continue;
-//         if (di%2==1)
-//         {
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             for (auto v : adj[u]) {
-//                 if (dist[v] > dist[u]+1LL) {
-//                     dist[v] = dist[u]+1LL;
-//                     pq.push({dist[v], di, v});
-//                 }
-//             }
-//             for (auto v : radj[u]) {
-//                 if (dist[v] > dist[u]+x+1LL) {
-//                     dist[v] = dist[u]+x+1LL;
-//                     pq.push({dist[v], di+1LL, v});
-//                 }
-//             }
-//         }
-        
-//     } 
-// }
 
 int reduce(array<int, K> &b, int x) {  // reducing x using basis vectors b
 	for (int i = K - 1; i >= 0; i--) {
@@ -156,32 +116,27 @@ void recur(int st)
 
 void solve() {
     ll l=0,r=0;
-    ll w=0,y=0,z=0;
+    ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    vector<int> arr(n);
-    int ind1=-1;
-    int indn=-1;
-    for (int i=0;i<n;i++){
-        cin >> arr[i];
-        if (arr[i]==1) ind1=i+1;
-        else if (arr[i]==n) indn=i+1;
+    cin >> a;
+    vector<int> arr;
+    while(a>0){
+        arr.push_back(a%10);
+        a/=10;
     }
-    string s;
-    cin >> s;
-    if (s[0]=='1' || s[n-1]=='1' || s[ind1-1]=='1' || s[indn-1]=='1') cout << -1 << endl;
-    else{
-        if (ind1>indn) {
-            swap(ind1,indn);
+    sort(arr.begin(),arr.end());
+    for (int i=0;i<arr.size();i++){
+        if (arr[i]!=0){
+            int ti = arr[0];
+            arr[0]=arr[i];
+            arr[i]=ti;
+            break;
         }
-        cout << 5 << endl;
-        cout << 1 << " " << ind1 << endl;
-        cout << 1 << " " << indn << endl;
-        cout << ind1 << " " << indn << endl;
-        cout << ind1 << " " << n << endl;
-        cout << indn << " " << n << endl;
     }
+    n = arr.size();
+    for (int i=0;i<n;i++) cout << arr[i];
+    cout << endl;
     return;
 }
 
@@ -189,7 +144,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

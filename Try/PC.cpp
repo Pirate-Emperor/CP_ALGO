@@ -13,7 +13,7 @@ using namespace std;
 const int MAX_N = 2e5 + 5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
-const ll LINF = 1e18;
+const ll LINF = 1e18+100;
 const int K = 11;
 struct st{
     ll id;
@@ -63,27 +63,30 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m >> k;
-    vector<ll> arr(n),brr(m);
-    for (int i=0;i<n;i++) cin >> arr[i];
-    for (int i=0;i<m;i++) cin >> brr[i];
-    sort(arr.begin(),arr.end());
-    sort(brr.begin(),brr.end());
-    int i=0;
-    int j=0;
-    int res=0;
-    while(i<n && j<m){
-        if (brr[j]>=arr[i]){
-            j++;
-            i++;
-            res++;
-        }
-        else {
-            j++;
-        }
+    cin >> n >> x >> y;
+    vector<ll> arr(n),brr(n);
+    map<ll,ll> mpi;
+    g=LINF;
+    for (int i=0;i<n;i++) {
+        cin >> arr[i];
+        brr[i]=arr[i]*y;
+        ll ti = brr[i]%(y-x);
+        mpi[ti]++;
+        g=min(g,brr[i]);
     }
-    if (res>=k) cout << "Yes\n";
-    else cout << "No\n";
+    if (mpi.size()>1) cout << -1 << endl;
+    else{
+        a=0;
+        for (int i=0;i<n;i++){
+            ll ni = (brr[i]-g)/(y-x);
+            if (ni>arr[i]){
+                cout << -1 << endl;
+                return;
+            }
+            a+=arr[i]-ni;
+        }
+        cout << a << endl;
+    }
     return;
 }
 
