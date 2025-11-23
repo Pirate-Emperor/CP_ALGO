@@ -119,14 +119,21 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    // cin >> n >> a;
-    vector<int> arr(3,0);
-    for (int i=0;i<3;i++){
-        cin >> arr[i];
+    cin >> a >> b >> c;
+    if (a<b*c){
+        cout << "No\n";
     }
-    sort(arr.begin(),arr.end());
-    for (int i=0;i<3;i++) cout << arr[3-1-i];
-    cout << endl;
+    else {
+        l = a-(b*c);
+        r=l/(c-1);
+        a+=r;
+        b+=r;
+        if (a==b*c){
+            cout << "Yes\n";
+        }
+        else cout << "No\n";
+    }
+    
     return;
 }
 

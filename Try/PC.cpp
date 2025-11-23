@@ -63,30 +63,43 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> x >> y;
-    vector<ll> arr(n),brr(n);
-    map<ll,ll> mpi;
-    g=LINF;
-    for (int i=0;i<n;i++) {
-        cin >> arr[i];
-        brr[i]=arr[i]*y;
-        ll ti = brr[i]%(y-x);
-        mpi[ti]++;
-        g=min(g,brr[i]);
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<ll> arr(n);
+    for (int i=0;i<n;i++){
+        arr[i]=s[i]-'0';
     }
-    if (mpi.size()>1) cout << -1 << endl;
-    else{
-        a=0;
-        for (int i=0;i<n;i++){
-            ll ni = (brr[i]-g)/(y-x);
-            if (ni>arr[i]){
-                cout << -1 << endl;
-                return;
+    vector<array<ll,2>> dp(n,{0,0});
+    vector<int> res;
+    for (int i=1;i<n;i++){
+        if (arr[i]==arr[i-1]){
+            if (dp[i-1][0]==0) {
+                dp[i]=dp[i-1];
             }
-            a+=arr[i]-ni;
+            else {
+                int j = i-dp[i-1][0]-1;
+                if (j>=0 && arr[j]==arr[j+1]){
+                    dp[i]={dp[i-1][0]+2,dp[i-1][1]};
+                    r++;
+                    res.push_back(i);
+                }
+                else dp[i]={0,0};
+            }
         }
-        cout << a << endl;
+        else{
+            if (arr[i]-arr[i-1]==1){
+                dp[i]={2,arr[i-1]};
+                r++;
+                res.push_back(i);
+            }
+            else{
+                dp[i]={0,0};
+            }
+        }
     }
+    // for (int it: res) cout << it << " ";
+    cout << r << endl;
     return;
 }
 

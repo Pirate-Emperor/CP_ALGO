@@ -119,24 +119,18 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a;
-    vector<int> arr;
-    while(a>0){
-        arr.push_back(a%10);
-        a/=10;
-    }
-    sort(arr.begin(),arr.end());
-    for (int i=0;i<arr.size();i++){
-        if (arr[i]!=0){
-            int ti = arr[0];
-            arr[0]=arr[i];
-            arr[i]=ti;
-            break;
+    cin >> n;
+    vector<array<ll,2>> arr;
+    
+    for (int i=0;i<n;i++){
+        cin >> x;
+        while(arr.size() && arr.back()[0]<=x){
+            arr.pop_back();
         }
+        if (arr.size()==0) cout << -1 << endl;
+        else cout << arr.back()[1] << endl;
+        arr.push_back({x,i+1});
     }
-    n = arr.size();
-    for (int i=0;i<n;i++) cout << arr[i];
-    cout << endl;
     return;
 }
 

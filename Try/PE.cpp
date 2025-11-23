@@ -85,84 +85,76 @@ void solve() {
     ll g=0,q=0,k=0;
     ll v=0,m=0,x=0;
     cin >> n >> m;
-    vector<string> arr(n);
+    vector<ll> arr(n), brr(m);
+    ll ni=-1;
+    ll mi=-1;
+    map<ll,vector<ll>> tempi,tempj;
+    bool ch=false;
     for (int i=0;i<n;i++)
     {
         cin >> arr[i];
+        if (arr[i]>a){
+            a=arr[i];
+            ni=i;
+        }
+        tempi[arr[i]].push_back(i);
+        if (tempi[arr[i]].size()>1) ch=true;
     }
-    vector<array<ll,1>> dp((n+1)*(m+1),{INF});
-    priority_queue<array<int,5>,vector<array<int,5>>,greater<array<int,5>>> pq;
-    pq.push({0,0,-1,0,0});
-    int res=n*m;
-    while(!pq.empty())
+    bool ch1=false;
+    for (int i=0;i<m;i++)
     {
-        auto it = pq.top();
-        pq.pop();
-        int val=it[0];
-        int px=it[1];
-        int py=it[2];
-        int x=it[3];
-        int y=it[4];
-        int nx=x,ny=y;
-        int nval=val;
-        // cout << val << " " << x << " " << y << endl;
-        if (x==n-1 && y==m) {
-            res=val;
-            cout << res << endl;
+        cin >> brr[i];
+        if (brr[i]>b){
+            b=brr[i];
+            mi=i;
+        }
+        tempj[brr[i]].push_back(i);
+        if (tempj[brr[i]].size()>1) ch1=true;
+    }
+    if (a!=b || ch || ch1) {
+        cout << "No\n";
+        return;
+    }
+    vector<vector<ll>> grid(n,vector<ll>(m,0));
+    map<ll,ll> vis;
+    for (int i=0;i<n;i++){
+        if (tempj[arr[i]].size()==1) grid[i][tempj[arr[i]][0]]=arr[i];
+        else grid[i][mi]=arr[i];
+        vis[arr[i]]=1;
+    }
+    for (int i=0;i<m;i++){
+        if (tempi[brr[i]].size()==1) grid[tempi[brr[i]][0]][i]=brr[i];
+        else grid[ni][i]=brr[i];
+        vis[brr[i]]=1;
+    }
+    map<array<ll,3>,ll,greater<array<ll,3>>> mpi;
+    for (int i=0;i<n;i++){
+        for (int j=0;j<m;j++){
+            if (grid[i][j]==0){
+                ll t1 = min(arr[i],brr[j]);
+                mpi[{t1,i,j}]=1;
+            }
+        }
+    }
+    ll prev=a;
+    for (auto it: mpi){
+        if (a>it.first[0]) a=it.first[0]-1;
+        while(vis[a]==1) a--;
+        if (a<=0) {
+            cout << "No\n";
             return;
         }
-        else if (x<0 || y<0 || x>=n || y>=m) continue;
-        dp[x][y]=min(dp[x][y],val);
-        if (x==px){
-            int vi = -1;
-            if (py<y) vi=1;
-            for (char it: {'A','B','C'}){
-                nx=x;
-                ny=y;
-                if (it=='A') ny=y+vi;
-                else if (it=='B') nx=x+vi;
-                else if (it=='C') nx=x-vi;
-
-                nval = val+(arr[x][y]!=it);
-                // if (nx==n-1 && ny==m) {
-                //     res=nval;
-                //     break;
-                // }
-                if (nx<0 || ny<0 || nx>=n || ny>m) continue;
-                if (dp[nx][ny]>=nval) {
-                    // dp[x][y]=nval;
-                    // cout << nval << " " << x << " " << y << " " << nx << " " << ny << endl;
-                    pq.push({nval,x,y,nx,ny});
-                }
-            }
-        }
-        else if (y==py){
-            int vi = -1;
-            if (px<x) vi=1;
-            for (char it: {'A','B','C'}){
-                nx=x;
-                ny=y;
-                if (it=='A') nx=x+vi;
-                else if (it=='B') ny=y+vi;
-                else if (it=='C') ny=y-vi;
-
-                nval = val+(arr[x][y]!=it);
-                // if (nx==n-1 && ny==m) {
-                //     res=nval;
-                //     break;
-                // }
-                if (nx<0 || ny<0 || nx>=n || ny>m) continue;
-                if (dp[nx][ny]>=nval) {
-                    // dp[x][y]=nval;
-                    // cout << val << " " << x << " " << y << " " << nx << " " << ny << endl;
-                    
-                    pq.push({nval,x,y,nx,ny});
-                }
-            }
-        }
-        
+        grid[it.first[1]][it.first[2]]=a;
+        vis[a]=1;
+        a--;
     }
-    cout << "T" << res << endl;
+    cout << "Yes\n";
+    for (int i=0;i<n;i++){
+        for (int j=0;j<m;j++){
+            cout << grid[i][j] << " ";
+        }
+        cout << endl;
+    }
     return;
 }
 
