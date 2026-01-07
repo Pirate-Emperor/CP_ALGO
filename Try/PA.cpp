@@ -119,21 +119,16 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b >> c;
-    if (a<b*c){
-        cout << "No\n";
+    cin >> a >> b;
+    c = min(a,b);
+    if (a>b){
+        if (a%2==0) cout << "Bob\n";
+        else cout << "Alice\n";
     }
     else {
-        l = a-(b*c);
-        r=l/(c-1);
-        a+=r;
-        b+=r;
-        if (a==b*c){
-            cout << "Yes\n";
-        }
-        else cout << "No\n";
+        if (c%2==0) cout << "Bob\n";
+        else cout << "Alice\n";
     }
-    
     return;
 }
 
@@ -141,7 +136,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

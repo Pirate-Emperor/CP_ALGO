@@ -63,43 +63,48 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin >> s;
-    int n = s.size();
-    vector<ll> arr(n);
-    for (int i=0;i<n;i++){
-        arr[i]=s[i]-'0';
+    cin >> n >> m;
+    vector<ll> arr(n),brr(m);
+    for (int i=0;i<n;i++)
+    {
+        cin >> arr[i];
     }
-    vector<array<ll,2>> dp(n,{0,0});
-    vector<int> res;
-    for (int i=1;i<n;i++){
-        if (arr[i]==arr[i-1]){
-            if (dp[i-1][0]==0) {
-                dp[i]=dp[i-1];
-            }
-            else {
-                int j = i-dp[i-1][0]-1;
-                if (j>=0 && arr[j]==arr[j+1]){
-                    dp[i]={dp[i-1][0]+2,dp[i-1][1]};
-                    r++;
-                    res.push_back(i);
-                }
-                else dp[i]={0,0};
-            }
-        }
-        else{
-            if (arr[i]-arr[i-1]==1){
-                dp[i]={2,arr[i-1]};
-                r++;
-                res.push_back(i);
-            }
-            else{
-                dp[i]={0,0};
-            }
-        }
+    for (int i=0;i<m;i++)
+    {
+        cin >> brr[i];
     }
-    // for (int it: res) cout << it << " ";
-    cout << r << endl;
+    sort(arr.begin(),arr.end());
+    sort(brr.begin(),brr.end());
+    a = arr[0];
+    b = brr[0];
+    l = a*(brr[m-1]-brr[1]);
+    r = b*(arr[n-1]-arr[1]);
+    ll res=max(l,r);
+    int i=1;
+    int j=1;
+    while(i<n-1 && j<m-1){
+        l = arr[i-1]*(brr[m-1]-brr[j]);
+        r = brr[j-1]*(arr[n-1]-arr[i]);
+        ll tem=max(l,r);
+        if (tem<res) res=tem;
+        if (r>l) i++;
+        else j++;
+        // else {i++; j++;}
+    }
+    // else{
+    //     for (int i=2;i<m-1;i++){
+    //         l = arr[0]*(brr[m-1]-brr[i]);
+    //         r = brr[i-1]*(arr[n-1]-arr[1]);
+    //         ll tem=max(l,r);
+    //         if (tem<res) res=tem;
+    //     }
+    // }
+    ll a1 = arr[n-2]*(brr[m-2]-brr[0]);
+    ll b1 = brr[m-2]*(arr[n-2]-arr[0]);
+    ll res1=max(a1,b1);
+    // cout << res1 << " ";
+    res=min(res,res1);
+    cout << res << endl;
     return;
 }
 
@@ -107,7 +112,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

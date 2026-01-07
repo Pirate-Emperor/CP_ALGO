@@ -8,6 +8,7 @@ using namespace std;
 #define int long long
  
 const int MAX_N = 2e5 + 5;
+const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
@@ -52,46 +53,75 @@ void recur(int u, int dep)
     }
     dis[u]=dep;
 }
- 
+
+class SegTree{
+
+public:
+
+array<ll,3> t[4*MAX_K];
+
+array<ll,3> combine(array<ll,3> a, array<ll,3> b) {
+    if (a > b) return a;
+    else return b;
+}
+
+void build(int v, int tl, int tr) {
+    if (tl == tr) {
+        t[v] = {0,0,0};
+    } else {
+        int tm = (tl + tr) / 2;
+        build(v*2, tl, tm);
+        build(v*2+1, tm+1, tr);
+        t[v] = combine(t[v*2], t[v*2+1]);
+    }
+}
+
+array<ll,3> get_max(int v, int tl, int tr, int l, int r) {
+    if (l > r)
+        return {-INF, 0,0};
+    if (l == tl && r == tr)
+        return t[v];
+    int tm = (tl + tr) / 2;
+    return combine(get_max(v*2, tl, tm, l, min(r, tm)), 
+                   get_max(v*2+1, tm+1, tr, max(l, tm+1), r));
+}
+
+void update(int v, int tl, int tr, int pos, array<ll,3> new_val) {
+    if (tl == tr) {
+        t[v] = new_val;
+    } else {
+        int tm = (tl + tr) / 2;
+        if (pos <= tm)
+            update(v*2, tl, tm, pos, new_val);
+        else
+            update(v*2+1, tm+1, tr, pos, new_val);
+        t[v] = combine(t[v*2], t[v*2+1]);
+    }
+}
+
+};
+
 void solve() {
     ll l=0,r=0;
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m;
-    vector<ll> arr(n),brr(n,0);
-    vector<map<ll,ll>> bmpi(11);
-    for (int i=0;i<n;i++) {
-        cin >> arr[i];
-        x=arr[i];
-        while(x>0){
-            brr[i]++;
-            x/=10;
-        }
-        ll tem=1;
-        for (int j=0;j<bmpi.size();j++)
-        {
-            tem%=m;
-            ll t2 = ((arr[i]%m)*tem)%m;
-            bmpi[j][t2]++;
-            tem=(tem*10)%m;
-        }
+    cin >> n;
+    vector<int> dp;
+    for (int i = 0; i < n; i++) {
+        int x; cin >> x;
+        auto it = lower_bound(dp.begin(), dp.end(), x);
+        if (it == dp.end()) dp.push_back(x);
+        else *it = x;
     }
-    ll res=0;
-    for (int i=0;i<n;i++){
-        ll t1 = (m-(arr[i]%m))%m;
-        if (bmpi[brr[i]].find(t1)!=bmpi[brr[i]].end()){
-            res+=bmpi[brr[i]][t1];
-        }
-    }
-    cout << res << endl;
+    cout << dp.size() << "\n";
 }
  
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

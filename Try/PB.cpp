@@ -120,17 +120,97 @@ void solve() {
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin >> n;
-    vector<array<ll,2>> arr;
+    vector<array<ll,2>> arr(n), dp(n,{INF,INF});
     
     for (int i=0;i<n;i++){
-        cin >> x;
-        while(arr.size() && arr.back()[0]<=x){
-            arr.pop_back();
-        }
-        if (arr.size()==0) cout << -1 << endl;
-        else cout << arr.back()[1] << endl;
-        arr.push_back({x,i+1});
+        cin >> arr[i][0];
     }
+    for (int i=0;i<n;i++){
+        cin >> arr[i][1];
+    }
+    dp[0][0]=min(arr[0][0],arr[0][1]);
+    dp[0][1]=max(arr[0][0],arr[0][1]);
+    // int ind=0;
+    // for (int i=1;i<n;i++)
+    // {
+    //     a=min(arr[i][0],arr[i][1]);
+    //     b=max(arr[i][0],arr[i][1]);
+    //     if (dp[i-1][0]<=a) {
+    //         dp[i][0]=a;
+    //         dp[i][1]=b;
+    //         ind=i;
+    //     }
+    //     else break;
+    // }
+    // if (ind==n-1) {
+    //     cout << "Yes\n";
+    //     return;
+    // }
+    // int val=0;
+    // for (int i=n-1;i>ind;i--){
+    //     a=min(arr[i][0],arr[i][1]);
+    //     b=max(arr[i][0],arr[i][1]);
+    //     if (i==n-1) val=b;
+    //     else {
+    //         if (b<=val) val=b;
+    //         else if (a<=val) val=a;
+    //         else {
+    //             cout << "No\n";
+    //             return;
+    //         }
+    //     }
+    // }
+    // for (int i=ind;i>=0;i--){
+    //     a=min(arr[i][0],arr[i][1]);
+    //     b=max(arr[i][0],arr[i][1]);
+    //     if (dp[i][1]<=val) {
+    //         val=dp[i][1];
+    //         cout << "Yes\n";
+    //         return;
+    //     }
+    //     else {
+    //         if (b<=val) val=b;
+    //         else if (a<=val) val=a;
+    //         else {
+    //             cout << "No\n";
+    //             return;
+    //         }
+    //     }
+    // }
+    // cout << "No\n";
+    // return;
+    for (int i=1;i<n;i++)
+    {
+        // cout << dp[i-1][0] << " " << dp[i-1][1] << " - ";
+        a=min(arr[i][0],arr[i][1]);
+        b=max(arr[i][0],arr[i][1]);
+        if (dp[i-1][0]<=a) {
+            dp[i][0]=a;
+            if (dp[i-1][1]<=a){
+                dp[i][1]=a;
+            }
+            else {
+                dp[i][1]=b;
+            }
+        }
+        else if (dp[i-1][0]<=b){
+            dp[i][0]=b;
+            if (dp[i-1][1]<=b){
+                dp[i][1]=b;
+            }
+            else {
+                // cout << "No\n";
+                // return;
+            }
+        }
+        else {
+            cout << "No\n";
+            return;
+        }
+        
+    }
+    if (dp[n-1][1] == INF) cout << "No\n";
+    else cout << "Yes\n";
     return;
 }
 
@@ -138,7 +218,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
