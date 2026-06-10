@@ -119,16 +119,16 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b;
-    c = min(a,b);
-    if (a>b){
-        if (a%2==0) cout << "Bob\n";
-        else cout << "Alice\n";
-    }
-    else {
-        if (c%2==0) cout << "Bob\n";
-        else cout << "Alice\n";
-    }
+    cin >> n >> x >> y >> z;
+    a = (n+x+y-1)/(x+y);
+    b = z*x;
+    l = x+10*y;
+    r=n-b;
+    
+    if (b<n) c = z + (r+l-1)/(l);
+    else c=a;
+    ll res = min(a,c);
+    cout << res << endl;
     return;
 }
 

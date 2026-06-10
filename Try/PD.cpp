@@ -103,20 +103,107 @@ void update(int v, int tl, int tr, int pos, array<ll,3> new_val) {
 
 void solve() {
     ll l=0,r=0;
-    ll w=0,y=0,z=0;
+    ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    vector<int> dp;
-    for (int i = 0; i < n; i++) {
-        int x; cin >> x;
-        auto it = lower_bound(dp.begin(), dp.end(), x);
-        if (it == dp.end()) dp.push_back(x);
-        else *it = x;
+    cin>>n;
+    vector<ll> arr(n);
+    for(ll i=0;i<n;i++) {
+        cin>>arr[i];
     }
-    cout << dp.size() << "\n";
+    vector<ll> sa=arr;
+    sort(sa.begin(),sa.end());
+    sa.erase(unique(sa.begin(),sa.end()),sa.end());
+    for(ll i=0;i<n;i++) {
+        arr[i]=lower_bound(sa.begin(),sa.end(),arr[i])-sa.begin()+1;
+    }
+    ll mv=sa.size();
+    vector<ll> fo(mv+1,-1);
+    vector<ll> lo(mv+1,-1);
+    vector<ll> cnt(mv+1,0);
+    for(ll i=0;i<n;i++) {
+        ll v=arr[i];
+        if(fo[v]==-1) fo[v]=i;
+        lo[v]=i;
+        cnt[v]++;
+    }
+    vector<ll> bad;
+    for(ll v=1;v<=mv;v++) {
+        if(cnt[v]>0) {
+            if(lo[v]-fo[v]+1!=cnt[v]) {
+                bad.push_back(v);
+            }
+        }
+    }
+    if(bad.empty()) {
+        cout<<"YES\n";
+        return;
+    }
+    if(bad.size()>2) {
+        cout<<"NO\n";
+        return;
+    }
+    vector<ll> cds;
+    for(ll v:bad) {
+        ll bc=0;
+        ll i=0;
+        while(i<n) {
+            if(arr[i]==v) {
+                bc++;
+                ll st=i;
+                while(i<n&&arr[i]==v) i++;
+                ll ed=i-1;
+                cds.push_back(st);
+                cds.push_back(ed);
+                if(st>0) cds.push_back(st-1);
+                if(ed<n-1) cds.push_back(ed+1);
+            } else {
+                i++;
+            }
+        }
+        if(bc>3) {
+            cout<<"NO\n";
+            return;
+        }
+    }
+    sort(cds.begin(),cds.end());
+    cds.erase(unique(cds.begin(),cds.end()),cds.end());
+    vector<ll> vis(mv+1,0);
+    ll tk=0;
+    auto chk=[&](const vector<ll>& vct) {
+        tk++;
+        ll sz=vct.size();
+        ll id=0;
+        while(id<sz) {
+            ll x=vct[id];
+            if(vis[x]==tk) return false;
+            vis[x]=tk;
+            while(id<sz&&vct[id]==x) id++;
+        }
+        return true;
+    };
+
+    bool chck=false;
+    for(size_t i=0;i<cds.size();i++) {
+        for(size_t j=i+1;j<cds.size();j++) {
+            ll i1=cds[i];
+            ll i2=cds[j];
+            
+            if(arr[i1]==arr[i2]) continue; 
+            
+            swap(arr[i1],arr[i2]);
+            if(chk(arr)) {
+                chck=true;
+                break;
+            }
+            swap(arr[i1],arr[i2]);
+        }
+        if(chck) break;
+    }
+
+    if(chck) cout<<"YES\n";
+    else cout<<"NO\n";
 }
- 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);

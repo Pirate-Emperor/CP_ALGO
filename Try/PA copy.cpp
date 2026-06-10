@@ -119,20 +119,22 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n;
-    if(n==1){
-        cout<<"1 1 1 1\n";
+    cin >> n >> k;
+    int i=0;
+    a=1;
+    c=1;
+    m=n;
+    while((m&1)==0){
+        r++;
+        m>>=1;
+    }
+    if(m%3!=0){
+        cout << 1 << '\n';
         return;
     }
-    if(n==2){
-        cout<<"1 2 1 2 2 1 1 2\n";
-        return;
-    }
-    for(int j=0;j<n;++j) cout<<j+1<<" ";
-    for(int j=0;j<n;++j) cout<<(j+n-1)%n+1<<" ";
-    for(int j=0;j<n;++j) cout<<(j+n-3)%n+1<<" ";
-    for(int j=0;j<n;++j) cout<<(j+n-3)%n+1<<" ";
-    cout << endl;
+    a=(1LL)<<(min(k,r)+1);
+    ll res = qexp(2,a*k,MOD);
+    cout << res << endl;
     return;
 }
 

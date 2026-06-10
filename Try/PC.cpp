@@ -1,6 +1,3 @@
-// Consider N points given on a plane
-// the objective is to generate a convex hull, i.e. the smallest convex polygon that contains all the given points.
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -63,50 +60,37 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> n >> m;
-    vector<ll> arr(n),brr(m);
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    vector<int> pl,pr;
+    for(int i=0;i<n;++i) {
+        if(s[i]=='(') pl.push_back(i);
+        else pr.push_back(i);
     }
-    for (int i=0;i<m;i++)
-    {
-        cin >> brr[i];
+    int mp=n+1;
+    string bm="";
+    for(int a=0;a<=k;++a){
+        int b=k-a;
+        if(a>pl.size() || b>pr.size()) continue;
+        string cm(n,'0');
+        for(int i=0;i<a;++i)cm[pl[i]]='1';
+        for(int i=0;i<b;++i)cm[pr[pr.size()-1-i]]='1';
+        int cp=0,oc=0;
+        for(int i=0;i<n;++i){
+            if(cm[i]=='1') continue;
+            if(s[i]=='(') oc++;
+            else if(s[i]==')'&&oc>0){
+                oc--;cp++;
+            }
+        }
+        if(cp<mp){
+            mp=cp;
+            bm=cm;
+        }
     }
-    sort(arr.begin(),arr.end());
-    sort(brr.begin(),brr.end());
-    a = arr[0];
-    b = brr[0];
-    l = a*(brr[m-1]-brr[1]);
-    r = b*(arr[n-1]-arr[1]);
-    ll res=max(l,r);
-    int i=1;
-    int j=1;
-    while(i<n-1 && j<m-1){
-        l = arr[i-1]*(brr[m-1]-brr[j]);
-        r = brr[j-1]*(arr[n-1]-arr[i]);
-        ll tem=max(l,r);
-        if (tem<res) res=tem;
-        if (r>l) i++;
-        else j++;
-        // else {i++; j++;}
-    }
-    // else{
-    //     for (int i=2;i<m-1;i++){
-    //         l = arr[0]*(brr[m-1]-brr[i]);
-    //         r = brr[i-1]*(arr[n-1]-arr[1]);
-    //         ll tem=max(l,r);
-    //         if (tem<res) res=tem;
-    //     }
-    // }
-    ll a1 = arr[n-2]*(brr[m-2]-brr[0]);
-    ll b1 = brr[m-2]*(arr[n-2]-arr[0]);
-    ll res1=max(a1,b1);
-    // cout << res1 << " ";
-    res=min(res,res1);
-    cout << res << endl;
-    return;
-}
+    cout<<bm<<endl;
+}  
 
 signed main() {
     ios_base::sync_with_stdio(0);
