@@ -101,17 +101,6 @@ void update(int v, int tl, int tr, int pos, array<ll,3> new_val) {
 
 };
 
-bool mch(int k, int n, const vector<ll>& a) {
-    ll sum = 0;
-    for (int j = 1; j <= k; j++) {
-        sum += a[n - k + j - 1];
-        if (sum > 1LL * j * (n - j)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 void solve() {
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
@@ -121,17 +110,25 @@ void solve() {
     vector<ll> arr(n);
     for(int i=0;i<n;i++) cin >> arr[i];
     sort(arr.rbegin(), arr.rend());
-
-    int lo = 0, hi = n;
-    int ans = 0; 
-    while (lo <= hi) {
-        int mid = lo + (hi - lo) / 2;
-        
-        if (mch(mid, n, arr)) {
-            ans = mid;
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
+    ll mR = 1;
+    for(ll i=0;i<n;i++) {
+        ll r = arr[i] + (ll)(i+1LL) - n;
+        if(r > mR) mR = r;
+    }
+    vector<ll> s(n+1, 0);
+    for(int i=n-1;i>=0;i--) s[i] = s[i+1] + arr[i];
+    ll ans = 0;
+    // for(ll r=mR;r<=n;r++) {
+    //     if(s[r] <= r*(ll)(n-r)) {
+    //         ans = n - r;
+    //         break;
+    //     }
+    // }
+    for(ll r=1;r<=n;r++) {
+        if (r<n && arr[r]>=n) continue;
+        if(s[r] <= r*(ll)(n-r)) {
+            ans = n - r;
+            break;
         }
     }
     cout << ans << endl;

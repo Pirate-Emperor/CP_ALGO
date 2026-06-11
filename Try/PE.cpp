@@ -1,6 +1,3 @@
-// Consider N points given on a plane
-// the objective is to generate a convex hull, i.e. the smallest convex polygon that contains all the given points.
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -80,54 +77,82 @@ void find_art() {
 
 
 void solve() {
-    int n;
-    if(!(cin>>n)) return;
-    int k=0;
-    while((1LL<<k)<=n) k++;
-    vector<string>S(k);
-    for(int i=0;i<k;i++) cin>>S[i];
-    vector<int>E(k,0);
-    for(int i=1;i<=n;i++)for(int j=0;j<k;j++)if((i>>j)&1)E[j]++;
-    
-    vector<int>W(k,0);
-    for(int j=0;j<k;j++){
-        int c=0;
-        for(int i=0;i<n;i++) if(S[j][i]=='1') {
-            c++;
-            W[j]=c;
+    ll l=0,r=0;
+    ll x=0,w=0,y=0,z=0;
+    ll b=0,c=0,d=0;
+    ll g=0,q=0,k=0;
+    cin>>n;
+    vector<int> arr(n),h(n),s(n);
+    for(int i=0;i<n;i++) cin>>arr[i]>>h[i]>>s[i];
+    vector<pair<int,int>> S;
+    S.push_back({1,1});
+
+    for(int i=0;i<n;i++) {
+        int A=arr[i],H=h[i],tr=s[i];
+        if(H<=0) H=1;
+        vector<pair<int,int>> val;
+        if(A==0) {
+            val=S;
+        } 
+        else {
+            for(auto p:S) {
+                int L=p.first,R=p.second,P=L;
+                if(tr>0) {
+                    int psk=(H-1)/tr;
+                    if(P<=psk) P=psk+1;
+                } else {
+                    P=R+1;
+                }
+
+                while(P<=R) {
+                    int cmx=tr/A;
+                    if(cmx>0) {
+                        int pth=(H+cmx-1)/cmx;
+                        if(P>=pth) {
+                            val.push_back({P,R});
+                            break;
+                        }
+                    }
+                    int C=(H+P-1)/P;
+                    int pmx=R;
+                    if(C>1) {
+                        int mxc=(H-1)/(C-1);
+                        if(mxc<pmx) pmx=mxc;
+                    }
+                    int m=tr/C;
+                    if(m>0) {
+                        int rk=(A+m-1)/m;
+                        int plm=(i+2)-rk;
+                        int vl=P,vr=min(pmx,plm);
+                        if(vl<=vr) val.push_back({vl,vr});
+                    }
+                    P=pmx+1;
+                }
+            }
         }
-    }
-    vector<int> sE=E,sW=W;
-    sort(sE.begin(),sE.end());
-    sort(sW.begin(),sW.end());
-    if(sE!=sW){
-        cout<<0<<endl;
-        return;
-    }
-    vector<int>p(k,-1);
-    vector<bool>u(k,0);
-    for(int i=0;i<k;i++) for(int j=0;j<k;j++) if(!u[j]&&E[i]==W[j]) {
-        u[j]=1;p[i]=j;
-        break;
-    }
-    vector<int>a(n,0);
-    for(int i=0;i<n;i++){
-        int v=0;
-        for(int j=0;j<k;j++) if(S[p[j]][i]=='1') {
-            v|=(1<<j);
-            a[i]=v;
+        if(val.empty()) {
+            cout<<"No\n";
+            return;
         }
+        vector<pair<int,int>> nxt;
+        for(auto p:val) nxt.push_back({p.first,p.second+1});
+        sort(all(nxt));
+
+        vector<pair<int,int>> v2;
+        for(auto p:nxt) {
+            if(v2.empty()) {
+                v2.push_back(p);
+            } else {
+                if(p.first<=v2.back().second+1) {
+                    if(p.second>v2.back().second) v2.back().second=p.second;
+                } else {
+                    v2.push_back(p);
+                }
+            }
+        }
+        S=v2;
     }
-    sort(a.begin(),a.end());
-    for(int i=0;i<n;i++) if(a[i]!=i+1) {
-        cout<<0<<endl;
-        return;
-    }
-    ll ans=1;
-    map<int,int>f;
-    for(int x:E) f[x]++;
-    for(auto&[w,ct]:f) for(int i=1;i<=ct;i++) ans*=i;
-    cout<<ans<<endl;
+    cout<<"Yes\n";
 }
 
 signed main() {

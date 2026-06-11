@@ -114,112 +114,63 @@ void recur(int st)
     return;
 }
 
-struct Tr { ll lv; ll pl; ll pi; 
-};
-
-vector<vector<ll>> getp(ll v) {
-    vector<vector<ll>> r;
-    r.push_back({v});
-    if(v>1) {
-        if(1!=v-1) {
-            r.push_back({1,v-1});
-            r.push_back({v-1,1});
-        }
-        if(2!=v-2&&v-2>0) {
-            r.push_back({2,v-2});
-            r.push_back({v-2,2});
-        }
-        if(3!=v-3&&v-3>0) {
-            r.push_back({3,v-3});
-            r.push_back({v-3,3});
-        }
-    }
-    if(v>2) {
-        if(1!=v-2) r.push_back({1,v-2,1});
-        if(v-4>0&&2!=v-4) r.push_back({2,v-4,2});
-        if(v-3>0&&2!=v-3) r.push_back({1,2,v-3});
-        if(v-3>0&&v-3!=2) r.push_back({v-3,2,1});
-        if(v-3>0&&1!=v-3) r.push_back({2,1,v-3});
-        if(v-3>0&&v-3!=1) r.push_back({v-3,1,2});
-    }
-    sort(r.begin(),r.end());
-    r.erase(unique(r.begin(),r.end()),r.end());
-    return r;
-}
-
 void solve() {
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
-    ll a=0,c=0,d=0;
+    ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-
+    
     cin>>n;
     vector<ll> arr(n);
     for(int i=0;i<n;++i) cin>>arr[i];
-    vector<vector<Tr>> dp(n);
     
-    auto p0 = getp(arr[0]);
-    vector<Tr> it;
-    for(int j=0;j<p0.size();++j) {
-        it.push_back({p0[j].back(),-1,j});
-    }
-    sort(it.begin(),it.end(),[](const Tr& a,const Tr& b) {
-        return a.lv<b.lv;
-    });
-    for(const auto& t:it) {
-        if(dp[0].empty()||dp[0].back().lv!=t.lv) {
-            dp[0].push_back(t);
+    auto getp = [](ll x) {
+        vector<vector<ll>> p = {{x}};
+        if(x>=2) p.push_back({1,x-1}), p.push_back({x-1,1});
+        // if(x>=3) p.push_back({2,x-1}), p.push_back({x-2,2}), p.push_back({1,x-1,1});
+        if(x>=3) p.push_back({2,x-2}), p.push_back({x-2,2}), p.push_back({1,x-2,1});
+        if(x>=4) p.push_back({1,2,x-3}), p.push_back({x-3,2,1}), p.push_back({2,1,x-3}), p.push_back({x-3,1,2});
+        if(x>=5) p.push_back({2,x-4,2});
+        vector<vector<ll>> val;
+        for(auto& v:p) {
+            bool ok=true;
+            for(size_t i=1;i<v.size();++i) if(v[i]==v[i-1]) ok=false;
+            if(ok) val.push_back(v);
         }
-    }
+        return val;
+    };
+
+    vector<map<ll,pair<ll,int>>> dp(n);
+    auto p0 = getp(arr[0]);
+    for(int j=0;j<p0.size();++j) dp[0][p0[j].back()] = {-1,j};
+    // for(int j=0;j<p0.size();++j) dp[0][p0[j].back()] = {1,j};
     for(int i=1;i<n;++i) {
         auto p = getp(arr[i]);
-        vector<Tr> nt;
-        
-        for(const auto& pv:dp[i-1]) {
-            for(int j=0;j<p.size();++j) {
-                if(p[j].front()!=pv.lv) {
-                    nt.push_back({p[j].back(),pv.lv,j});
+        for(int j=0;j<p.size();++j) {
+            for(auto& [pl,_]:dp[i-1]) {
+                if(p[j].front()!=pl) {
+                    dp[i][p[j].back()] = {pl,j};
+                    break;
                 }
             }
         }
-        
-        if(nt.empty()) {
-            cout<<-1<<endl;
+        if(dp[i].empty()) {
+            cout<<"-1\n";
             return;
         }
-        
-        sort(nt.begin(),nt.end(),[](const Tr& a,const Tr& b) {
-            return a.lv<b.lv;
-        });
-        for(const auto& t:nt) {
-            if(dp[i].empty()||dp[i].back().lv!=t.lv) {
-                dp[i].push_back(t);
-            }
-        }
     }
-    ll cl = dp[n-1][0].lv;
-    vector<int> cp(n);
-    for(int i=n-1;i>=0;i--) {
-        for(const auto& t:dp[i]) {
-            if(t.lv==cl) {
-                cp[i] = t.pi;
-                cl = t.pl;
-                break;
-            }
-        }
-    }
-
-    vector<ll> b;
-    for(int i=0;i<n;++i) {
+    vector<ll> ans;
+    ll cur = dp.back().begin()->first;
+    for(int i=n-1;i>=0;--i) {
+        auto [pr,j] = dp[i][cur];
         auto p = getp(arr[i]);
-        auto pt = p[cp[i]];
-        for(ll x:pt) b.push_back(x);
+        for(int k=p[j].size()-1;k>=0;--k) ans.push_back(p[j][k]);
+        cur = pr;
     }
+    reverse(ans.begin(),ans.end());
 
-    cout<<b.size()<<endl;
-    for(size_t i=0;i<b.size();++i) {
-        cout<<b[i]<<(i==b.size()-1?"":" ");
-    }
+    cout<<ans.size()<<endl;
+    for(ll x:ans) cout<<x<<" ";
     cout<<endl;
 }
 

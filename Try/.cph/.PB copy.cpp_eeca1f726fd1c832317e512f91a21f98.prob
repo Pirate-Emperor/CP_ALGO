@@ -1,0 +1,1 @@
+{"name":"Local: PB copy","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PB copy.cpp","tests":[{"id":1781105787283,"input":"4\n4\n1 2 1 3\n3\n7 7 4\n4\n7 1 1 8\n1\n2","output":"4\n1 2 1 3\n8\n4 3 1 2 3 1 3 1\n-1\n1\n2\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\PB copy.cpp","group":"local","local":true}
