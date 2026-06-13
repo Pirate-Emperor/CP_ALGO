@@ -152,82 +152,29 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,c=0,d=0;
     ll g=0,q=0,k=0;
-
     cin>>n;
-    vector<ll> arr(n);
-    for(int i=0;i<n;++i) cin>>arr[i];
-    vector<vector<Tr>> dp(n);
-    
-    auto p0 = getp(arr[0]);
-    vector<Tr> it;
-    for(int j=0;j<p0.size();++j) {
-        it.push_back({p0[j].back(),-1,j});
-    }
-    sort(it.begin(),it.end(),[](const Tr& a,const Tr& b) {
-        return a.lv<b.lv;
-    });
-    for(const auto& t:it) {
-        if(dp[0].empty()||dp[0].back().lv!=t.lv) {
-            dp[0].push_back(t);
+    vector<vector<ll>> arr(n);
+    for (int i=0;i<n;i++){
+        cin>>x;
+        for(int j=0;j<x;j++){
+            cin >> a;
+            arr[a-1].push_back(i);
         }
     }
-    for(int i=1;i<n;++i) {
-        auto p = getp(arr[i]);
-        vector<Tr> nt;
-        
-        for(const auto& pv:dp[i-1]) {
-            for(int j=0;j<p.size();++j) {
-                if(p[j].front()!=pv.lv) {
-                    nt.push_back({p[j].back(),pv.lv,j});
-                }
-            }
-        }
-        
-        if(nt.empty()) {
-            cout<<-1<<endl;
-            return;
-        }
-        
-        sort(nt.begin(),nt.end(),[](const Tr& a,const Tr& b) {
-            return a.lv<b.lv;
-        });
-        for(const auto& t:nt) {
-            if(dp[i].empty()||dp[i].back().lv!=t.lv) {
-                dp[i].push_back(t);
-            }
-        }
+    for (int i=0;i<n;i++){
+        sort(arr[i].begin(),arr[i].end());
+        cout<<arr[i].size()<<" ";
+        for (int j:arr[i]) cout<<j+1<<" "; 
+        cout<<endl;
     }
-    ll cl = dp[n-1][0].lv;
-    vector<int> cp(n);
-    for(int i=n-1;i>=0;i--) {
-        for(const auto& t:dp[i]) {
-            if(t.lv==cl) {
-                cp[i] = t.pi;
-                cl = t.pl;
-                break;
-            }
-        }
-    }
-
-    vector<ll> b;
-    for(int i=0;i<n;++i) {
-        auto p = getp(arr[i]);
-        auto pt = p[cp[i]];
-        for(ll x:pt) b.push_back(x);
-    }
-
-    cout<<b.size()<<endl;
-    for(size_t i=0;i<b.size();++i) {
-        cout<<b[i]<<(i==b.size()-1?"":" ");
-    }
-    cout<<endl;
+    // cout<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

@@ -119,11 +119,14 @@ void solve() {
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin >> a >> b >> c;
-    if(a==b) cout<<0<<endl;
-    else if(gcd(a,c)==gcd(b,c)) cout<<1<<endl;
-    else if(gcd(a,c+1)==gcd(b,c+1)) cout<<2<<endl;
-    else cout<<3<<endl;
+    string s;
+    cin >> s;
+    string t="";
+    n=s.size();
+    for (int i=0;i<n;i++){
+        if (s[i]>='0' && s[i]<='9') t+=s[i];
+    }
+    cout << t << endl;
     return;
 }
 
@@ -131,7 +134,7 @@ signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

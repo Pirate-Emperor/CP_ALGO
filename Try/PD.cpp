@@ -5,6 +5,7 @@ using namespace std;
 #define all(x) (x).begin(),(x).end()
 #define ar array
 #define ll long long
+#define ull unsigned long long
 #define int long long
  
 const int MAX_N = 2e5 + 5;
@@ -113,34 +114,40 @@ bool mch(int k, int n, const vector<ll>& a) {
 }
 
 void solve() {
-    ll l=0,r=0;
-    ll x=0,w=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin >> n;
-    vector<ll> arr(n);
-    for(int i=0;i<n;i++) cin >> arr[i];
-    sort(arr.rbegin(), arr.rend());
-
-    int lo = 0, hi = n;
-    int ans = 0; 
-    while (lo <= hi) {
-        int mid = lo + (hi - lo) / 2;
-        
-        if (mch(mid, n, arr)) {
-            ans = mid;
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
+    ll n=0,d=0,s=0,t=0;
+    ll l=0,r=0,px=-1,cx=0,c=0;
+    ull ans=0,len=0,cmb=0;
+    cin >> n >> d;
+    vector<pair<ll,int>> v;
+    for(int i=0;i<n;i++) {
+        cin >> s >> t;
+        l=s;
+        r=t-d;
+        if(l<=r) {
+            v.push_back({l,1});
+            v.push_back({r+1,-1});
         }
+    }
+    sort(v.begin(), v.end());
+
+    for(int i=0;i<v.size();i++) {
+        cx=v[i].first;
+        if(px!=-1 && cx>px) {
+            len=cx-px;
+            cmb=(c*(c-1))/2;
+            ans+=len*cmb;
+        }
+        c+=v[i].second;
+        px=cx;
     }
     cout << ans << endl;
 }
+
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

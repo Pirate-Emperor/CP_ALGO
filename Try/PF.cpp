@@ -13,6 +13,8 @@ const int MAX_N = 1e6;
 const int MOD = 998244353;
 const int INF = 1e9;
 const ll LINF = 1e18;
+const int OFF=40;
+const int MDIF=100;
 
 // const int mod = 7340033;
 const int mod = (119 << 23) + 1;
@@ -94,27 +96,74 @@ void sieve(int n) {
 }
 
 void solve() {
-    int n, m, k, l, resu=0;
-    cin >> n;
-    vector<int> arr(n);
-    for (int i=0;i<n;i++) cin >> arr[i];
-    int a=0;
-    int b=0;
-    int c=0;
+    string s;
+    int k;
+    cin >> s >> k;
+    int n=s.length();
+    vector<vector<int>> dp(3,vector<int>(MDIF,INF));
+    dp[0][OFF]=0;
     for (int i=0;i<n;i++)
     {
-        if (arr[i]==1) 
+        int iso=(i>=2&&s[i-2]=='A'&&s[i-1]=='B'&&s[i]=='C')?1:0;
+        vector<vector<int>> ndp(3,vector<int>(MDIF,INF));
+        int ca=(s[i]=='A'?0:1);
+        int cb=(s[i]=='B'?0:1);
+        int cc=(s[i]=='C'?0:1);
+        int cx=(s[i]!='A'&&s[i]!='B'&&s[i]!='C')?0:1;
+        int mnd=MDIF,mxd=-1;
+        for (int st=0;st<3;st++)
         {
-            a++;
+            for (int d=0;d<MDIF;d++)
+            {
+                if (dp[st][d]!=INF) 
+                {
+                    mnd=min(mnd,d);
+                    mxd=max(mxd,d);
+                }
+            }
         }
-        if (arr[i]==2) c=((c*2)%MOD+a)%MOD;
-        if (arr[i]==3)
+        if (mnd==MDIF) break;
+        for (int st=0;st<3;st++)
         {
-            resu=(resu+c)%MOD;
+            for (int d=mnd;d<=mxd;d++)
+            {
+                if (dp[st][d]==INF) continue;
+                int nst=1;
+                int nd=d-iso;
+                if (nd>=0&&nd<MDIF)
+                {
+                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+ca);
+                }
+                nst=(st==1?2:0);
+                nd=d-iso;
+                if (nd>=0&&nd<MDIF)
+                {
+                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cb);
+                }
+                nst=0;
+                nd=d-iso+(st==2?1:0);
+                if (nd>=0&&nd<MDIF)
+                {
+                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cc);
+                }
+                nst=0;
+                nd=d-iso;
+                if (nd>=0&&nd<MDIF)
+                {
+                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cx);
+                }
+            }
         }
-        
+        dp=move(ndp);
     }
-    cout << resu << endl;
+    int tgtd=OFF+k;
+    int ans=INF;
+    if (tgtd>=0&&tgtd<MDIF)
+    {
+        ans=min({dp[0][tgtd],dp[1][tgtd],dp[2][tgtd]});
+    }
+    if (ans>=INF/2) cout << -1 << endl;
+    else cout << ans << endl;
 }
 
 signed main() {

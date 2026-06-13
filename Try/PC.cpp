@@ -125,36 +125,27 @@ void solve() {
     ll w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>q;
-    ST st(n);
-    for(int i=0;i<q;++i){
-        int ty;
-        cin>>ty;
-        if(ty==0){
-            int l,r;
-            cin>>l>>r;
-            st.upd(1,1,n,l,r,0);
-        }
-        else if(ty==1){
-            int l,r;
-            cin>>l>>r;
-            st.upd(1,1,n,l,r,1);
-        }
-        else if(ty==2){
-            int o=st.gt1();
-            int z=n-o;
-            if(z>0) st.upd(1,1,n,1,z,0);
-            if(o>0) st.upd(1,1,n,z+1,n,1);
-        }
-        cout<<st.ans()<<endl;
+    cin>>n;
+    vector<pair<int,int>> v(n);
+    for(int i=0;i<n;++i){
+        cin>>v[i].first>>v[i].second;
     }
+    sort(v.begin(),v.end());
+    int ans=0,my=n+1;
+    for(int i=0;i<n;++i){
+        if(v[i].second<my){
+            ans++;
+            my=v[i].second;
+        }
+    }
+    cout<<ans<<endl;
 }
 
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();
