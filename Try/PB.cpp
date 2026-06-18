@@ -147,34 +147,62 @@ vector<vector<ll>> getp(ll v) {
     return r;
 }
 
-void solve() {
+void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<vector<ll>> arr(n);
-    for (int i=0;i<n;i++){
-        cin>>x;
-        for(int j=0;j<x;j++){
-            cin >> a;
-            arr[a-1].push_back(i);
+    vector<ll> arr(n),brr(n),crr(n);
+    for(int i=0;i<n;i++) cin>>arr[i];
+    for(int i=0;i<n;i++) cin>>brr[i];
+    for(int i=0;i<n;i++){
+        auto it=lower_bound(brr.begin(),brr.end(),arr[i]);
+        if(it==brr.end()) crr[i]=-1;
+        else crr[i]=distance(brr.begin(),it)+1;
+    }
+    set<int> av;
+    for(int i=1;i<=n;i++) av.insert(i);
+    vector<int> p(n);
+    bool check=true;
+    for(int i=0;i<n;i++){
+        if(crr[i]==-1){
+            check=false;
+            break;
         }
+        auto it=av.lower_bound(crr[i]);
+        if(it==av.end()){
+            check=false;
+            break;
+        }
+        p[i]=*it;
+        av.erase(it);
     }
-    for (int i=0;i<n;i++){
-        sort(arr[i].begin(),arr[i].end());
-        cout<<arr[i].size()<<" ";
-        for (int j:arr[i]) cout<<j+1<<" "; 
-        cout<<endl;
+    if(!check){
+        cout<<-1<<endl;
+        return;
     }
-    // cout<<endl;
+    ll res=0;
+    vector<int> bit(n+1,0);
+    auto fa=[&](int i,int v){
+        for(;i<=n;i+=i&-i) bit[i]+=v;
+    };
+    auto get=[&](int i){
+        int s=0;
+        for(;i>0;i-=i&-i) s+=bit[i];
+        return s;
+    };
+    for(int i=0;i<n;i++){
+        res+=i-get(p[i]);
+        fa(p[i],1);
+    }
+    cout<<res<<endl;
 }
-
 signed main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t << ": ";
         solve();

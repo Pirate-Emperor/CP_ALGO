@@ -9,19 +9,18 @@ using namespace std;
 #define ll long long
 #define int long long
 
-const int MAX_N = 1e6;
+const int MAX_N = 1e6+5;
 const int MOD = 998244353;
 const int INF = 1e9;
 const ll LINF = 1e18;
 const int OFF=40;
 const int MDIF=100;
+const int G=3;
 
-// const int mod = 7340033;
-const int mod = (119 << 23) + 1;
-const int root = 62;
-int root_1 = 0;
-const int root_pw = 1 << 23;
-
+ll gcd(ll a, ll b) {
+    return b ? gcd(b, a % b) : a;
+}
+ 
 ll qexp(ll a, ll b, ll m) {
     ll res = 1;
     while (b) {
@@ -32,138 +31,130 @@ ll qexp(ll a, ll b, ll m) {
     return res;
 }
 
-void fft(vector<int> & a, bool invert) {
-    int n = a.size();
-
-    for (int i = 1, j = 0; i < n; i++) {
-        int bit = n >> 1;
-        for (; j & bit; bit >>= 1)
-            j ^= bit;
-        j ^= bit;
-
-        if (i < j)
-            swap(a[i], a[j]);
+void fft(vector<int>&a,bool inv){
+    int n=a.size();
+    for(int i=1,j=0;i<n;i++){
+        int bt=n>>1;
+        for(;j&bt;bt>>=1)j^=bt;
+        j^=bt;
+        if(i<j)swap(a[i],a[j]);
     }
-
-    for (int len = 2; len <= n; len <<= 1) {
-        int wlen = invert ? root_1 : root;
-        for (int i = len; i < root_pw; i <<= 1)
-            wlen = (int)(1LL * wlen * wlen % mod);
-
-        for (int i = 0; i < n; i += len) {
-            int w = 1;
-            for (int j = 0; j < len / 2; j++) {
-                int u = a[i+j], v = (int)(1LL * a[i+j+len/2] * w % mod);
-                a[i+j] = u + v < mod ? u + v : u + v - mod;
-                a[i+j+len/2] = u - v >= 0 ? u - v : u - v + mod;
-                w = (int)(1LL * w * wlen % mod);
+    for(int l=2;l<=n;l<<=1){
+        int wl=qexp(G,(MOD-1)/l,MOD);
+        if(inv)wl=qexp(wl,MOD-2,MOD);
+        for(int i=0;i<n;i+=l){
+            int w=1;
+            for(int j=0;j<l/2;j++){
+                int u=a[i+j],v=(a[i+j+l/2]*w)%MOD;
+                a[i+j]=(u+v<MOD?u+v:u+v-MOD);
+                a[i+j+l/2]=(u-v>=0?u-v:u-v+MOD);
+                w=(w*wl)%MOD;
             }
         }
     }
-
-    if (invert) {
-        int n_1 = qexp(n,mod-2,mod);
-        for (int & x : a)
-            x = (int)(1LL * x * n_1 % mod);
+    if(inv){
+        int ni=qexp(n,MOD-2,MOD);
+        for(int&x:a)x=(x*ni)%MOD;
     }
 }
 
-vector<int> primes, is_prime, spf, mobius, phi;
+vector<int> primes,is_prime,spf,mobius,phi;
 
-void sieve(int n) {
+void sieve(int n){
     primes.clear();
-    is_prime.assign(n + 1, 1);
-    spf.assign(n + 1, 0);
-    mobius.assign(n + 1, 0);
-    phi.assign(n + 1, 0);
-    is_prime[0] = is_prime[1] = 0;
-    mobius[1] = phi[1] = 1;
-    for (ll i = 2; i <= n; i++) {
-        if (is_prime[i]) {
+    is_prime.assign(n+1,1);
+    spf.assign(n+1,0);
+    mobius.assign(n+1,0);
+    phi.assign(n+1,0);
+    is_prime[0]=is_prime[1]=0;
+    mobius[1]=phi[1]=1;
+    for(ll i=2;i<=n;i++){
+        if(is_prime[i]){
             primes.push_back(i);
-            spf[i] = i;
-            mobius[i] = -1;
-            phi[i] = i - 1;
+            spf[i]=i;
+            mobius[i]=-1;
+            phi[i]=i-1;
         }
-        for (auto p : primes) {
-            if (i * p > n || p > spf[i]) break;
-            is_prime[i * p] = 0;
-            spf[i * p] = p;
-            mobius[i * p] = (spf[i] == p) ? 0 : -mobius[i];
-            phi[i * p] = (spf[i] == p) ? phi[i] * p : phi[i] * phi[p];
+        for(auto p:primes){
+            if(i*p>n||p>spf[i])break;
+            is_prime[i*p]=0;
+            spf[i*p]=p;
+            mobius[i*p]=(spf[i]==p)?0:-mobius[i];
+            phi[i*p]=(spf[i]==p)?phi[i]*p:phi[i]*phi[p];
         }
     }
 }
 
-void solve() {
-    string s;
-    int k;
-    cin >> s >> k;
-    int n=s.length();
-    vector<vector<int>> dp(3,vector<int>(MDIF,INF));
-    dp[0][OFF]=0;
-    for (int i=0;i<n;i++)
-    {
-        int iso=(i>=2&&s[i-2]=='A'&&s[i-1]=='B'&&s[i]=='C')?1:0;
-        vector<vector<int>> ndp(3,vector<int>(MDIF,INF));
-        int ca=(s[i]=='A'?0:1);
-        int cb=(s[i]=='B'?0:1);
-        int cc=(s[i]=='C'?0:1);
-        int cx=(s[i]!='A'&&s[i]!='B'&&s[i]!='C')?0:1;
-        int mnd=MDIF,mxd=-1;
-        for (int st=0;st<3;st++)
-        {
-            for (int d=0;d<MDIF;d++)
-            {
-                if (dp[st][d]!=INF) 
-                {
-                    mnd=min(mnd,d);
-                    mxd=max(mxd,d);
-                }
-            }
-        }
-        if (mnd==MDIF) break;
-        for (int st=0;st<3;st++)
-        {
-            for (int d=mnd;d<=mxd;d++)
-            {
-                if (dp[st][d]==INF) continue;
-                int nst=1;
-                int nd=d-iso;
-                if (nd>=0&&nd<MDIF)
-                {
-                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+ca);
-                }
-                nst=(st==1?2:0);
-                nd=d-iso;
-                if (nd>=0&&nd<MDIF)
-                {
-                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cb);
-                }
-                nst=0;
-                nd=d-iso+(st==2?1:0);
-                if (nd>=0&&nd<MDIF)
-                {
-                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cc);
-                }
-                nst=0;
-                nd=d-iso;
-                if (nd>=0&&nd<MDIF)
-                {
-                    ndp[nst][nd]=min(ndp[nst][nd],dp[st][d]+cx);
-                }
-            }
-        }
-        dp=move(ndp);
+int n, m, x;
+vector<int> adj[MAX_N];
+vector<array<int,2>> edges;
+vector<ll> vis;
+vector<ll> dis;
+vector<ll> par;
+// void recur(int u, int dep)
+// {
+//     vis[u]=1;
+//     for (int it: adj[u])
+//     {
+//         if (vis[it]==0) 
+//         {
+//             par[it]=u;
+//             recur(it, dep+1);
+//         }
+//     }
+//     dis[u]=dep;
+// }
+
+void solve(){
+    ll l=0,r=0;
+    ll x=0,w=0,y=0,z=0;
+    ll a=0,c=0,d=0;
+    ll g=0,q=0,k=0;
+    cin>>n>>m;
+    vector<ll> arr(n+1);
+    for(ll i=1;i<=n;++i) cin>>arr[i];
+    ll res=0;
+    if(arr[1]!=1){
+        arr[1]=1;
+        res++;
     }
-    int tgtd=OFF+k;
-    int ans=INF;
-    if (tgtd>=0&&tgtd<MDIF)
-    {
-        ans=min({dp[0][tgtd],dp[1][tgtd],dp[2][tgtd]});
+    if(arr[n]!=m){
+        arr[n]=m;
+        res++;
     }
-    if (ans>=INF/2) cout << -1 << endl;
-    else cout << ans << endl;
+    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
+    ll msz=n+m+5;
+    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
+    auto fa=[&](ll i,ll v){
+        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
+    };
+    auto get=[&](ll i){
+        ll rt=-INF;
+        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
+        return rt;
+    };
+    brr[1]=1;
+    crr[1]=1;
+    ll d1=1-arr[1]+m+1;
+    drr[d1]=1;
+    fa(d1,1);
+    for(int j=2;j<=n;++j){
+        if(arr[j]<=j&&arr[j]>=j+m-n){
+            ll v1=crr[j-arr[j]];
+            ll v2=get(j);
+            ll v3=drr[j-arr[j]+m+1];
+            brr[j]=1+max({v1,v2,v3});
+        }
+        if(brr[j]<0)brr[j]=-INF;
+        crr[j]=max(crr[j-1],brr[j]);
+        if(brr[j]>0){
+            ll dj=j-arr[j]+m+1;
+            drr[dj]=max(drr[dj],brr[j]);
+            fa(dj,brr[j]);
+        }
+    }
+    res+=n-brr[n];
+    cout<<res<<endl;
 }
 
 signed main() {
