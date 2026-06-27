@@ -96,53 +96,35 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<int> X(n+1,0),Y(n+1,0);
-    for(int i=0;i<n;i++){
-        int c;
-        cin>>c;
-        X[c]++;
+    string S;
+    cin>>S;
+    vector<vector<int>> arr(n+1);
+    for(int i=2;i<=n;i++){
+        cin>>k;
+        arr[k].push_back(i);
     }
-    for(int i=0;i<n;i++){
-        int g;
-        cin>>g;
-        Y[g]++;
-    }
-    auto cmp=[](const vector<int>&a,const vector<int>&b){
-        return a.size()>b.size();
+    
+    vector<vector<ll>> dp(n+1,vector<ll>(2,0));
+    auto dfs=[&](auto& f,int u)->void{
+        for(int v:arr[u])f(f,v);
+        for(int t=0;t<2;t++){
+            ll nw=1;
+            ll hz=t;
+            for(int i=(int)arr[u].size()-1;i>=0;i--){
+                int v=arr[u][i];
+                ll w0=0,w1=0;
+                char ch=S[v-2];
+                if(ch=='0'||ch=='?')w0=dp[v][hz];
+                if((ch=='1'||ch=='?')&&hz==1)w1=dp[v][hz];
+                nw=(nw*(w0+w1))%1000000007;
+                hz=1;
+            }
+            dp[u][t]=nw;
+        }
     };
-    priority_queue<vector<int>,vector<vector<int>>,decltype(cmp)> pq(cmp);
-    for(int c=1;c<=n;c++){
-        int m=min(X[c],Y[c]);
-        if(m==0)continue;
-        vector<int> P(m+1);
-        for(int j=0;j<=m;j++){
-            int w=ncr(X[c],j)*ncr(Y[c],j)%MOD;
-            w=w*fct[j]%MOD;
-            P[j]=w;
-        }
-        pq.push(P);
-    }
-    vector<int> Pf;
-    if(pq.empty()){
-        Pf={1};
-    }else{
-        while(pq.size()>1){
-            auto p1=pq.top();
-            pq.pop();
-            auto p2=pq.top();
-            pq.pop();
-            pq.push(mult(p1,p2));
-        }
-        Pf=pq.top();
-    }
-    int vw=0;
-    for(int k=0;k<Pf.size();k++){
-        int t=(Pf[k]*fct[n-k])%MOD;
-        if(k%2==1)vw=(vw-t+MOD)%MOD;
-        else vw=(vw+t)%MOD;
-    }
-    int prb=(vw*minv(fct[n]))%MOD;
-    cout<<prb<<"\n";
+    dfs(dfs,1);
+    ll res=dp[1][0];
+    cout<<res<<endl;
 }
 
 signed main() {
@@ -151,9 +133,9 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    prec();
+    // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
