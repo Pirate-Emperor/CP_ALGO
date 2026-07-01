@@ -1,0 +1,1 @@
+{"name":"Local: PD","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\0_codeforces\\PD.cpp","tests":[{"id":1782572189392,"input":"5\n2 1\n3 1\n3 2\n4 2\n8 3","output":"2\n12\n18\n216\n20415360"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\0_codeforces\\PD.cpp","group":"local","local":true}

@@ -55,56 +55,92 @@ ll res=0;
 //     dis[u]=dep;
 // }
 
+ll arr[MAX_N];
+ll brr[MAX_N];
+ll crr[MAX_N];
+ll bit1[MAX_N];
+ll bit2[MAX_N];
+ll resu[MAX_N];
+
+void ad1(int i,int v){
+    for(;i<=n;i+=i&-i) bit1[i]+=v;
+}
+int qu1(int i){ 
+    int s=0;
+    for(;i;i-=i&-i) s+=bit1[i];
+    return s;
+}
+void ad2(int i,int v){ 
+    for(;i<=n;i+=i&-i) bit2[i]+=v;
+}
+int qu2(int i){
+    int s=0;
+    for(;i;i-=i&-i) s+=bit2[i];
+    return s;
+}
+
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+    cin>>n;
+    for(int i=1;i<=n;i++)bit1[i]=bit2[i]=0;
+    set<int> st;
+    for(int i=1;i<=n;i++)st.insert(i);
+    for(int i=1;i<=n;i++){
+        char ch;cin>>ch>>brr[i];
+        if(ch>='A'&&ch<='Z')ch+=32;
+        arr[i]=(ch=='p'?1:0);
+        if(arr[i])st.erase(brr[i]);
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
-    }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
-        }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
+    dis.assign(n+1,0);
+    for(int i=1;i<=n;i++){
+        if(arr[i]){
+            x=brr[i];
+            crr[i]=(i-1)-qu1(x);
+            dis[i]=dis[i-1]+crr[i];
+            ad1(x,1);
+        }else{
+            y=brr[i];
+            dis[i]=y;
+            crr[i]=dis[i]-dis[i-1];
+            k=(i-1)-crr[i];
+            int pk=0;
+            if(k>0){
+                l=1;r=n;
+                while(l<=r){
+                    int md=l+(r-l)/2;
+                    if(qu1(md)>=k){pk=md;r=md-1;}
+                    else l=md+1;
+                }
+            }
+            auto it=st.upper_bound(pk);
+            int u=*it;
+            ad1(u,1);
+            st.erase(it);
         }
     }
-    res+=n-brr[n];
-    cout<<res<<endl;
+    for(int i=1;i<=n;i++)ad2(i,1);
+    for(int i=n;i>=1;i--){
+        if(arr[i]){
+            x=brr[i];
+            resu[i]=x;
+            ad2(x,-1);
+        }else{
+            int tg=i-crr[i];
+            l=1;r=n;int u=-1;
+            while(l<=r){
+                int md=l+(r-l)/2;
+                if(qu2(md)>=tg){u=md;r=md-1;}
+                else l=md+1;
+            }
+            resu[i]=u;
+            ad2(u,-1);
+        }
+    }
+    for(int i=1;i<=n;i++)cout<<resu[i]<<" ";
+    cout<<endl;
 }
 
 signed main() {

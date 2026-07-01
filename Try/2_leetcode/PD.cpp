@@ -55,11 +55,24 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-long long solve(vector<int>&nums,int k, int mul){
-    sort(nums.begin(),nums.end());
-    long long res=0;
-    for (int i=0;i<k;i++) {
-        res+=nums[n-1-i]*(max(0,mul-i));
+vector<long long> solve(int n, vector<vector<int>>& edges, int power, vector<int>& cost, int source, int target){
+    long long l=0,r=0,x=0,w=0,y=0,z=0,a=0,b=0,c=0,d=0;
+    long long g=0,q=0,k=0; 
+    vector<vector<array<long long,2>>> brr(n);
+    for(auto&e:edges) brr[e[0]].push_back({e[1],e[2]});
+    priority_queue<array<long long,3>> pq;
+    vector<long long>arr(n,-1);
+    pq.push({0,power,source});
+    vector<long long>res={-1,-1};
+    while(!pq.empty()){
+        array<long long,3> cur=pq.top();
+        pq.pop();
+        long long nt=cur[0],p=cur[1],u=cur[2];
+        if(u==target) return{-nt,p};
+        if(p<=arr[u]) continue;
+        arr[u]=p;
+        if(p<cost[u]) continue;
+        for(auto&v:brr[u]) pq.push({nt-v[1],p-cost[u],v[0]});
     }
     return res;
 }

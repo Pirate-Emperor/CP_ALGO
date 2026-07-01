@@ -60,50 +60,18 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+    cin>>n>>d;
+    vector<ll> arr(n);
+    for(int i=0;i<n;++i) cin >>arr[i];
+    for(int i=-d;i<=d;++i) w+=arr[(i%n+n)%n];
+    res=0;
+    for(int i=0;i<n;++i){
+        x=w-arr[i];
+        c=2LL*d*arr[i]-x;
+        if(c>0) res+=c;
+        w-=arr[((i-d)%n+n)%n];
+        w+=arr[((i+1+d)%n+n)%n];
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
-    }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
-        }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
-        }
-    }
-    res+=n-brr[n];
     cout<<res<<endl;
 }
 

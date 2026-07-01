@@ -55,11 +55,47 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-long long solve(vector<int>&nums,int k, int mul){
-    sort(nums.begin(),nums.end());
-    long long res=0;
-    for (int i=0;i<k;i++) {
-        res+=nums[n-1-i]*(max(0,mul-i));
+long long solve(vector<int>&arr,int p){
+    long long l=0,r=0,x=0,w=0,y=0,z=0;
+    long long a=-1e11,b=-1e11,c=-1e11,d=0;
+    long long g=0,q=0,k=p;
+    long long res=-1e18;
+    n=arr.size();
+    if(n>1){
+        l=-1e14,r=0;
+        for(int i=0;i<n-1;++i){
+            g=arr[i];
+            r=max(g,r+g);
+            l=max(l,r);
+        }
+        x=-1e14,r=0;
+        for(int i=1;i<n;++i){
+            g=arr[i];
+            r=max(g,r+g);
+            x=max(x,r);
+        }
+        res=max(l,x);
+    }
+    for(int i:arr){
+        x=max(i,a+i);
+        w=i*k;
+        y=max({w,a+w,b+w});
+        z=max(b+i,c+i);
+        res=max({res,y,z});
+        a=x;
+        b=y;
+        c=z;
+    }
+    a=-1e11;b=-1e11;c=-1e11;
+    for(int i:arr){
+        x=max(i,a+i);
+        w=i/k;
+        y=max({w,a+w,b+w});
+        z=max(b+i,c+i);
+        res=max({res,y,z});
+        a=x;
+        b=y;
+        c=z;
     }
     return res;
 }

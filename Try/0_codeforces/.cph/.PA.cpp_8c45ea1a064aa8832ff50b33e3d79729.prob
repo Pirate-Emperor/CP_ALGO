@@ -1,0 +1,1 @@
+{"name":"Local: PA","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\0_codeforces\\PA.cpp","tests":[{"id":1782570892709,"input":"5\n1\n1\n2\n1 2\n5\n1 4 5 2 6\n1\n1073741823\n3\n1 2 3","output":"0\n1\n3\n0\n1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\0_codeforces\\PA.cpp","group":"local","local":true}

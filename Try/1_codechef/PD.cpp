@@ -14,7 +14,7 @@ const int MAX_N = 2e5 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
-const ll LINF = 1e18;
+const ll LINF = 4e18;
 const int K = 11;
 const int OFF=40;
 const int MDIF=100;
@@ -60,50 +60,53 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+    cin>>n>>k;
+    vector<ll> arr(n),brr(n),crr(n),drr(n),err(n);
+    vector<int> chk(n,0);
+    for(int i=0;i<n;++i) cin>>arr[i];
+    for(int i=0;i<n;++i) cin>>brr[i];
+    for(int i=0;i<n;++i){
+        crr[i]=arr[i]-(i+1);
+        drr[i]=crr[i];
+        if(!brr[i]) chk[i]=1;
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
-    }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
+    ll mt=min(n-1,k-1);
+    for(int t=0;t<=mt;++t){
+        for(int i=0;i<n;++i){
+            if(chk[i]) continue;
+            ll j=i+1+t;
+            if(j<n&&j<=i+k) if(arr[j]-arr[j-1]==1 &&drr[i]==crr[j-1]) chk[i]=1;
         }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
+        if(t<mt){
+            // vector<ll> err(n,0);
+            err[n-1]=drr[n-1]+brr[n-1];
+            for(int i=0;i<n-1;++i) err[i]=min(drr[i]+brr[i],drr[i+1]);
+            drr=err;
         }
     }
-    res+=n-brr[n];
+    q=k-1;
+    if(q>=0){
+        for(int i=0;i<n;++i){
+            if(chk[i]) continue;
+            ll gt=LINF;
+            ll mk=min(n-1,i+q);
+            ll cmin=brr[i];
+            for(int j=i;j<=mk;++j){
+                if(brr[j]<cmin)cmin=brr[j];
+                ll v=crr[j]+(q-(j-i))*cmin;
+                // ll v=crr[j]+(q-(j-i))*brr[j];
+                if(v<gt)gt=v;
+            }
+            for(int j=i+1;j<=mk;++j) {
+                if(!brr[j]&&crr[j]==gt){
+                    chk[i]=1;
+                    break;
+                }
+            }
+        }
+    }
+    res=0;
+    for(int i=0;i<n;++i) res+=chk[i];
     cout<<res<<endl;
 }
 

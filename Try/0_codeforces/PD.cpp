@@ -10,7 +10,7 @@ using namespace std;
 #define ull unsigned long long
 #define int long long
  
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 1e6 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -41,6 +41,7 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
+ll arr[MAX_N],brr[MAX_N];
 // void recur(int u, int dep)
 // {
 //     vis[u]=1;
@@ -55,56 +56,39 @@ ll res=0;
 //     dis[u]=dep;
 // }
 
+void prec(){
+	arr[0]=1;
+    brr[0]=1;
+	for(int i=1;i<MAX_N;i++) arr[i]=(arr[i-1]*i)%MOD;
+	brr[MAX_N-1]=qexp(arr[MAX_N-1],MOD-2,MOD);
+	for(int i=MAX_N-2;i>=1;i--) {
+        brr[i]=(brr[i+1]*(i+1))%MOD;
+    }
+}
+ll rec(int a,int b){
+	if(b<0||b>a) return 0;
+	return (((arr[a]*brr[b])%MOD)*brr[a-b])%MOD;
+}
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
-    }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
-    }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
-        }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
-        }
-    }
-    res+=n-brr[n];
-    cout<<res<<endl;
+	if(n==m){
+		res=qexp(n-1,n,MOD);
+		cout<<res<<endl;
+		return;
+	}
+	x=n-m;
+	for(int i=0;i<=x;i++){
+		w= (rec(x,i)*qexp(n-1-i,n-1,MOD))%MOD;
+		if(i%2) y=(y-w+MOD)%MOD;
+		else y=(y+w)%MOD;
+	}
+	res=(y*(n-1))%MOD;
+	res=(res*rec(n,m))%MOD;
+	cout<<res<<endl;
 }
 
 signed main() {
@@ -113,7 +97,7 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    // prec();
+    prec();
     int tc; tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

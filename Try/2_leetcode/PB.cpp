@@ -55,13 +55,33 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-long long solve(vector<int>&nums,int k, int mul){
-    sort(nums.begin(),nums.end());
-    long long res=0;
-    for (int i=0;i<k;i++) {
-        res+=nums[n-1-i]*(max(0,mul-i));
+vector<vector<int>>solve(vector<vector<int>>&occupiedIntervals,int freeStart,int freeEnd){
+    long long l=0,r=0,x=0,w=0,y=0,z=0,a=0,b=0,c=0,d=0,g=0,q=0,k=0;
+    vector<vector<int>> res;
+    if(occupiedIntervals.empty()) return res;
+    sort(occupiedIntervals.begin(),occupiedIntervals.end());
+    vector<vector<int>> resu;
+    x=occupiedIntervals[0][0];
+    y=occupiedIntervals[0][1];
+    for(w=1;w<occupiedIntervals.size();++w){
+        if(occupiedIntervals[w][0]<=y+1) y=max(y,(long long)occupiedIntervals[w][1]);
+        else{
+            res.push_back({(int)x,(int)y});
+            x=occupiedIntervals[w][0];
+            y=occupiedIntervals[w][1];
+        }
     }
-    return res;
+    res.push_back({(int)x,(int)y});
+    for(auto&i:res){
+        l=i[0];
+        r=i[1];
+        if(r<freeStart||l>freeEnd) resu.push_back(i);
+        else{
+            if(l<freeStart) resu.push_back({(int)l,freeStart-1});
+            if(r>freeEnd) resu.push_back({freeEnd+1,(int)r});
+        }
+    }
+    return resu;
 }
 
 void solve() {
@@ -70,12 +90,12 @@ void solve() {
     long long a=0,b=0,c=0,d=0;
     long long g=0,q=0,k=0;
     cin >> n >> k;
-    vector<int> arr(n);
+    vector<int> occupiedIntervals(n);
     for (int i=0;i<n;i++)
     {
-        cin >> arr[i];
+        cin >> occupiedIntervals[i];
     }
-    auto brr = subsequenceSumAfterCapping(arr, k);
+    auto brr = subsequenceSumAfterCapping(occupiedIntervals, k);
     for (int i=0;i<n;i++)
     {
         cout << brr[i] << " ";

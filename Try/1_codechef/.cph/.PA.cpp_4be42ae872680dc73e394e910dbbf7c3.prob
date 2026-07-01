@@ -1,0 +1,1 @@
+{"name":"Local: PA","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\1_codechef\\PA.cpp","tests":[{"id":1782916053669,"input":"3\n1 0\n2 2\n3 5","output":"000\n100001\n011101001"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\1_codechef\\PA.cpp","group":"local","local":true}
