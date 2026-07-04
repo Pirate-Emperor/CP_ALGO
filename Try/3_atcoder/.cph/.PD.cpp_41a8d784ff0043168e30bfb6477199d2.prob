@@ -1,0 +1,1 @@
+{"name":"Local: PD","url":"d:\\Z_CONTEST\\CP_ALGO\\Try\\3_atcoder\\PD.cpp","tests":[{"id":1783167751469,"input":"4\n11 9 3\n0 0 2\n842 180 7\n1948706013487601 48019760148910476 89014537\n","output":"2\n0\n7\n5\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\Z_CONTEST\\CP_ALGO\\Try\\3_atcoder\\PD.cpp","group":"local","local":true}

@@ -6,7 +6,7 @@ using namespace std;
  
 #define all(x) (x).begin(),(x).end()
 #define ar array
-#define long long long long
+#define ll long long
 #define ull unsigned long long
 #define int long long
  
@@ -55,26 +55,36 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-vector<long long> solve(int n, vector<vector<int>>& edges, int power, vector<int>& cost, int source, int target){
-    long long l=0,r=0,x=0,w=0,y=0,z=0,a=0,b=0,c=0,d=0;
+ll solve(string word1, string word2, string target){
+    long long l=0,r=0,x=0,w=1e9+7,y=0,z=0;
+    long long a=0,b=0,c=0,d=0;
     long long g=0,q=0,k=0; 
-    vector<vector<array<long long,2>>> brr(n);
-    for(auto&e:edges) brr[e[0]].push_back({e[1],e[2]});
-    priority_queue<array<long long,3>> pq;
-    vector<long long>arr(n,-1);
-    pq.push({0,power,source});
-    vector<long long>res={-1,-1};
-    while(!pq.empty()){
-        array<long long,3> cur=pq.top();
-        pq.pop();
-        long long nt=cur[0],p=cur[1],u=cur[2];
-        if(u==target) return{-nt,p};
-        if(p<=arr[u]) continue;
-        arr[u]=p;
-        if(p<cost[u]) continue;
-        for(auto&v:brr[u]) pq.push({nt-v[1],p-cost[u],v[0]});
+    a=word1.length();
+    b=word2.length();
+    c=target.length();
+    long long resu=0;
+    vector<vector<long long>>arr(a+1,vector<long long>(b+1,0));
+    vector<vector<long long>>brr(a+1,vector<long long>(b+1,0));
+    vector<vector<long long>>crr(a+1,vector<long long>(b+1,0));
+    vector<vector<long long>>drr(a+1,vector<long long>(b+1,0));
+    arr[0][0]=1;
+    for(l=0;l<c;++l){
+        for(x=0;x<=a;++x){
+        for(y=0;y<=b;++y){
+            brr[x][y]=0;
+            crr[x][y]=arr[x][y];
+            if(x>0) crr[x][y]=(crr[x][y]+crr[x-1][y])%w;
+            drr[x][y]=arr[x][y];
+            if(y>0) drr[x][y]=(drr[x][y]+drr[x][y-1])%w;
+        }
+        }
+        // for(x=0;x<a;++x) if(word1[x]==target[l]) for(y=0;y<=b;++y) brr[x][y+1]=(brr[x][y+1]+crr[x][y])%w;
+        for(x=0;x<a;++x) if(word1[x]==target[l]) for(y=0;y<=b;++y) brr[x+1][y]=(brr[x+1][y]+crr[x][y])%w;
+        for(y=0;y<b;++y) if(word2[y]==target[l]) for(x=0;x<=a;++x) brr[x][y+1]=(brr[x][y+1]+drr[x][y])%w;
+        arr=brr;
     }
-    return res;
+    for(x=1;x<=a;++x) for(y=1;y<=b;++y) resu=(resu+arr[x][y])%w;
+    return resu;
 }
 
 void solve() {
@@ -82,18 +92,11 @@ void solve() {
     long long x=0,w=0,y=0,z=0;
     long long a=0,b=0,c=0,d=0;
     long long g=0,q=0,k=0;
-    cin >> n >> k;
-    vector<int> arr(n);
-    for (int i=0;i<n;i++)
-    {
-        cin >> arr[i];
-    }
-    auto brr = subsequenceSumAfterCapping(arr, k);
-    for (int i=0;i<n;i++)
-    {
-        cout << brr[i] << " ";
-    }
-    cout << endl;
+    string s1,s2,s3;
+    cin >>s1>>s2>>s3;
+
+    ll res = solve(s1,s2,s3);
+    cout << res << endl;
 }
 
 signed main() {
@@ -104,7 +107,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

@@ -55,33 +55,19 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-vector<vector<int>>solve(vector<vector<int>>&occupiedIntervals,int freeStart,int freeEnd){
-    long long l=0,r=0,x=0,w=0,y=0,z=0,a=0,b=0,c=0,d=0,g=0,q=0,k=0;
-    vector<vector<int>> res;
-    if(occupiedIntervals.empty()) return res;
-    sort(occupiedIntervals.begin(),occupiedIntervals.end());
-    vector<vector<int>> resu;
-    x=occupiedIntervals[0][0];
-    y=occupiedIntervals[0][1];
-    for(w=1;w<occupiedIntervals.size();++w){
-        if(occupiedIntervals[w][0]<=y+1) y=max(y,(long long)occupiedIntervals[w][1]);
-        else{
-            res.push_back({(int)x,(int)y});
-            x=occupiedIntervals[w][0];
-            y=occupiedIntervals[w][1];
-        }
+int maxValidPairSum(vector<int>&nums,int k){
+    long long l=0,r=0,x=0,w=0,y=0,z=0;
+    long long a=0,b=0,c=0,d=0;
+    long long g=0,q=0,k=0;
+    if(k<1) k=1;
+    a=nums.size();
+    b=nums[0];
+    int res=nums[0]+nums[k];
+    for(l=k;l<a;++l){
+        if(nums[l-k]>b) b=nums[l-k];
+        if(b+nums[l]>res) res=b+nums[l];
     }
-    res.push_back({(int)x,(int)y});
-    for(auto&i:res){
-        l=i[0];
-        r=i[1];
-        if(r<freeStart||l>freeEnd) resu.push_back(i);
-        else{
-            if(l<freeStart) resu.push_back({(int)l,freeStart-1});
-            if(r>freeEnd) resu.push_back({freeEnd+1,(int)r});
-        }
-    }
-    return resu;
+    return res;
 }
 
 void solve() {

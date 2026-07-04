@@ -55,14 +55,13 @@ long long res=0;
 //     dis[u]=dep;
 // }
 
-long long solve(vector<int>&nums,int k, int mul){
-    sort(nums.begin(),nums.end());
-    long long res=0;
-    for (int i=0;i<k;i++) {
-        res+=nums[n-1-i]*(max(0,mul-i));
-    }
-    return res;
+long long solve(vector<int>& nums) {
+    long long a=0,b=0,c=0,d=0;
+    a = nums[nums.size()/2];
+    for (int i=0;i<nums.size();++i) b+=(a==nums[i]);
+    return (b==1)?true:false;
 }
+
 
 void solve() {
     long long l=0,r=0;

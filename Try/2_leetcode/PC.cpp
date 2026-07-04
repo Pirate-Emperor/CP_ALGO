@@ -57,46 +57,32 @@ long long res=0;
 
 long long solve(vector<int>&arr,int p){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
-    long long a=-1e11,b=-1e11,c=-1e11,d=0;
-    long long g=0,q=0,k=p;
-    long long res=-1e18;
-    n=arr.size();
-    if(n>1){
-        l=-1e14,r=0;
-        for(int i=0;i<n-1;++i){
-            g=arr[i];
-            r=max(g,r+g);
-            l=max(l,r);
+    long long a=0,b=0,c=0,d=0;
+    long long g=0,q=0,k=0;
+    // int arr[4][4]={{0,1,1,2},{2,0,2,1},{2,2,0,1},{1,2,2,0}};
+    int arr[4][4]={{0,1,1,2},{2,0,3,1},{2,3,0,1},{1,2,2,0}};
+    long long brr[2]={1e9,1e9};
+    a=s1.size();
+    brr[s1[0]-'0']=0;
+    for(k=0;k<a-1;++k){
+        long long crr[2]={1e9,1e9};
+        x=s1[k+1]-'0';
+        y=s2[k]-'0';
+        for(c=0;c<2;++c){
+        if(brr[c]<1e9){
+            for(d=0;d<2;++d){
+            q=brr[c]+arr[(c<<1)|x][(y<<1)|d];
+            if(q<crr[d]) crr[d]=q;
+            }
         }
-        x=-1e14,r=0;
-        for(int i=1;i<n;++i){
-            g=arr[i];
-            r=max(g,r+g);
-            x=max(x,r);
         }
-        res=max(l,x);
+        brr[0]=crr[0];
+        brr[1]=crr[1];
     }
-    for(int i:arr){
-        x=max(i,a+i);
-        w=i*k;
-        y=max({w,a+w,b+w});
-        z=max(b+i,c+i);
-        res=max({res,y,z});
-        a=x;
-        b=y;
-        c=z;
-    }
-    a=-1e11;b=-1e11;c=-1e11;
-    for(int i:arr){
-        x=max(i,a+i);
-        w=i/k;
-        y=max({w,a+w,b+w});
-        z=max(b+i,c+i);
-        res=max({res,y,z});
-        a=x;
-        b=y;
-        c=z;
-    }
+    b=s2[a-1]-'0';
+    long long res=brr[b];
+    if(b==1&&brr[0]+1<res) res=brr[0]+1;
+    if(res>=1e9) return -1;
     return res;
 }
 

@@ -41,70 +41,51 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+ll arr[1000000];
+
+void recur(ll k,ll id,ll sn,string &sx,string &sy){
+    if(k==6){
+        res+=sn*arr[id];
+        return;
+    }
+    recur(k+1,id*10+(sy[k]-'0'),sn,sx,sy);
+    if((sx[k]-'0')>0) recur(k+1,id*10+(sx[k]-'0'-1),-sn,sx,sy);
+}
 
 void solve(){
-    ll l=0,r=0;
-    ll x=0,w=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+  ll l=0,r=0;
+  ll x=0,w=0,y=0,z=0;
+  ll a=0,b=0,c=0,d=0;
+  ll g=0,q=0,k=0;
+  cin>>n;
+  string s1;
+  for(int i=0;i<n;++i){
+    cin>>s1>>w;
+    x=stoll(s1);
+    arr[x]+=w;
+  }
+  ll p=1;
+  for(k=0;k<6;++k){
+    for(int i=0;i<1e6;++i) if((i/p)%10>0) arr[i]+=arr[i-p];
+    p*=10;
+  }
+  cin>>q;
+  while(q--){
+    string sx,sy;
+    cin>>sx>>sy;
+    bool chk=1;
+    for(k=0;k<6;++k) if(sx[k]>sy[k]){
+        chk=0;
+        break;
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
+    if(!chk){
+        cout<<0<<endl;
+        continue;
     }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
-        }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
-        }
-    }
-    res+=n-brr[n];
+    res=0;
+    recur(0,0,1,sx,sy);
     cout<<res<<endl;
+  }
 }
 
 signed main() {
@@ -115,7 +96,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
