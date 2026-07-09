@@ -56,36 +56,40 @@ long long res=0;
 // }
 
 ll solve(string word1, string word2, string target){
-    long long l=0,r=0,x=0,w=1e9+7,y=0,z=0;
-    long long a=0,b=0,c=0,d=0;
+    long long l=0,r=0,x=0,w=0,y=0,z=0;
+    long long a=nums.size(),b=0,c=0,d=0;
     long long g=0,q=0,k=0; 
-    a=word1.length();
-    b=word2.length();
-    c=target.length();
-    long long resu=0;
-    vector<vector<long long>>arr(a+1,vector<long long>(b+1,0));
-    vector<vector<long long>>brr(a+1,vector<long long>(b+1,0));
-    vector<vector<long long>>crr(a+1,vector<long long>(b+1,0));
-    vector<vector<long long>>drr(a+1,vector<long long>(b+1,0));
-    arr[0][0]=1;
-    for(l=0;l<c;++l){
-        for(x=0;x<=a;++x){
-        for(y=0;y<=b;++y){
-            brr[x][y]=0;
-            crr[x][y]=arr[x][y];
-            if(x>0) crr[x][y]=(crr[x][y]+crr[x-1][y])%w;
-            drr[x][y]=arr[x][y];
-            if(y>0) drr[x][y]=(drr[x][y]+drr[x][y-1])%w;
+    long long res=nums[0];
+    vector<long long>brr(a*2,0),crr(a+1,0);
+    for(x=0;x<a;++x) crr[x+1]=crr[x]+nums[x];
+    for(b=0;b<a*2-1;++b){
+        l=b/2;
+        r=l+b%2;
+        k=0;
+        if(d>r){
+            y=2*c-b;
+            k=min(brr[y],d-r);
         }
+        l-=k;r+=k;
+        while(l>=0&&r<a&& nums[l]==nums[r]){
+            ++k;
+            // w+=nums[l];
+            // if(l!=r) w+=nums[r];
+            // if(w>res) res=w;
+            --l;
+            ++r;
         }
-        // for(x=0;x<a;++x) if(word1[x]==target[l]) for(y=0;y<=b;++y) brr[x][y+1]=(brr[x][y+1]+crr[x][y])%w;
-        for(x=0;x<a;++x) if(word1[x]==target[l]) for(y=0;y<=b;++y) brr[x+1][y]=(brr[x+1][y]+crr[x][y])%w;
-        for(y=0;y<b;++y) if(word2[y]==target[l]) for(x=0;x<=a;++x) brr[x][y+1]=(brr[x][y+1]+drr[x][y])%w;
-        arr=brr;
+        brr[b]=k;
+        if(r>d){
+            d=r;
+            c=b;
+        }
+        w=crr[r]-crr[l+1];
+        if(w>res) res=w;
     }
-    for(x=1;x<=a;++x) for(y=1;y<=b;++y) resu=(resu+arr[x][y])%w;
-    return resu;
+    return res;
 }
+
 
 void solve() {
     long long l=0,r=0;

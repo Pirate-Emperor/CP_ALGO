@@ -56,10 +56,29 @@ long long res=0;
 // }
 
 long long solve(vector<int>& nums) {
-    long long a=0,b=0,c=0,d=0;
-    a = nums[nums.size()/2];
-    for (int i=0;i<nums.size();++i) b+=(a==nums[i]);
-    return (b==1)?true:false;
+    long long l=0,r=0,x=0,w=0,y=0,z=0;
+    long long a=0,b=0,c=0,d=-1;
+    long long g=0,q=0,k=0;
+    int res=0;
+    for(int it:nums){
+        x=it;
+        a=-1;
+        b=10;
+        if(!x) a=b=0;
+        while(x){
+            y=x%10;
+            if(y>a) a=y;
+            if(y<b) b=y;
+            x/=10;
+        }
+        c=a-b;
+        if(c>d){
+            d=c;
+            res=it;
+        }
+        else if(c==d) res+=it;
+    }
+    return res;
 }
 
 

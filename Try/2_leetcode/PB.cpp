@@ -57,15 +57,18 @@ long long res=0;
 
 int maxValidPairSum(vector<int>&nums,int k){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
-    long long a=0,b=0,c=0,d=0;
+    long long a=s.size(),b=t.size(),c=0,d=0;
     long long g=0,q=0,k=0;
-    if(k<1) k=1;
-    a=nums.size();
-    b=nums[0];
-    int res=nums[0]+nums[k];
-    for(l=k;l<a;++l){
-        if(nums[l-k]>b) b=nums[l-k];
-        if(b+nums[l]>res) res=b+nums[l];
+    bool res=false;
+    vector<long long>arr(a,-1),brr(a,b);
+    for(l=0,r=0;l<a&&r<b;r++) if(s[l]==t[r]) arr[l++]=r;
+    if(l==a) return true;
+    for(x=a-1,y=b-1;x>=0&&y>=0;y--) if(s[x]==t[y]) brr[x--]=y;
+    for(l=0;l<a;l++){
+        c=(l>0?arr[l-1]:-1);
+        // d=(l<a?brr[l]:b);
+        d=(l+1<a?brr[l+1]:b);
+        if((c!=-1||!l)&& (d!=b||l==a-1) &&d-c>1) res=true;
     }
     return res;
 }

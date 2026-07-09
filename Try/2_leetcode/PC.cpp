@@ -58,32 +58,33 @@ long long res=0;
 long long solve(vector<int>&arr,int p){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
     long long a=0,b=0,c=0,d=0;
-    long long g=0,q=0,k=0;
-    // int arr[4][4]={{0,1,1,2},{2,0,2,1},{2,2,0,1},{1,2,2,0}};
-    int arr[4][4]={{0,1,1,2},{2,0,3,1},{2,3,0,1},{1,2,2,0}};
-    long long brr[2]={1e9,1e9};
-    a=s1.size();
-    brr[s1[0]-'0']=0;
-    for(k=0;k<a-1;++k){
-        long long crr[2]={1e9,1e9};
-        x=s1[k+1]-'0';
-        y=s2[k]-'0';
-        for(c=0;c<2;++c){
-        if(brr[c]<1e9){
-            for(d=0;d<2;++d){
-            q=brr[c]+arr[(c<<1)|x][(y<<1)|d];
-            if(q<crr[d]) crr[d]=q;
-            }
+    long long g=-1e18,q=1e9+7,k=2;
+    map<int,int> mpi;
+    for(int a:nums){
+        x=a>0?a:-a;
+        for(d=2;d*d<=x;d++){
+            if(x%d==0) mpi[d]=1;
+            while(x%d==0) x/=d;
         }
-        }
-        brr[0]=crr[0];
-        brr[1]=crr[1];
+        if(x>1) mpi[x]=1;
     }
-    b=s2[a-1]-'0';
-    long long res=brr[b];
-    if(b==1&&brr[0]+1<res) res=brr[0]+1;
-    if(res>=1e9) return -1;
-    return res;
+    mpi[2]=1;
+    for(auto p:mpi){
+        b=p.first;
+        c=0;
+        d=-1e18;
+        for(int a:nums){
+            y=a%b==0?a:-a;
+            c=c>0?c+y:y;
+            if(c>d) d=c;
+        }
+        if(d>g){
+            g=d;
+            k=b;
+        }
+    }
+    long long res=(g%q+q)%q;
+    return (res*(k%q))%q;
 }
 
 void solve() {
