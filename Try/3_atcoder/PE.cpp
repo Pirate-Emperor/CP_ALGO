@@ -41,44 +41,37 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-string arr;
-ll dp[505][2][3][2][1024][2];
 
-ll cnt(ll x){
-    ll c=0;
-    while(x){
-        x&=x-1;
-        c++;
-    }
-    return c;
-}
-ll recur(ll i,ll chk1,ll r3,ll chk2,ll msk,ll chk3){
-    if(i==arr.size()){
-        if(chk3)return 0;
-        if((r3==0)+chk2+(cnt(msk)==3)==1) return 1;
-        return 0;
-    }
-    if(dp[i][chk1][r3][chk2][msk][chk3]!=-1) return dp[i][chk1][r3][chk2][msk][chk3];
-    ll lim=chk1?9:(arr[i]-'0'),ans=0;
-    for(ll d=0;d<=lim;++d){
-        ll nchk=chk1||(d<lim);
-        if(chk3&&d==0)ans=(ans+recur(i+1,nchk,0,0,0,1))%MOD;
-        else {
-            // ans=(ans+recur(i+1,nchk,(r3+d+1)%3,chk2||(d==3),msk|(1<<d),0))%MOD;
-            ans=(ans+recur(i+1,nchk,(r3+d)%3,chk2||(d==3),msk|(1<<d),0))%MOD;
-        }
-    }
-    return dp[i][chk1][r3][chk2][msk][chk3]=ans;
-}
- 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0; 
-    cin>>arr;
-    memset(dp,-1,sizeof(dp));
-    res=recur(0,0,0,0,0,1);
+    cin>>n>>k;
+    vector<ll> arr(n+1),brr(n+1),crr(n+1);
+    vector<vector<ll>> dp(15,vector<ll>(2)),ndp(15,vector<ll>(2));
+    for(int i=1;i<=n;++i){
+        cin>>arr[i]>>brr[i];
+        a+=arr[i];
+        crr[i]=brr[i]-arr[i];
+    }
+    for(int j=0;j<=k;++j) dp[j][0]=dp[j][1]=-LINF;
+    dp[0][0]=0;
+    for(int i=1;i<=n;++i){
+        for(int j=0;j<=k;++j){
+            ndp[j][0]=max(dp[j][0],dp[j][1]);
+            x=dp[j][1];
+            y=(j>0)?dp[j-1][0]:-LINF;
+            ndp[j][1]=crr[i]+max(x,y);
+        }
+        for(int j=0;j<=k;++j){
+            dp[j][0]=ndp[j][0];
+            dp[j][1]=ndp[j][1];
+        }
+    }
+    res=0;
+    for(int j=0;j<=k;++j) res=max({res,dp[j][0],dp[j][1]});
+    res+=a;
     cout<<res<<endl;
 }
 

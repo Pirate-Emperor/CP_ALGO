@@ -249,7 +249,7 @@ void solve(){
         wi(cur);
         putchar(' ');
     }
-    cout<<"\n";
+    // cout<<"\n";
     putchar('\n');
 }
 

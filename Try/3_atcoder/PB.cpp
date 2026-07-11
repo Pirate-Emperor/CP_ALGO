@@ -60,10 +60,14 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>x>>y>>l>>r>>a>>b;
-    c=max(0LL,min(b,r)-max(a,l));
-    res=c*x+(b-a-c)*y;
-    cout<<res<<endl;
+    cin>>n>>m;
+    vector<ll> resu(m+1,-1);
+    for(int i=0;i<n;i++){
+        cin>>a>>b;
+        if(b>resu[a]) resu[a]=b;
+    }
+    for(int i=1;i<=m;i++) cout<<resu[i]<<" ";
+    cout<<endl;
 }
 
 signed main() {

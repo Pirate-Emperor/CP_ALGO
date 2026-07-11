@@ -60,12 +60,18 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>x>>y>>k;
+    cin>>n>>m;
+    vector<array<int,2>> arr(m);
+    for(ll i=0;i<m;i++) cin>>arr[i][0]>>arr[i][1];
+    vis.assign(n+1,0);
+    dis.assign(n+1,0);
     res=0;
-    while(x!=y){
-        if(x>y)x/=k;
-        else y/=k;
-        res++;
+    for(ll i=m-1;i>=0;i--){
+        r=arr[i][0];
+        c=arr[i][1];
+        if(!vis[r]&&!dis[c]) res++;
+        vis[r]=1;
+        dis[c]=1;
     }
     cout<<res<<endl;
 }
@@ -78,7 +84,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

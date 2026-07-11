@@ -61,24 +61,21 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     string s;
-    cin>>n>>s;
-    bool chk=0;
-    for(int i=1;i<=n;++i){
-        if(chk)c++;
-        if(s[i-1]=='o') chk=!chk;
+    cin>>n;
+    r=1;
+    for(l=1;l<=n;++l){
+        if(r<l) r=l;
+        while(r+1<=n){
+            cout<<"? "<<l<<" "<<r+1<<endl;
+            cout.flush();
+            cin>>s;
+            if(s=="Yes") r++;
+            else break;
+        }
+        res+=(r-l);
     }
-    vector<int>resu(n);
-    l=c-1;
-    r=c;
-    chk=0;
-    for(int i=1;i<=n;++i){
-        if(!chk)resu[r++]=i;
-        else resu[l--]=i;
-        if(s[i-1]=='o') chk=!chk;
-    }
-    if(!chk) for(int i=0;i<n;++i) cout<<resu[i]<<" ";
-    else for(int i=n-1;i>=0;--i) cout<<resu[i]<<" ";
-    cout<<endl;
+    cout<<"! "<<res<<endl;
+    cout.flush();
 }
 
 signed main() {

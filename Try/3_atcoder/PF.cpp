@@ -41,51 +41,40 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll arr[1000000];
 
-void recur(ll k,ll id,ll sn,string &sx,string &sy){
-    if(k==6){
-        res+=sn*arr[id];
-        return;
+
+vector<ll> brr,crr;
+ll recur(ll idx,ll v){
+    ll resu=0,cv=v,ci=idx;
+    while(ci<m){
+        auto it=lower_bound(brr.begin()+ci,brr.end(),cv,greater<ll>());
+        if(it==brr.end()) break;
+        ll k=it-brr.begin();
+        // resu+=(cv/brr[k])*crr[k+1];
+        resu+=(cv/brr[k])*crr[k];
+        cv%=brr[k];
+        ci=k+1;
     }
-    recur(k+1,id*10+(sy[k]-'0'),sn,sx,sy);
-    if((sx[k]-'0')>0) recur(k+1,id*10+(sx[k]-'0'-1),-sn,sx,sy);
+    return resu+1;
 }
 
 void solve(){
-  ll l=0,r=0;
-  ll x=0,w=0,y=0,z=0;
-  ll a=0,b=0,c=0,d=0;
-  ll g=0,q=0,k=0;
-  cin>>n;
-  string s1;
-  for(int i=0;i<n;++i){
-    cin>>s1>>w;
-    x=stoll(s1);
-    arr[x]+=w;
-  }
-  ll p=1;
-  for(k=0;k<6;++k){
-    for(int i=0;i<1e6;++i) if((i/p)%10>0) arr[i]+=arr[i-p];
-    p*=10;
-  }
-  cin>>q;
-  while(q--){
-    string sx,sy;
-    cin>>sx>>sy;
-    bool chk=1;
-    for(k=0;k<6;++k) if(sx[k]>sy[k]){
-        chk=0;
-        break;
-    }
-    if(!chk){
-        cout<<0<<endl;
-        continue;
-    }
-    res=0;
-    recur(0,0,1,sx,sy);
+    ll l=0,r=0;
+    ll x=0,w=0,y=0,z=0;
+    ll a=0,b=0,c=0,d=0;
+    ll g=0,q=0,k=0; 
+    cin>>n>>x;
+    vector<ll> arr(n);
+    for(ll i=0;i<n;i++) cin>>arr[i];
+    brr.clear();
+    brr.push_back(arr[0]);
+    for(ll i=1;i<n;i++) if(arr[i]<brr.back()) brr.push_back(arr[i]);
+    m=brr.size();
+    crr.assign(m,0);
+    crr[m-1]=1;
+    for(ll i=m-2;i>=0;i--) crr[i]=recur(i+1,brr[i]-1);
+    res=recur(0,x)-1;
     cout<<res<<endl;
-  }
 }
 
 signed main() {
@@ -96,7 +85,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
