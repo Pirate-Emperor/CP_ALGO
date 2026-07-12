@@ -60,14 +60,15 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> resu(m+1,-1);
-    for(int i=0;i<n;i++){
-        cin>>a>>b;
-        if(b>resu[a]) resu[a]=b;
-    }
-    for(int i=1;i<=m;i++) cout<<resu[i]<<" ";
-    cout<<endl;
+    cin>>n;
+    k=sqrt(n);
+    while((k+1)*(k+1)<=n) k++;
+    while(k*k>n) k--;
+    if(n==k*k) res=2*n-2*k;
+    else if(n<=k*k+k) res=2*n-2*k-1;
+    else res=2*n-2*k-2;
+    // else res=2*n-1-2*k-2;
+    cout<<res<<endl;
 }
 
 signed main() {
@@ -78,7 +79,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

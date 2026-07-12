@@ -60,18 +60,49 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<array<int,2>> arr(m);
-    for(ll i=0;i<m;i++) cin>>arr[i][0]>>arr[i][1];
-    vis.assign(n+1,0);
-    dis.assign(n+1,0);
+    cin>>n>>k;
+    if(n<20&& k>(1LL<<n)){
+        cout<<-1<<endl;
+        return;
+    }
+    vector<ll> arr;
+    c=1;
+    arr.push_back(1);
+    r=k-1;
+    w=1;
+    while(r>0){
+        d=(c*(n-w+1))/w;
+        if(d>k) d=k+1;
+        c=d;
+        x=min(r,c);
+        arr.push_back(x);
+        r-=x;
+        w++;
+    }
+    ll brr[8]={0};
+    l=1;
+    for(ll i=1;i<=7;i++){
+        a=l;
+        b=min(k,l*10-1);
+        if(a<=k) brr[i]=b-a+1;
+        l*=10;
+    }
     res=0;
-    for(ll i=m-1;i>=0;i--){
-        r=arr[i][0];
-        c=arr[i][1];
-        if(!vis[r]&&!dis[c]) res++;
-        vis[r]=1;
-        dis[c]=1;
+    y=0;
+    z=7;
+    while(y<arr.size() &&z>0){
+        if(!arr[y]){
+            y++;
+            continue;
+        }
+        if(!brr[z]){
+            z--;
+            continue;
+        }
+        q=min(arr[y],brr[z]);
+        res+=q*y*z;
+        arr[y]-=q;
+        brr[z]-=q;
     }
     cout<<res<<endl;
 }
@@ -84,7 +115,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

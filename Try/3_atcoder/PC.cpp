@@ -10,7 +10,7 @@ using namespace std;
 #define ull unsigned long long
 #define int long long
  
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 3e5 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -41,41 +41,29 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
-
+ll resu[MAX_N];
+void recur(ll u,ll d){
+    resu[u]=d;
+    for(auto v:adj[u]) if(resu[v]==-1) recur(v,d+1);
+}
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin>>n;
-    r=1;
-    for(l=1;l<=n;++l){
-        if(r<l) r=l;
-        while(r+1<=n){
-            cout<<"? "<<l<<" "<<r+1<<endl;
-            cout.flush();
-            cin>>s;
-            if(s=="Yes") r++;
-            else break;
-        }
-        res+=(r-l);
+    cin>>n>>m;
+    for(l=1;l<=n;++l) {
+        adj[l].clear();
+        resu[l]=-1;
     }
-    cout<<"! "<<res<<endl;
-    cout.flush();
+    for(l=1;l<=m;++l){
+        cin>>a>>b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    recur(1,0);
+    for(l=1;l<=n;++l) cout<<resu[l]<<" ";
+    cout<<endl;
 }
 
 signed main() {
@@ -86,7 +74,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

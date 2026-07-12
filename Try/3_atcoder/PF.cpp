@@ -41,39 +41,77 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
+ll arr[MAX_N];
+ll fac[MAX_N];
+ll inv[MAX_N];
+ll rn,rm,rs;
 
-
-vector<ll> brr,crr;
-ll recur(ll idx,ll v){
-    ll resu=0,cv=v,ci=idx;
-    while(ci<m){
-        auto it=lower_bound(brr.begin()+ci,brr.end(),cv,greater<ll>());
-        if(it==brr.end()) break;
-        ll k=it-brr.begin();
-        // resu+=(cv/brr[k])*crr[k+1];
-        resu+=(cv/brr[k])*crr[k];
-        cv%=brr[k];
-        ci=k+1;
-    }
-    return resu+1;
+ll ncr(ll a,ll b){
+    if(b<0||b>a) return 0;
+    return fac[a]*inv[b]%MOD*inv[a-b]%MOD;
 }
 
+ll recur(ll w,ll i){
+    if(!w) return 0;
+    if(i<1) return LINF;
+    if(w&~arr[i]) return 1+recur(w&~arr[i],i-1);
+    return 1;
+}
+
+ll get(ll tn,ll tm){
+    while(rm>tm){
+        rs=(rs-ncr(rn,rm)%MOD+MOD)%MOD;
+        rm--;}
+    while(rn>tn){
+        ll tr=ncr(rn-1,rm);
+        rs=(rs+tr)*((MOD+1)/2)%MOD;
+        rn--;
+    }
+    return rs;
+}
+void prec(){
+    fac[0]=1;
+    inv[0]=1;
+    for(ll i=1;i<MAX_N;++i) fac[i]=fac[i-1]*i%MOD;
+    inv[MAX_N-1]=qexp(fac[MAX_N-1],MOD-2,MOD);
+    for(ll i=MAX_N-2;i>=1;--i) inv[i]=inv[i+1]*(i+1)%MOD;
+}
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0; 
-    cin>>n>>x;
-    vector<ll> arr(n);
-    for(ll i=0;i<n;i++) cin>>arr[i];
-    brr.clear();
-    brr.push_back(arr[0]);
-    for(ll i=1;i<n;i++) if(arr[i]<brr.back()) brr.push_back(arr[i]);
-    m=brr.size();
-    crr.assign(m,0);
-    crr[m-1]=1;
-    for(ll i=m-2;i>=0;i--) crr[i]=recur(i+1,brr[i]-1);
-    res=recur(0,x)-1;
+    ll g=0,q=0,k=0;
+    cin>>n>>k;
+    for(ll i=1;i<=n;++i) cin>>arr[i];
+    m=0;
+    for(ll i=59;i>=0;--i){
+        y=m|(1LL<<i);
+        if(recur(y,n)<=k) m=y;
+    }
+    rn=n-1;
+    rm=k-1;
+    rs=0;
+    x=min(rm,rn);
+    for(ll i=0;i<=x;++i) rs=(rs+ncr(rn,i))%MOD;
+    res=0;
+    w=m;
+    q=0;
+    for(ll i=n;i>=1;--i){
+        z=m&~arr[i];
+        if(w&z){
+            q++;
+            w&=z;
+            if(q>k) break;
+        }
+        else{
+            if(q+1<=k)res=(res+get(i-1,k-q-1-(n/60)))%MOD;
+            // if(q+1<=k)res=(res+get(i-1,k-q-1-(n^5)))%MOD;
+            // if(q+1<=k) res=(res+get(i-1,k-q-1))%MOD;
+        }
+    }
+    bool chk=(w==0&&q<=k);
+    if(chk) res=(res+1)%MOD;
+    res=(res%MOD+MOD)%MOD;
     cout<<res<<endl;
 }
 
@@ -83,7 +121,7 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    // prec();
+    prec();
     int tc; tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

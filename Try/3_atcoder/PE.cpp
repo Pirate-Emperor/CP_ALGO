@@ -47,31 +47,33 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0; 
-    cin>>n>>k;
-    vector<ll> arr(n+1),brr(n+1),crr(n+1);
-    vector<vector<ll>> dp(15,vector<ll>(2)),ndp(15,vector<ll>(2));
-    for(int i=1;i<=n;++i){
-        cin>>arr[i]>>brr[i];
-        a+=arr[i];
-        crr[i]=brr[i]-arr[i];
-    }
-    for(int j=0;j<=k;++j) dp[j][0]=dp[j][1]=-LINF;
-    dp[0][0]=0;
-    for(int i=1;i<=n;++i){
-        for(int j=0;j<=k;++j){
-            ndp[j][0]=max(dp[j][0],dp[j][1]);
-            x=dp[j][1];
-            y=(j>0)?dp[j-1][0]:-LINF;
-            ndp[j][1]=crr[i]+max(x,y);
+    string s;
+    cin>>s;
+    n=s.length();
+    // vector<char> arr;
+    // for(ll i=n-1;i>=0;i--){
+    //     if(s[i]=='A'){
+    //         if(arr.size()&& arr.back()=='B'){
+    //             arr.pop_back();
+    //         }
+    //     }
+    //     else arr.push_back(s[i]);
+    // }
+    l=n;
+    for(ll i=n-1;i>=0;i--){
+        if(s[i]=='A'){
+            if(l<n&&s[l]=='B'){
+                l++;
+                if(l<n&&s[l]=='C') l++;
+            }
         }
-        for(int j=0;j<=k;++j){
-            dp[j][0]=ndp[j][0];
-            dp[j][1]=ndp[j][1];
+        else{
+            l--;
+            s[l]=s[i];
         }
     }
-    res=0;
-    for(int j=0;j<=k;++j) res=max({res,dp[j][0],dp[j][1]});
-    res+=a;
+    res=n-l;
+    // res=arr.size();
     cout<<res<<endl;
 }
 
@@ -83,7 +85,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
