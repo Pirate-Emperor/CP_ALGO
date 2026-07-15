@@ -41,73 +41,71 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+
+ll recur(ll i){
+    return par[i]==i?i:par[i]=recur(par[i]);
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
+    ll g=0,q=0,k=0; 
     cin>>n>>k;
-    vector<ll> arr(n),brr(n),crr(n),drr(n),err(n);
-    vector<int> chk(n,0);
-    for(int i=0;i<n;++i) cin>>arr[i];
-    for(int i=0;i<n;++i) cin>>brr[i];
-    for(int i=0;i<n;++i){
-        crr[i]=arr[i]-(i+1);
-        drr[i]=crr[i];
-        if(!brr[i]) chk[i]=1;
+    string arr;
+    cin>>arr;
+    for(char ch:arr) if(ch=='0') a++;
+    b=n-a;
+    if(a<k||b<k){
+        cout<<arr<<"\n0\n";
+        return;
     }
-    ll mt=min(n-1,k-1);
-    for(int t=0;t<=mt;++t){
-        for(int i=0;i<n;++i){
-            if(chk[i]) continue;
-            ll j=i+1+t;
-            if(j<n&&j<=i+k) if(arr[j]-arr[j-1]==1 &&drr[i]==crr[j-1]) chk[i]=1;
-        }
-        if(t<mt){
-            // vector<ll> err(n,0);
-            err[n-1]=drr[n-1]+brr[n-1];
-            for(int i=0;i<n-1;++i) err[i]=min(drr[i]+brr[i],drr[i+1]);
-            drr=err;
+    
+    if(a==k&&b==k){
+        string brr=arr;
+        for(char& ch:brr) ch=(ch=='0'?'1':'0');
+        if(arr<=brr) cout<<arr<<"\n0\n";
+        else cout<<brr<<"\n1\n";
+        return;
+    }
+    string crr=string(a,'0')+string(b,'1');
+    for(ll i=0;i<a;i++) if(arr[i]=='1') c++;
+    if(!c){
+        cout<<crr<<"\n0\n";
+        return;
+    }
+    d=min(a,b);
+    par.assign(d+2,0);
+    dis.assign(d+1,-1);
+    for(ll i=0;i<d+2;i++) par[i]=i;
+    queue<ll> qu;
+    qu.push(c);
+    // queue<ll> qui;
+    // qui.push(c);
+    dis[c]=0;
+    par[c]=recur(c+1);
+    while(!qu.empty()){
+        x=qu.front();
+        qu.pop();
+        if(!x) break;
+        l=max(0ll,k-b+x);
+        r=min(k,x);
+        y=max(0ll,k-a+x);
+        z=min(k,x);
+        if(l>r||y>z) continue;
+        w=x+k-(r+z);
+        q=x+k-(l+y);
+        // w=x+z-(r+k);
+        // q=x+k-l+y;
+        g=recur(w);
+        while(g<=q){
+            dis[g]=dis[x]+1;
+            qu.push(g);
+            par[g]=recur(g+1);
+            g=recur(g);
         }
     }
-    q=k-1;
-    if(q>=0){
-        for(int i=0;i<n;++i){
-            if(chk[i]) continue;
-            ll gt=LINF;
-            ll mk=min(n-1,i+q);
-            ll cmin=brr[i];
-            for(int j=i;j<=mk;++j){
-                if(brr[j]<cmin)cmin=brr[j];
-                ll v=crr[j]+(q-(j-i))*cmin;
-                // ll v=crr[j]+(q-(j-i))*brr[j];
-                if(v<gt)gt=v;
-            }
-            for(int j=i+1;j<=mk;++j) {
-                if(!brr[j]&&crr[j]==gt){
-                    chk[i]=1;
-                    break;
-                }
-            }
-        }
-    }
-    res=0;
-    for(int i=0;i<n;++i) res+=chk[i];
-    cout<<res<<endl;
+    cout<<crr<<"\n"<<dis[0]<<"\n";
 }
 
 signed main() {

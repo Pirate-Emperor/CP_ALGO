@@ -41,42 +41,56 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+ll bit[MAX_N*4];
+void add(ll i,ll d){
+    for(;i<=4*n+5;i+=i&-i) bit[i]+=d;
+}
+ll qry(ll i){
+    ll s=0;
+    if(i<0) return 0;
+    for(i=min(i,4*n+5);i>0;i-=i&-i) s+=bit[i];
+    return s;
+}
+ll recur(vector<ll>&v,ll pr,ll df,bool chk){
+    ll res=0,f=n+2,vt,rest=0;
+    for(ll i=0;i<=4*n+5;++i) bit[i]=0;
+    for(ll r=0;r<n;++r){
+        if(r%2==pr) add(rest+f,1);
+        rest+=v[r];
+        vt=(chk?df:-df);
+        vt+=rest+f;
+        res+=chk?qry(4*n+5)-qry(vt-1):qry(vt);
+    }
+    return res;
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>k;
-    vector<ll> arr(n),brr(n),crr(n);
-    map<ll,ll> mpi;
-    for(l=0;l<n;++l){
-        cin>>arr[l];
-        mpi[arr[l]]=1;
+    cin>>n;
+    vector<ll> arr(n),brr(n);
+    for(ll i=0;i<n;++i){
+        cin>>arr[i];
+        brr[i]=arr[i];
     }
-    for(l=0;l<n;++l)cin>>brr[l];
-    res=0;
-    for(auto p:mpi){
-        for(l=0;l<n;++l) crr[l]=p.first>arr[l]?(p.first-arr[l])*brr[l]:0;
-        sort(all(crr));
-        c=0;
-        for(l=0;l<=k;++l) c+=crr[l];
-        y=k*p.first-c;
-        if(y>res) res=y;
+    sort(all(brr));
+    m=brr[(n+1)/2-1];
+    for(auto v:arr){
+        if(v<=m) c++;
+        if(v<m) d++;
     }
+    x=c-(n+1)/2;
+    y=(n+1)/2-d;
+    vector<ll> vv(n,0),uu(n,0),ff(n,0),gg(n,0);
+    for(ll i=0;i<n;++i){
+        if(arr[i]==m) i%2?(uu[i]=-1,ff[i]=1):(vv[i]=-1,gg[i]=1);
+        else if(arr[i]==m+1) i%2?vv[i]=1:(uu[i]=1);
+        else if(arr[i]==m-1) i%2?gg[i]=-1:(ff[i]=-1);
+    }
+    res=recur(vv,0,x+1,1)+recur(uu,1,x+1,1);
+    res+=recur(ff,0,y,0)+recur(gg,1,y,0);
     cout<<res<<endl;
 }
 

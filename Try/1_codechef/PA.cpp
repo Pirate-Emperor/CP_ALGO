@@ -60,30 +60,15 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>x;
-    string s1="",s2="",s3="";
-    x=3*n-x;
-    a=x/2;
-    a=min(a,n);
-    for (int i=0;i<a;i++){
-        s1+='0';
-        s2+='0';
-    }
-    for (int i=a;i<n;i++){
-        s1+='1';
-        s2+='1';
-    }
-    x-=a*2;
-    for (int i=0;i<n;i++){
-        if (x>0) {
-            s3+='0';
-            x--;
-        }
-        else {
-            s3+='1';
+    string s;
+    cin>>n>>s;
+    for(int i=0;i<n;++i){
+        if(s[i]=='z'){
+            while(i<n&&s[i]=='z') s[i++]='a';
+            break;
         }
     }
-    cout << s1 << s2 << s3 << endl;
+    cout<<s<<endl;
 }
 
 signed main() {

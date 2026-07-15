@@ -60,36 +60,48 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
+    m=0;
     cin>>n;
-    vector<int>arr(n+1),brr(n+1),crr(n+1,0),resu(n+1);
-    for(int i=1;i<=n;i++){
-        cin>>arr[i];
-        brr[i]=(n+1-arr[i]%(n+1))%(n+1);
-        crr[brr[i]]++;
-        resu[i]=i;
+    vector<ll> arr(n),brr(n),crr(n,0);
+    m=0;
+    for(ll i=0;i<n;++i) cin>>arr[i];
+    for(ll i=0;i<n;++i){
+        cin>>brr[i];
+        if(brr[i]==1) crr[i]=++m;
     }
-    for(int i=1;i<=n;i++) {
-        if(crr[i]==n){
-            cout<<"-1\n";
-            return;
+    k=n-m;
+    if(!m||!k){
+        cout<<1<<endl;
+        return;
+    }
+    vector<ll> dp(m+1,0);
+    dp[0]=1;
+    for(ll i=0;i<n;++i){
+        if(!brr[i]){
+            l=0;
+            r=m;
+            for(ll j=i-1;j>=0;--j) if(brr[j]&&arr[j]>arr[i]){
+                l=crr[j];
+                break;
+            }
+            // for(ll j=i+1;j<n;++j) if(brr[j]&&arr[j]>arr[i]){
+            //     r=crr[j];
+            //     break;
+            // }
+            for(ll j=i+1;j<n;++j) if(brr[j]&&arr[j]>arr[i]){
+                r=crr[j]-1;
+                break;
+            }
+            w=0;
+            for(ll j=0;j<=m;++j){
+                w=(w+dp[j])%MOD;
+                dp[j]=(j>=l&&j<=r)?w:0;
+            }
         }
     }
-    x=1;
-    w=1;
-    for(int i=2;i<=n;i++) {
-        if(brr[i]!=brr[1]){
-            w=i;
-            break;
-        }
-    }
-    for(int i=1;i<=n;i++){
-        if(resu[i]==brr[i]){
-        z=(brr[x]!=brr[i])?x:w;
-        swap(resu[i],resu[z]);
-        }
-    }
-    for(int i=1;i<=n;i++) cout<<resu[i] <<" ";
-    cout<<endl;
+    res=0;
+    for(ll j=0;j<=m;++j) res=(res+dp[j])%MOD;
+    cout<<res<<endl;
 }
 
 signed main() {
