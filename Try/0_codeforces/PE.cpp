@@ -41,69 +41,53 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+ll arr[MAX_N];
+
+void recur(ll u, ll&c, ll&s){
+    vis[u]=1;
+    c++;
+    s+=arr[u];
+    for(auto v:adj[u]) if(!vis[v]) recur(v,c,s);
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+    cin>>n;
+    edges.clear();
+    vis.assign(n+1,0);
+    for(ll i=1;i<=n;i++){
+        arr[i]=0;
+        adj[i].clear();
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
+    for(ll i=1;i<n;i++){
+        cin>>x>>y;
+        edges.push_back({x,y});
+        arr[x]++;
+        arr[y]++;
     }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
-        }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
+    res=0;
+    for(auto e:edges){
+        // if (arr[e[0]]%2!=0 && arr[e[1]]%2!=0 && arr[e[0]]*arr[e[1]]<=3) res++;
+        if(arr[e[0]]%2!=0&&arr[e[1]]%2!=0) res++;
+        else if(arr[e[0]]%2==0&&arr[e[1]]%2==0){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
         }
     }
-    res+=n-brr[n];
+    for(ll i=1;i<=n;i++){
+        if(arr[i]%2==0&&!vis[i]){
+            c=0;
+            q=0;
+            recur(i,c,q);
+            k=q/c;
+            // k=q-(c/2)*4;
+            k=q-2*(c-1);
+            res+=(k*(k-1))/2;
+        }
+    }
     cout<<res<<endl;
 }
 

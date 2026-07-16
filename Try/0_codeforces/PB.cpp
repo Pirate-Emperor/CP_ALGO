@@ -60,17 +60,18 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>d;
-    vector<ll> arr(n);
-    for(int i=0;i<n;++i) cin >>arr[i];
-    for(int i=-d;i<=d;++i) w+=arr[(i%n+n)%n];
-    res=0;
-    for(int i=0;i<n;++i){
-        x=w-arr[i];
-        c=2LL*d*arr[i]-x;
-        if(c>0) res+=c;
-        w-=arr[((i-d)%n+n)%n];
-        w+=arr[((i+1+d)%n+n)%n];
+    cin>>n>>c;
+    vector<ll>arr(n);
+    res=-n*c;
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+        res+=arr[i];
+    }
+    sort(all(arr));
+    k=n/2;
+    for(int i=0;i<k;++i){
+        if(c-arr[i]>0) res+=c-arr[i];
+        else break;
     }
     cout<<res<<endl;
 }

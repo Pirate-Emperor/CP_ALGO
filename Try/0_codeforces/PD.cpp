@@ -41,7 +41,7 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll arr[MAX_N],brr[MAX_N];
+vector<ll> resu;
 // void recur(int u, int dep)
 // {
 //     vis[u]=1;
@@ -56,39 +56,59 @@ ll arr[MAX_N],brr[MAX_N];
 //     dis[u]=dep;
 // }
 
-void prec(){
-	arr[0]=1;
-    brr[0]=1;
-	for(int i=1;i<MAX_N;i++) arr[i]=(arr[i-1]*i)%MOD;
-	brr[MAX_N-1]=qexp(arr[MAX_N-1],MOD-2,MOD);
-	for(int i=MAX_N-2;i>=1;i--) {
-        brr[i]=(brr[i+1]*(i+1))%MOD;
-    }
-}
-ll rec(int a,int b){
-	if(b<0||b>a) return 0;
-	return (((arr[a]*brr[b])%MOD)*brr[a-b])%MOD;
-}
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n>>m;
-	if(n==m){
-		res=qexp(n-1,n,MOD);
-		cout<<res<<endl;
-		return;
-	}
-	x=n-m;
-	for(int i=0;i<=x;i++){
-		w= (rec(x,i)*qexp(n-1-i,n-1,MOD))%MOD;
-		if(i%2) y=(y-w+MOD)%MOD;
-		else y=(y+w)%MOD;
-	}
-	res=(y*(n-1))%MOD;
-	res=(res*rec(n,m))%MOD;
-	cout<<res<<endl;
+    for(ll i=0;i<2*n;i++) adj[i].clear();
+    dis.assign(2*n,0);
+    vis.assign(2*n,0);
+    queue<ll> qu;
+    for(ll i=0;i<m;i++){
+        cin>>a>>b>>c;
+        b--;
+        c--;
+        if(a==1){
+            adj[2*b+1].push_back(2*c);
+            dis[2*c]++;
+            if(b!=c){
+                adj[2*c+1].push_back(2*b);
+                dis[2*b]++;
+            }
+        }
+        else{
+            adj[2*b].push_back(2*c+1);
+            dis[2*c+1]++;
+            if(b!=c){
+                adj[2*c].push_back(2*b+1);
+                dis[2*b+1]++;
+            }
+        }
+    }
+  
+    for(ll i=0;i<2*n;i++) if(!dis[i]) qu.push(i);
+    resu.clear();
+    while(!qu.empty()){
+        x=qu.front();
+        qu.pop();
+        resu.push_back(x);
+        w=(x%2==0)?1:0;
+        for(auto v:adj[x]){
+            vis[v]=max(vis[v],vis[x]+w);
+            if(--dis[v]==0) qu.push(v);
+        }
+    }
+    if(resu.size()<2*n) cout<<"NO\n";
+    else{
+        cout<<"YES\n";
+        for(ll i=0;i<n;i++) {
+            res=vis[2*i]-vis[2*i+1];
+            cout<<res<<" ";
+        }
+        cout<<endl;
+    }
 }
 
 signed main() {
@@ -97,7 +117,7 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    prec();
+    // prec();
     int tc; tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

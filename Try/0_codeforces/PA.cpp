@@ -60,26 +60,14 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-    vector<ll> arr(n);
-    res=0;
-    for(int i=0;i<n;++i){
-        cin>>arr[i];
-        if(arr[i]>0) c++;
-        x^=arr[i];
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    if(2*k>n) cout<<-1<<endl;
+    else{
+        for(int i=0;i<k;++i) b+=(s[i]=='L')+(s[n-1-i]=='R');
+        cout<<b<<endl;
     }
-    if(c<=1){
-        cout<<0<<endl;
-        return;
-    }
-    else if(x==0){
-        cout<<1<<endl;
-        return;
-    }
-    for(int i=0;i<n;++i) {
-        if((x^arr[i])<arr[i]) res++;
-    }
-    cout<<res%MOD<<endl;
 }
 
 signed main() {
