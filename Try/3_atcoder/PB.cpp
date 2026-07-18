@@ -61,13 +61,11 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    k=sqrt(n);
-    while((k+1)*(k+1)<=n) k++;
-    while(k*k>n) k--;
-    if(n==k*k) res=2*n-2*k;
-    else if(n<=k*k+k) res=2*n-2*k-1;
-    else res=2*n-2*k-2;
-    // else res=2*n-1-2*k-2;
+    string s;
+    for(int i=0;i<n;++i){
+        cin>>a>>b>>s;
+        if(s=="keep") res+=b-a;
+    }
     cout<<res<<endl;
 }
 
@@ -79,7 +77,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

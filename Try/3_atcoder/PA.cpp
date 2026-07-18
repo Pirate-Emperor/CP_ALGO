@@ -60,16 +60,11 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>k;
-    for(a=1;a<=100;++a){
-        res=a*k;
-        b=res;
-        while(b>=10&& b%100!=0) b/=10;
-        if(b>=10){
-            cout<<res<<endl;
-            break;
-        }
-    }
+    cin>>a>>b;
+    a*=a*25;
+    b*=100*100;
+    if (b>=a) cout<<"Yes\n";
+    else cout<<"No\n";
 }
 
 signed main() {
@@ -80,7 +75,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

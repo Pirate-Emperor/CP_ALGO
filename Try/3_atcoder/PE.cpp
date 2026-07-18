@@ -46,34 +46,46 @@ void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0; 
-    string s;
-    cin>>s;
-    n=s.length();
-    // vector<char> arr;
-    // for(ll i=n-1;i>=0;i--){
-    //     if(s[i]=='A'){
-    //         if(arr.size()&& arr.back()=='B'){
-    //             arr.pop_back();
-    //         }
-    //     }
-    //     else arr.push_back(s[i]);
-    // }
-    l=n;
-    for(ll i=n-1;i>=0;i--){
-        if(s[i]=='A'){
-            if(l<n&&s[l]=='B'){
-                l++;
-                if(l<n&&s[l]=='C') l++;
-            }
+    ll g=0,q=0,k=0;
+    cin>>n>>m;
+    vector<ll> arr(n+1),brr(n),crr(n+1,0),drr;
+    for(ll i=1;i<=n;++i) cin>>arr[i];
+    for(ll i=1;i<n;++i) cin>>brr[i];
+    for(ll i=1;i<n;++i){
+        crr[i+1]=(brr[i]-arr[i]-arr[i+1]-crr[i])%m;
+        if(crr[i+1]<0) crr[i+1]+=m;
+    }
+    map<ll,ll> mpi;
+    for(ll i=1;i<=n;++i){
+        r+=crr[i];
+        if(i%2){
+            x++;
+            mpi[m-1-crr[i]]-=m;
         }
         else{
-            l--;
-            s[l]=s[i];
+            q++;
+            mpi[crr[i]]+=m;
         }
     }
-    res=n-l;
-    // res=arr.size();
+    drr.push_back(0);
+    drr.push_back(m-1);
+    for(auto& v:mpi){
+        drr.push_back(v.first);
+        if(v.first+1<m) drr.push_back(v.first+1);
+    }
+    sort(all(drr));
+    drr.erase(unique(all(drr)),drr.end());
+    res=LINF;
+    ll sum=0;
+    auto it=mpi.begin();
+    for(ll i:drr){
+        while(it!=mpi.end()&&it->first<i){
+            sum+=it->second;
+            it++;
+        }
+        c=r+(x-q)*i+sum;
+        if(c<res) res=c;
+    }
     cout<<res<<endl;
 }
 
@@ -85,7 +97,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

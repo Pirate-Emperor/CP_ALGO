@@ -41,78 +41,53 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll arr[MAX_N];
-ll fac[MAX_N];
-ll inv[MAX_N];
-ll rn,rm,rs;
+ll arr[MAX_N],brr[MAX_N],st[MAX_N*4],resu[MAX_N*4],q1[MAX_N],q2[MAX_N],q3[MAX_N],sz=1;
+vector<ll> val;
 
-ll ncr(ll a,ll b){
-    if(b<0||b>a) return 0;
-    return fac[a]*inv[b]%MOD*inv[a-b]%MOD;
-}
-
-ll recur(ll w,ll i){
-    if(!w) return 0;
-    if(i<1) return LINF;
-    if(w&~arr[i]) return 1+recur(w&~arr[i],i-1);
-    return 1;
+void rec(ll i,ll d){
+	ll p=sz+i;
+	st[p]+=d;
+	resu[p]=st[p]?st[p]+val[i]:-LINF;
+	for(p/=2;p>0;p/=2){
+		st[p]=st[p*2]+st[p*2+1];
+		resu[p]=max(resu[p*2+1],resu[p*2]+st[p*2+1]);
+	}
 }
 
-ll get(ll tn,ll tm){
-    while(rm>tm){
-        rs=(rs-ncr(rn,rm)%MOD+MOD)%MOD;
-        rm--;}
-    while(rn>tn){
-        ll tr=ncr(rn-1,rm);
-        rs=(rs+tr)*((MOD+1)/2)%MOD;
-        rn--;
-    }
-    return rs;
-}
-void prec(){
-    fac[0]=1;
-    inv[0]=1;
-    for(ll i=1;i<MAX_N;++i) fac[i]=fac[i-1]*i%MOD;
-    inv[MAX_N-1]=qexp(fac[MAX_N-1],MOD-2,MOD);
-    for(ll i=MAX_N-2;i>=1;--i) inv[i]=inv[i+1]*(i+1)%MOD;
-}
 void solve(){
-    ll l=0,r=0;
-    ll x=0,w=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin>>n>>k;
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    m=0;
-    for(ll i=59;i>=0;--i){
-        y=m|(1LL<<i);
-        if(recur(y,n)<=k) m=y;
+	ll l=0,r=0;
+	ll x=0,w=0,y=0,z=0;
+	ll a=0,b=0,c=0,d=0;
+	ll g=0,q=0,k=0;
+	cin>>n>>q;
+	for(ll i=1;i<=n;++i) cin>>arr[i];
+	for(ll i=1;i<=n;++i){
+        cin>>brr[i];
+        val.push_back(brr[i]);
     }
-    rn=n-1;
-    rm=k-1;
-    rs=0;
-    x=min(rm,rn);
-    for(ll i=0;i<=x;++i) rs=(rs+ncr(rn,i))%MOD;
-    res=0;
-    w=m;
-    q=0;
-    for(ll i=n;i>=1;--i){
-        z=m&~arr[i];
-        if(w&z){
-            q++;
-            w&=z;
-            if(q>k) break;
-        }
+	for(ll i=0;i<q;++i){
+        cin>>q1[i]>>q2[i]>>q3[i];
+        if(q1[i]==2) val.push_back(q3[i]);
+    }
+	sort(all(val));
+	val.erase(unique(all(val)),val.end());
+	m=val.size();
+	while(sz<m) sz*=2;
+    for(ll i=0;i<2*sz;++i) resu[i]=-LINF;
+	for(ll i=1;i<=n;++i) rec(lower_bound(all(val),brr[i])-val.begin(),arr[i]);
+	for(ll i=0;i<q;++i){
+		a=lower_bound(all(val),brr[q2[i]])-val.begin();
+		if(q1[i]==1){
+			rec(a,q3[i]-arr[q2[i]]);
+			arr[q2[i]]=q3[i];
+		}
         else{
-            if(q+1<=k)res=(res+get(i-1,k-q-1-(n/60)))%MOD;
-            // if(q+1<=k)res=(res+get(i-1,k-q-1-(n^5)))%MOD;
-            // if(q+1<=k) res=(res+get(i-1,k-q-1))%MOD;
-        }
-    }
-    bool chk=(w==0&&q<=k);
-    if(chk) res=(res+1)%MOD;
-    res=(res%MOD+MOD)%MOD;
-    cout<<res<<endl;
+			rec(a,-arr[q2[i]]);
+			brr[q2[i]]=q3[i];
+			rec(lower_bound(all(val),brr[q2[i]])-val.begin(),arr[q2[i]]);
+		}
+		cout<<resu[1]<<endl;
+	}
 }
 
 signed main() {
@@ -121,9 +96,9 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    prec();
+    // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();
