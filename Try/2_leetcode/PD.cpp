@@ -57,36 +57,28 @@ long long res=0;
 
 ll solve(string word1, string word2, string target){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
-    long long a=nums.size(),b=0,c=0,d=0;
-    long long g=0,q=0,k=0; 
-    long long res=nums[0];
-    vector<long long>brr(a*2,0),crr(a+1,0);
-    for(x=0;x<a;++x) crr[x+1]=crr[x]+nums[x];
-    for(b=0;b<a*2-1;++b){
-        l=b/2;
-        r=l+b%2;
-        k=0;
-        if(d>r){
-            y=2*c-b;
-            k=min(brr[y],d-r);
+    long long a=0,b=0,c=0,d=0;
+    long long g=0,q=0,k=0;
+    if((l=source.size())!=(r=target.size())) return -1;
+    vector<long long> arr(l+1,1e18);
+    arr[0]=0;
+    for(x=1;x<=l;++x){
+        if(source[x-1]==target[x-1]) arr[x]=arr[x-1];
+        for(z=0;z<rules.size();++z){
+            if(x>=(w=rules[z][0].size())&&arr[x-w]!=1e18){
+                bool chk=1;c=costs[z];
+                for(y=0;y<w;++y){
+                    if(rules[z][1][y]!=target[x-w+y]||(rules[z][0][y]!='*'&&rules[z][0][y]!=source[x-w+y])){
+                        chk=0;
+                        break;
+                    }
+                    if(rules[z][0][y]=='*') c++;
+                }
+                if(chk&&arr[x]>arr[x-w]+c) arr[x]=arr[x-w]+c;
+            }
         }
-        l-=k;r+=k;
-        while(l>=0&&r<a&& nums[l]==nums[r]){
-            ++k;
-            // w+=nums[l];
-            // if(l!=r) w+=nums[r];
-            // if(w>res) res=w;
-            --l;
-            ++r;
-        }
-        brr[b]=k;
-        if(r>d){
-            d=r;
-            c=b;
-        }
-        w=crr[r]-crr[l+1];
-        if(w>res) res=w;
     }
+    int res=arr[l]==1e18?-1:arr[l];
     return res;
 }
 

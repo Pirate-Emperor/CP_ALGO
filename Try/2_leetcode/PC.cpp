@@ -57,34 +57,18 @@ long long res=0;
 
 long long solve(vector<int>&arr,int p){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
-    long long a=0,b=0,c=0,d=0;
-    long long g=-1e18,q=1e9+7,k=2;
-    map<int,int> mpi;
-    for(int a:nums){
-        x=a>0?a:-a;
-        for(d=2;d*d<=x;d++){
-            if(x%d==0) mpi[d]=1;
-            while(x%d==0) x/=d;
+    long long c=0,d=0;
+    long long g=0,q=0,k=1e9+7;
+    long long res=0;
+    for(l=0;l<nums.size();l++){
+        if(nums[l]<a) res=(res+c+d)%(k);
+        else if(nums[l]<=b){
+            res=(res+d)%(k);
+            c++;
         }
-        if(x>1) mpi[x]=1;
+        else d++;
     }
-    mpi[2]=1;
-    for(auto p:mpi){
-        b=p.first;
-        c=0;
-        d=-1e18;
-        for(int a:nums){
-            y=a%b==0?a:-a;
-            c=c>0?c+y:y;
-            if(c>d) d=c;
-        }
-        if(d>g){
-            g=d;
-            k=b;
-        }
-    }
-    long long res=(g%q+q)%q;
-    return (res*(k%q))%q;
+    return res;
 }
 
 void solve() {
