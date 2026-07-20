@@ -57,29 +57,24 @@ long long res=0;
 
 ll solve(string word1, string word2, string target){
     long long l=0,r=0,x=0,w=0,y=0,z=0;
-    long long a=0,b=0,c=0,d=0;
+    long long a=0,b=0,c=0,d=cuts.size();
     long long g=0,q=0,k=0;
-    if((l=source.size())!=(r=target.size())) return -1;
-    vector<long long> arr(l+1,1e18);
+    vector<int> arr(d+2);
+    vector<vector<int>> dp(d+2,vector<int>(d+2,0));
+    sort(cuts.begin(),cuts.end());
+    for (int i=0;i<d;i++) arr[i+1]=cuts[i];
     arr[0]=0;
-    for(x=1;x<=l;++x){
-        if(source[x-1]==target[x-1]) arr[x]=arr[x-1];
-        for(z=0;z<rules.size();++z){
-            if(x>=(w=rules[z][0].size())&&arr[x-w]!=1e18){
-                bool chk=1;c=costs[z];
-                for(y=0;y<w;++y){
-                    if(rules[z][1][y]!=target[x-w+y]||(rules[z][0][y]!='*'&&rules[z][0][y]!=source[x-w+y])){
-                        chk=0;
-                        break;
-                    }
-                    if(rules[z][0][y]=='*') c++;
-                }
-                if(chk&&arr[x]>arr[x-w]+c) arr[x]=arr[x-w]+c;
+    arr[d+1]=n;
+    for (int i=2;i<=d+1;i++){
+        for (int j=0;j<d+2-i;j++){
+            a=1e18;
+            for (int k=j+1;k<j+i;k++){
+                a=min(a,dp[j][k]+dp[k][j+i]);
             }
+            dp[j][j+i]=a+(arr[j+i]-arr[j]);
         }
     }
-    int res=arr[l]==1e18?-1:arr[l];
-    return res;
+    return dp[0][d+1];
 }
 
 
