@@ -103,35 +103,44 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>k;
-    vector<int> arr(n+1);
-    for(int i=1;i<=n;++i)cin>>arr[i];
-    rec1(1,1,n);
-    set<int> mpi;
-    mpi.insert(0);
-    mpi.insert(n+1);
-    res=0;
-    for(int t=1;t<=n;++t){
-        y=arr[t];
-        auto it=mpi.lower_bound(y);
-        int ry=*it;
-        --it;
-        int ly=*it;
-        mpi.insert(y);
-        int ul=max(1LL,y-k);
-        int ur=min(n,y+k);
-        rec3(1,1,n,ul,ur,1);
-        int x1=(ly+y+2)/2;
-        // int x2=(ry+y-2)/2;
-        int x2=(ry+y-1)/2;
-        int md=(ly+ry)/2;
-        l=max(1LL,x1);
-        r=min(n,md);
-        if(l<=r)res=max(res,rec4(1,1,n,l,r)-ly-1);
-        l=max(1LL,md+1);
-        r=min(n,x2);
-        if(l<=r)res=max(res,rec5(1,1,n,l,r)+ry-1);
+    cin>>n;
+    vector<ll> arr(n+1),brr(n+1,0),crr(n+1,0),drr(n+1,n+1),err;
+    for(ll i=1;i<=n;++i){
+        cin>>arr[i];
+        brr[i]=brr[i-1]+arr[i];
     }
+    for(ll i=1;i<=n;++i){
+        while(!err.empty()&& arr[err.back()]<arr[i]) err.pop_back();
+        crr[i]=err.empty()?0:err.back();
+        err.push_back(i);
+    }
+    err.clear();
+    for(ll i=n;i>=1;--i){
+        while(!err.empty()&& arr[err.back()]<=arr[i]) err.pop_back();
+        drr[i]=err.empty()?n+1:err.back();
+        err.push_back(i);
+    }
+    for(ll i=2;i<=n-1;++i){
+        a=max(0ll,crr[i]);b=i-2;x=i+1;y=drr[i]-1;
+        if(a>b||x>y)continue;
+        w=b-a+1;z=y-x+1;
+        if(w<=z){
+            for(l=a;l<=b;++l){
+                q=brr[l]+2ll*arr[i]-1;
+                k=upper_bound(brr.begin()+x,brr.begin()+y+1,q)-brr.begin();
+                if(k-x>0) c+=k-x;
+            }
+        }
+        else{
+            for(r=x;r<=y;++r){
+                q=brr[r]-2ll*arr[i];
+                k=upper_bound(brr.begin()+a,brr.begin()+b+1,q)-brr.begin();
+                // if(k-x>0) c+=k-x;
+                if(b-k+1>0) c+=b-k+1;
+            }
+        }
+    }
+    res=n*(n+1)/2-c;
     cout<<res<<endl;
 }
 

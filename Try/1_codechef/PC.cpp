@@ -69,28 +69,31 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
+    res=0;
     cin>>n;
-    vector<ll> arr(n),brr(n);
-    for(ll i=0;i<n;++i){
-        cin>>arr[i];
-        brr[i]=arr[i];
+    vector<ll> arr(n+2,0),brr(n+2,0);
+    for(ll i=1;i<=n;++i) cin>>arr[i];
+    if(arr[n]!=n){
+        cout<<0<<endl;
+        return;
     }
-    sort(all(brr));
-    m=brr[(n+1)/2-1];
-    for(auto v:arr){
-        if(v<=m) c++;
-        if(v<m) d++;
+    for(ll i=2;i<=n;++i){
+        if(arr[i]==i&&arr[i-1]==i-1&&(i==n||arr[i+1]==i+1)){
+            brr[i]=1;a++;
+        }
     }
-    x=c-(n+1)/2;
-    y=(n+1)/2-d;
-    vector<ll> vv(n,0),uu(n,0),ff(n,0),gg(n,0);
-    for(ll i=0;i<n;++i){
-        if(arr[i]==m) i%2?(uu[i]=-1,ff[i]=1):(vv[i]=-1,gg[i]=1);
-        else if(arr[i]==m+1) i%2?vv[i]=1:(uu[i]=1);
-        else if(arr[i]==m-1) i%2?gg[i]=-1:(ff[i]=-1);
+    b=n-a;
+    res=b*(b-1)%MOD*qexp(4,MOD-2,MOD)%MOD;
+    d=qexp(2*(a+1)%MOD,MOD-2,MOD);
+    for(ll i=1;i<=n;++i){
+        if(brr[i]) c++;
+        else{
+            l=c*(c+1)%MOD;
+            r=(a-c)*(a-c+1)%MOD;
+            res=(res+(l+r)%MOD*d%MOD)%MOD;
+        }
     }
-    res=recur(vv,0,x+1,1)+recur(uu,1,x+1,1);
-    res+=recur(ff,0,y,0)+recur(gg,1,y,0);
+    for(ll i=1;i<=n;++i) res=res*i%MOD;
     cout<<res<<endl;
 }
 

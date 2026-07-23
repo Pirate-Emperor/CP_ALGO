@@ -60,47 +60,23 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    m=0;
     cin>>n;
-    vector<ll> arr(n),brr(n),crr(n,0);
-    m=0;
-    for(ll i=0;i<n;++i) cin>>arr[i];
-    for(ll i=0;i<n;++i){
-        cin>>brr[i];
-        if(brr[i]==1) crr[i]=++m;
-    }
-    k=n-m;
-    if(!m||!k){
-        cout<<1<<endl;
-        return;
-    }
-    vector<ll> dp(m+1,0);
-    dp[0]=1;
-    for(ll i=0;i<n;++i){
-        if(!brr[i]){
-            l=0;
-            r=m;
-            for(ll j=i-1;j>=0;--j) if(brr[j]&&arr[j]>arr[i]){
-                l=crr[j];
-                break;
-            }
-            // for(ll j=i+1;j<n;++j) if(brr[j]&&arr[j]>arr[i]){
-            //     r=crr[j];
-            //     break;
-            // }
-            for(ll j=i+1;j<n;++j) if(brr[j]&&arr[j]>arr[i]){
-                r=crr[j]-1;
-                break;
-            }
-            w=0;
-            for(ll j=0;j<=m;++j){
-                w=(w+dp[j])%MOD;
-                dp[j]=(j>=l&&j<=r)?w:0;
-            }
+    vector<ll> arr(n+2,0),brr(n+2,0),crr(n+2,0);
+    for(int i=1;i<=n;i++) cin>>arr[i];
+    arr[0]=brr[0]=0;
+    crr[0]=1;
+    for(int i=1;i<=n;i++){
+        if(arr[i]%2==0){
+            brr[i]=(brr[i-1]+crr[i-1])%MOD;
+            crr[i]=brr[i];
+        }
+        else{
+            if(arr[i-1]%2!=0) brr[i]=(brr[i-2]+crr[i-2])%MOD;
+            else brr[i]=0;
+            crr[i]=(crr[i-1]+brr[i])%MOD;
         }
     }
-    res=0;
-    for(ll j=0;j<=m;++j) res=(res+dp[j])%MOD;
+    res=crr[n];
     cout<<res<<endl;
 }
 

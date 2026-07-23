@@ -60,15 +60,16 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin>>n>>s;
-    for(int i=0;i<n;++i){
-        if(s[i]=='z'){
-            while(i<n&&s[i]=='z') s[i++]='a';
-            break;
-        }
+    cin>>n;
+    vector<ll> arr(n),resu;
+    for(ll i=0;i<n;i++){
+        cin>>arr[i];
+        if(!arr[i]) c++;
     }
-    cout<<s<<endl;
+    for(ll i=0;i<c;i++) resu.push_back(0);
+    for(ll i=0;i<n;i++) if(arr[i]) resu.push_back(arr[i]);
+    for(ll i=0;i<n;i++) cout<<resu[i]<<" ";
+    cout<<endl;
 }
 
 signed main() {
