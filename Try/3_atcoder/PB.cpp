@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -60,13 +58,22 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
     string s;
-    for(int i=0;i<n;++i){
-        cin>>a>>b>>s;
-        if(s=="keep") res+=b-a;
+    cin>>m>>d;
+    vector<ll> arr(m);
+    cin>>s;
+    l=-LINF;
+    for(int i=0;i<m;++i){
+        if(s[i]=='G') l=i;
+        if(i-l<=d) arr[i]=1;
     }
-    cout<<res<<endl;
+    l=LINF;
+    for(int i=m-1;i>=0;--i){
+        if(s[i]=='G') l=i;
+        if(l-i<=d) arr[i]=1;
+    }
+    for(int i=0;i<m;++i) res+=!arr[i];
+    cout<<res;
 }
 
 signed main() {

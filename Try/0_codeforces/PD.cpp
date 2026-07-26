@@ -61,53 +61,37 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    for(ll i=0;i<2*n;i++) adj[i].clear();
-    dis.assign(2*n,0);
-    vis.assign(2*n,0);
-    queue<ll> qu;
-    for(ll i=0;i<m;i++){
-        cin>>a>>b>>c;
-        b--;
-        c--;
-        if(a==1){
-            adj[2*b+1].push_back(2*c);
-            dis[2*c]++;
-            if(b!=c){
-                adj[2*c+1].push_back(2*b);
-                dis[2*b]++;
-            }
-        }
-        else{
-            adj[2*b].push_back(2*c+1);
-            dis[2*c+1]++;
-            if(b!=c){
-                adj[2*c].push_back(2*b+1);
-                dis[2*b+1]++;
-            }
-        }
+    cin>>n>>x;
+    if((n&(n-1))||(x>0&&n<=2)){
+        cout<<"-1\n";
+        return;
     }
-  
-    for(ll i=0;i<2*n;i++) if(!dis[i]) qu.push(i);
-    resu.clear();
-    while(!qu.empty()){
-        x=qu.front();
-        qu.pop();
-        resu.push_back(x);
-        w=(x%2==0)?1:0;
-        for(auto v:adj[x]){
-            vis[v]=max(vis[v],vis[x]+w);
-            if(--dis[v]==0) qu.push(v);
-        }
-    }
-    if(resu.size()<2*n) cout<<"NO\n";
+    vector<ll> arr(n),brr(n,0);
+    if(x==0) for(ll i=0;i<n;++i) arr[i]=i;
     else{
-        cout<<"YES\n";
-        for(ll i=0;i<n;i++) {
-            res=vis[2*i]-vis[2*i+1];
-            cout<<res<<" ";
+        b=1;
+        for(ll i=0;i<n;++i){
+            if(!brr[i]){
+                brr[i]=brr[i^x]=1;
+                if(a<n){
+                    arr[a]=i;
+                    arr[a+2]=i^x;
+                    a+=4;
+                }
+                else{
+                    arr[b]=i;
+                    arr[b+2]=i^x;
+                    b+=4;
+                }
+            }
         }
-        cout<<endl;
+    }
+    for(ll i=0;i<n*n;++i){
+        res=arr[i/n]^arr[i%n];
+        // if(i%2!=0) res^=x;
+        if((((i/n)*(i%n))%2)!=0) res^=x;
+        cout<<res<<" ";
+        if(i%n==n-1) cout<<endl;
     }
 }
 

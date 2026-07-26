@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -41,29 +39,30 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll resu[MAX_N];
-void recur(ll u,ll d){
-    resu[u]=d;
-    for(auto v:adj[u]) if(resu[v]==-1) recur(v,d+1);
+
+ll recur(vector<ll>&crr){
+    ll r=0,l=1;
+    for(int i=n-1;i>=0;--i){
+        ll a=0;
+        for(int j=i+1;j<n;++j) if(crr[j]<crr[i]) a++;
+        r+=a*l;
+        if(i) l*=n-i;
+    }
+    return r;
 }
+
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    for(l=1;l<=n;++l) {
-        adj[l].clear();
-        resu[l]=-1;
-    }
-    for(l=1;l<=m;++l){
-        cin>>a>>b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-    recur(1,0);
-    for(l=1;l<=n;++l) cout<<resu[l]<<" ";
-    cout<<endl;
+    cin>>n;
+    vector<ll> arr(n),brr(n);
+    for(int i=0;i<n;++i) cin>>arr[i];
+    for(int i=0;i<n;++i) cin>>brr[i];
+    res=recur(brr)-recur(arr)-1;
+    if(res<0) res=0;
+    cout<<res<<endl;
 }
 
 signed main() {
@@ -74,7 +73,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

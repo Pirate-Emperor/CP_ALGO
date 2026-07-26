@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -41,53 +39,38 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll arr[MAX_N],brr[MAX_N],st[MAX_N*4],resu[MAX_N*4],q1[MAX_N],q2[MAX_N],q3[MAX_N],sz=1;
-vector<ll> val;
-
-void rec(ll i,ll d){
-	ll p=sz+i;
-	st[p]+=d;
-	resu[p]=st[p]?st[p]+val[i]:-LINF;
-	for(p/=2;p>0;p/=2){
-		st[p]=st[p*2]+st[p*2+1];
-		resu[p]=max(resu[p*2+1],resu[p*2]+st[p*2+1]);
-	}
+void upd(ll i,ll v){
+	for(;i<=n+1;i+=i&-i) dis[i]=max(dis[i],v);
 }
-
+ll get(ll i){
+	ll res=-INF;
+	for(;i>0;i-=i&-i) res=max(res,dis[i]);
+	return res;
+}
 void solve(){
 	ll l=0,r=0;
 	ll x=0,w=0,y=0,z=0;
 	ll a=0,b=0,c=0,d=0;
 	ll g=0,q=0,k=0;
-	cin>>n>>q;
-	for(ll i=1;i<=n;++i) cin>>arr[i];
-	for(ll i=1;i<=n;++i){
-        cin>>brr[i];
-        val.push_back(brr[i]);
-    }
-	for(ll i=0;i<q;++i){
-        cin>>q1[i]>>q2[i]>>q3[i];
-        if(q1[i]==2) val.push_back(q3[i]);
-    }
-	sort(all(val));
-	val.erase(unique(all(val)),val.end());
-	m=val.size();
-	while(sz<m) sz*=2;
-    for(ll i=0;i<2*sz;++i) resu[i]=-LINF;
-	for(ll i=1;i<=n;++i) rec(lower_bound(all(val),brr[i])-val.begin(),arr[i]);
-	for(ll i=0;i<q;++i){
-		a=lower_bound(all(val),brr[q2[i]])-val.begin();
-		if(q1[i]==1){
-			rec(a,q3[i]-arr[q2[i]]);
-			arr[q2[i]]=q3[i];
+	cin>>n;
+	vector<ll> arr(n);
+	dis.assign(n+2,-INF);
+	upd(1,0);
+	for(ll i=0;i<n;i++){
+		cin>>arr[i];
+		if(arr[i]>m){
+			c++;
+			upd(m+1,res);
+			m=arr[i];
 		}
-        else{
-			rec(a,-arr[q2[i]]);
-			brr[q2[i]]=q3[i];
-			rec(lower_bound(all(val),brr[q2[i]])-val.begin(),arr[q2[i]]);
+		else{
+			x=get(arr[i]);
+			upd(arr[i]+1,x+1);
+			res=max(res,x+1);
 		}
-		cout<<resu[1]<<endl;
 	}
+	res+=c;
+	cout<<res<<endl;
 }
 
 signed main() {

@@ -60,20 +60,52 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>c;
-    vector<ll>arr(n);
-    res=-n*c;
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
-        res+=arr[i];
+    cin>>n;
+	if(n==1){
+        cout<<1<<endl;
+        return;
     }
-    sort(all(arr));
-    k=n/2;
-    for(int i=0;i<k;++i){
-        if(c-arr[i]>0) res+=c-arr[i];
-        else break;
+	vector<ll> arr(n),brr(n+1,0),crr(n+1,0);
+	bool chk=true;
+    bool check=false;
+	for(ll i=0;i<n-1;++i){
+		cin>>arr[i];
+		if(arr[i]<1||arr[i]>=n){
+            chk=false;
+            continue;
+        }
+		brr[arr[i]]++;
+		a=max(a,arr[i]);
+		if(i>0){
+			if(arr[i]<arr[i-1]) check=true;
+			if(arr[i]>arr[i-1]&& check) chk=false;
+			if(arr[i]!=arr[i-1]&& crr[arr[i]]){
+                if (crr[arr[i]]>0) chk=false;
+                else{
+                    // check=false;
+                }
+            }
+		}
+		crr[arr[i]]=1;
+	}
+	if(!chk||a!=n-1){
+        cout<<0<<endl;
+        return;
     }
-    cout<<res<<endl;
+	res=2;
+    a=0;
+	for(x=n-1;x>=1;--x){
+		if(brr[x]>0) a+=brr[x]-1;
+		else{
+			if(a<=0){
+                res=0;
+                break;
+            }
+			res=(res*a)%MOD;
+			a--;
+		}
+	}
+	cout<<res<<endl;
 }
 
 signed main() {

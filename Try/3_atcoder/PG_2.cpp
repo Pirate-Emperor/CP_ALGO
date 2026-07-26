@@ -1,5 +1,3 @@
-// by Pirate-King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -11,7 +9,8 @@ using namespace std;
 #define int long long
  
 const int MAX_N = 2e5 + 5;
-const int MAX_K = 360+5;
+const int MAX_L = 400+5;
+const int MAX_K = 1e3+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
@@ -41,6 +40,9 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
+ll arr[MAX_N];
+vector<ll> brr[MAX_K];
+vector<ll> crr[MAX_K];
 // void recur(int u, int dep)
 // {
 //     vis[u]=1;
@@ -56,43 +58,43 @@ ll res=0;
 // }
 
 void solve(){
-    ll l=0,r=0;
+    ll l=-1,r=0;
     ll x=0,w=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
+    ll a=0,b=0,c=0,d=0,e=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<ll> arr(n+1,0),brr(n+1,0),crr(n+1,0),drr(n+1,0);
-    for(ll i=1;i<=n;++i) cin>>arr[i]>>brr[i]>>crr[i]>>drr[i];
-    for(ll i=n;i>=1;--i){
-        a=1;
-        bool chk=1;
-        for(ll j=1;j<=i;++j){
-            k=i-j+1;
-            b=0;
-            while(a<=n){
-                if(!(j>=arr[a]&&j<=brr[a])){
-                    if (k>=crr[a]&&k<=drr[a]){
-                    }
-                    else{
-                        b=1;
-                        a++;
-                        break;
-                    }
-                }
-                a++;
-            }
-            if(!b){
-                chk=0;
-                break;
-            }
-        }
-        if(chk){
-            cout<<i<<endl;
-            return;
+    string s;
+    cin>>s;
+    if(s[0]=='x'|| s[n-1]=='x'){
+        cout<<0<<endl;
+        return;
+    }
+    vector<ll> arr;
+    for(ll i=0;i<n;++i){
+        if(s[i]=='o'){
+            if(l!=-1)arr.push_back(i-l);
+            l=i;
         }
     }
-    cout<<0<<endl;
-}
+    if(arr.empty()){
+        cout<<1<<endl;
+        return;
+    }
+
+    b=0;
+    for(auto it:arr) b=max(b,it);
+    vector<ll> crr(b+2,1),brr(b+1,0);
+    for(ll i=1;i<=b+1;++i) crr[i]=(crr[i-1]*i)%MOD;
+    if(b>=1) brr[1]=2;
+    for(ll i=2;i<=b;++i){
+        a=crr[i+1];
+        for(ll j=1;j<i;++j) a=(a-crr[j+1]*brr[i-j])%MOD;
+        brr[i]=(a+MOD)%MOD;
+    }
+    res=1;
+    for(auto it:arr) res=(res*brr[it])%MOD;
+    cout<<res<<endl;
+}   
 
 signed main() {
     ios_base::sync_with_stdio(0);
@@ -102,7 +104,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

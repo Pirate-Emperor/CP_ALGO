@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -47,44 +45,22 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1),brr(n),crr(n+1,0),drr;
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    for(ll i=1;i<n;++i) cin>>brr[i];
-    for(ll i=1;i<n;++i){
-        crr[i+1]=(brr[i]-arr[i]-arr[i+1]-crr[i])%m;
-        if(crr[i+1]<0) crr[i+1]+=m;
+    cin>>n;
+    vector<ll> arr(n+1),brr(n+1,0),crr(n+1,0);
+    for(int i=1;i<=n;i++) cin>>arr[i];
+    if(n>=1){
+        brr[1]=1;
+        crr[1]=1;
     }
-    map<ll,ll> mpi;
-    for(ll i=1;i<=n;++i){
-        r+=crr[i];
-        if(i%2){
-            x++;
-            mpi[m-1-crr[i]]-=m;
-        }
-        else{
-            q++;
-            mpi[crr[i]]+=m;
-        }
+    for(int i=2;i<=n;i++){
+        brr[i]=MOD-((MOD/i)*brr[MOD%i]%MOD);
+        crr[i]=(crr[i-1]+brr[i])%MOD;
     }
-    drr.push_back(0);
-    drr.push_back(m-1);
-    for(auto& v:mpi){
-        drr.push_back(v.first);
-        if(v.first+1<m) drr.push_back(v.first+1);
-    }
-    sort(all(drr));
-    drr.erase(unique(all(drr)),drr.end());
-    res=LINF;
-    ll sum=0;
-    auto it=mpi.begin();
-    for(ll i:drr){
-        while(it!=mpi.end()&&it->first<i){
-            sum+=it->second;
-            it++;
-        }
-        c=r+(x-q)*i+sum;
-        if(c<res) res=c;
+    res=0;
+    w=crr[n];
+    for(int i=1;i<=n;i++){
+        res=(res+w*arr[i])%MOD;
+        if(i<n) w=(w+crr[n-i]-crr[i]+MOD)%MOD;
     }
     cout<<res<<endl;
 }

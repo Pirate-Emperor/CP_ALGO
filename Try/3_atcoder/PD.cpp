@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -60,14 +58,16 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>a>>b>>c>>d>>x>>y>>w>>z;
-    l=(c-a)*(z-y)-(d-b)*(w-x);
-    if(l==0){
-        r=(c-a)*(x+w-a-c)+(d-b)*(y+z-b-d);
-        if(r==0) cout<<"Yes\n";
-        else cout<<"No\n";
+    string s;
+    cin>>s;
+    n=s.size();
+    for(int i=0;i<n;i++) for(int j=0;j<2;j++){
+        for(b=0,a=0;i-b>=0 && (i+j+b)<n;b++){
+            if((a+=s[i-b]!=s[i+j+b])<2) res++;
+            else break;
+        }
     }
-    else cout<<"Yes\n";
+    cout<<res;
 }
 
 signed main() {
@@ -78,7 +78,7 @@ signed main() {
     // sieve(MAX_N);
     // prec();
     int tc; tc = 1;
-    cin >> tc;
+    // cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

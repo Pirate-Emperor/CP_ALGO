@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -60,11 +58,11 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>a>>b;
-    a*=a*25;
-    b*=100*100;
-    if (b>=a) cout<<"Yes\n";
-    else cout<<"No\n";
+    cin>>n;
+    vector<ll> arr(n);
+    for(int i=0;i<n;++i) cin>>arr[i];
+    for(int i=0;i<n-2;++i) if(arr[i]<arr[i+1]&& arr[i+1]>arr[i+2]) res++;
+    cout<<res;
 }
 
 signed main() {

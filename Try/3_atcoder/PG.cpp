@@ -1,5 +1,3 @@
-// by Pirate_King
-
 #include <bits/stdc++.h>
  
 using namespace std;
@@ -60,90 +58,41 @@ vector<ll> crr[MAX_K];
 // }
 
 void solve(){
-    ll l=0,r=0;
+    ll l=-1,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0,e=0;
     ll g=0,q=0,k=0;
-    ll li=0,hi=0,u=0,v=0,tr=0;
-    cin>>n>>q;
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
-        brr[i/MAX_L].push_back(arr[i]);
+    cin>>n;
+    string s;
+    cin>>s;
+    if(s[0]=='x'|| s[n-1]=='x'){
+        cout<<0<<endl;
+        return;
     }
-    for(int i=0;i<=n/MAX_L;i++){
-        sort(all(brr[i]));
-        crr[i].assign(brr[i].size()+1,0);
-        for(int j=0;j<brr[i].size();j++) crr[i][j+1]=crr[i][j]+brr[i][j];
+    vector<ll> arr;
+    for(ll i=0;i<n;++i){
+        if(s[i]=='o'){
+            if(l!=-1)arr.push_back(i-l);
+            l=i;
+        }
     }
-    while(q--){
-        cin>>c>>x>>l>>r>>k;
-        c--;
-        l--;
-        r--;
-        b=c/MAX_L;
-        y=arr[c];
-        arr[c]=x;
-        brr[b].erase(lower_bound(all(brr[b]),y));
-        brr[b].insert(lower_bound(all(brr[b]),x),x);
-        crr[b].assign(brr[b].size()+1,0);
-        for(int j=0;j<brr[b].size();j++) crr[b][j+1]=crr[b][j]+brr[b][j];
-        vector<ll> drr;
-        d=l/MAX_L;
-        e=r/MAX_L;
-        if(d==e){
-            for(int i=l;i<=r;i++) drr.push_back(arr[i]);
-        }
-        else{
-            for(int i=l;i<(d+1)*MAX_L;i++) drr.push_back(arr[i]);
-            // for(int i=l;i<d*MAX_L;i++) drr.push_back(arr[i]);
-            for(int i=e*MAX_L;i<=r;i++) drr.push_back(arr[i]);
-        }
-        sort(all(drr));
-        vector<ll> err(drr.size()+1,0);
-        for(int i=0;i<drr.size();i++) err[i+1]=err[i]+drr[i];
-        z=err.back();
-        for(int i=d+1;i<e;i++) z+=crr[i].back();
-        if(z<k){
-            cout<<"-1\n";
-            continue;
-        }
-        li=1;
-        hi=1e9;
-        g=-1;
-        while(li<=hi){
-            ll mid=li+(hi-li)/2;
-            w=0;a=0;
-            u=lower_bound(all(drr),mid)-drr.begin();
-            a+=drr.size()-u;
-            // w+=err.back();
-            w+=err.back()-err[u];
-            for(int i=d+1;i<e;i++){
-                v=lower_bound(all(brr[i]),mid)-brr[i].begin();
-                a+=brr[i].size()-v;
-                w+=crr[i].back()-crr[i][v];
-                // w+=crr[i].back();
-            }
-            if(w>=k){
-                g=mid;
-                li=mid+1;
-            }
-            else hi=mid-1;
-        }
-        w=0;
-        res=0;
-        u=upper_bound(all(drr),g)-drr.begin();
-        res+=drr.size()-u;
-        // w+=err.back();
-        w+=err.back()-err[u];
-        for(int i=d+1;i<e;i++){
-            v=upper_bound(all(brr[i]),g)-brr[i].begin();
-            res+=brr[i].size()-v;
-            w+=crr[i].back()-crr[i][v];
-        }
-        tr=k-w;
-        tr=(tr>0)?(tr+g-1)/g:0;
-        cout<<res+tr<<endl;
+    if(arr.empty()){
+        cout<<1<<endl;
+        return;
     }
+
+    for(auto it:arr) b=max(b,it);
+    vector<ll> crr(b+2,1),brr(b+1,0);
+    for(ll i=1;i<=b+1;++i) crr[i]=(crr[i-1]*i)%MOD;
+    if(b>=1) brr[1]=2;
+    for(ll i=2;i<=b;++i){
+        a=crr[i+1];
+        for(ll j=1;j<i;++j) a=(a-crr[j+1]*brr[i-j])%MOD;
+        brr[i]=(a%MOD+MOD)%MOD;
+    }
+    res=1;
+    for(auto it:arr) res=(res*brr[it])%MOD;
+    cout<<res<<endl;
 }   
 
 signed main() {
