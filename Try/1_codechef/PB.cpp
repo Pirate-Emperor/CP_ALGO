@@ -56,28 +56,27 @@ ll res=0;
 // }
 
 void solve(){
-    ll l=0,r=0;
+    ll l=INF,r=-INF;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<ll> arr(n+2,0),brr(n+2,0),crr(n+2,0);
-    for(int i=1;i<=n;i++) cin>>arr[i];
-    arr[0]=brr[0]=0;
-    crr[0]=1;
-    for(int i=1;i<=n;i++){
-        if(arr[i]%2==0){
-            brr[i]=(brr[i-1]+crr[i-1])%MOD;
-            crr[i]=brr[i];
-        }
-        else{
-            if(arr[i-1]%2!=0) brr[i]=(brr[i-2]+crr[i-2])%MOD;
-            else brr[i]=0;
-            crr[i]=(crr[i-1]+brr[i])%MOD;
+    vector<ll> arr(n);
+    for(int i=0;i<n;++i) cin>>arr[i];
+    bool chk=true;
+    for(int i=0;i<n/2;++i){
+        a=arr[i];
+        b=arr[n-1-i];
+        if(a!=b){
+            if(abs(a-b)!=2) chk=false;
+            c=min(a,b);
+            l=min(l,c);
+            r=max(r,c);
         }
     }
-    res=crr[n];
-    cout<<res<<endl;
+    if(r>l+1) chk=false;
+    if (chk) cout<<"Yes\n";
+    else cout<<"No\n";
 }
 
 signed main() {

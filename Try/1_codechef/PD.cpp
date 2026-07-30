@@ -41,28 +41,6 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-ll bit[MAX_N*4];
-void add(ll i,ll d){
-    for(;i<=4*n+5;i+=i&-i) bit[i]+=d;
-}
-ll qry(ll i){
-    ll s=0;
-    if(i<0) return 0;
-    for(i=min(i,4*n+5);i>0;i-=i&-i) s+=bit[i];
-    return s;
-}
-ll recur(vector<ll>&v,ll pr,ll df,bool chk){
-    ll res=0,f=n+2,vt,rest=0;
-    for(ll i=0;i<=4*n+5;++i) bit[i]=0;
-    for(ll r=0;r<n;++r){
-        if(r%2==pr) add(rest+f,1);
-        rest+=v[r];
-        vt=(chk?df:-df);
-        vt+=rest+f;
-        res+=chk?qry(4*n+5)-qry(vt-1):qry(vt);
-    }
-    return res;
-}
 
 void solve(){
     ll l=0,r=0;
@@ -71,50 +49,49 @@ void solve(){
     ll g=0,q=0,k=0;
     res=0;
     cin>>n;
-    vector<ll> arr(n+2,0),brr(n+2,0),crr(n+2,0),drr,err(n+2,0),frr(n+2,0);
-    for(ll i=1;i<=n;++i) cin>>brr[i];
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    if(arr[n]!=n){
-        cout<<-1<<endl;
-        return;
-    }
-    for(ll i=2;i<=n;++i){
-        if(arr[i]==i&&arr[i-1]==i-1&&(i==n||arr[i+1]==i+1)){
-            crr[i]=1;
-            // brr[i]=1;a++;
+    vector<int> arr(n+1);
+    for(int i=1;i<=n;++i) cin>>arr[i];
+    sort(arr.begin()+1,arr.end());
+    res=LINF;
+    for(l=2;l<n;++l){
+        for(r=l;r<n;++r){
+            // res=min(res,max(2*arr[r]-arr[1]-2*arr[r+1],arr[l-1]+arr[n]-arr[l]));
+            res=min(res,max(2*arr[r]-arr[1]-arr[r+1],arr[l-1]+arr[n]-2*arr[l]));
         }
     }
-    // b=n-a;
-    // res=b*(b-1)%MOD*qexp(4,MOD-2,MOD)%MOD;
-    // d=qexp(2*(a+1)%MOD,MOD-2,MOD);
-    // for(ll i=1;i<=n;++i){
-    //     if(brr[i]) c++;
-    //     else{
-    //         l=c*(c+1)%MOD;
-    //         r=(a-c)*(a-c+1)%MOD;
-    //         res=(res+(l+r)%MOD*d%MOD)%MOD;
-    //     }
-    // }
-    for(ll i=1;i<=n;++i){
-        if(crr[brr[i]]) drr.push_back(brr[i]);
-    }
-    for(ll i=1;i<=n;++i){
-        if(crr[i]){
-            err[drr[k]]=i;
-            k++;
+    for(l=1;l<=n;++l){
+        for(r=1;r<=l+1 &&r<=n;++r){
+            for(int j=0;j<3;++j){
+                if(j==1){ 
+                    y=-1; 
+                    a=2*arr[n]-arr[1]; 
+                    b=arr[l]-2*arr[r]; 
+                    // c=(a-b)/4; 
+                    c=(a-b)/2; 
+                }
+                else if(!j){ 
+                    y=2; 
+                    a=-(arr[1]+arr[r]); 
+                    // b=arr[l]+arr[n]-1; 
+                    b=arr[l]+arr[n]; 
+                    c=(b-a)/4; 
+                    // c=(b-a)/2; 
+                }
+                else{ 
+                    y=-1; 
+                    // a=1*arr[l]-arr[r]; 
+                    a=2*arr[l]-arr[r]; 
+                    b=arr[n]-2*arr[1]; 
+                    c=(a-b)/2; 
+                }
+                k=lower_bound(arr.begin()+1,arr.end(),c)-arr.begin();
+                for(int i=k-1;i<=k+1;++i){
+                    if(i>0&&i<=n) res=min(res,max(y*arr[i]+a,b-y*arr[i]));
+                }
+            }
         }
-        else err[i]=i;
     }
-    for(ll i=1;i<=n;++i){
-        w=err[brr[i]];q=0;
-        for(ll j=w;j>0;j-=j&-j) q+=frr[j];
-        res+=i-1-q;
-        for(ll j=w;j<=n;j+=j&-j) frr[j]+=1;
-    }
-    // for(ll i=1;i<=n;++i) res=res*i%MOD;
     cout<<res<<endl;
-
-
 }
 
 signed main() {

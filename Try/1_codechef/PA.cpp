@@ -61,15 +61,24 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<ll> arr(n),resu;
-    for(ll i=0;i<n;i++){
-        cin>>arr[i];
-        if(!arr[i]) c++;
+    vector<ll> arr(n);
+    for(ll i=0;i<n;++i) cin>>arr[i];
+    priority_queue<pair<ll,ll>> pq;
+    for(ll i=1;i<n-1;++i) pq.push({arr[i],i});
+    while(pq.size()){
+        x=pq.top().second;
+        pq.pop();
+        if(arr[x]<arr[x-1]){
+            if (arr[x]<arr[x+1]){
+                arr[x-1]=arr[x+1]=arr[x];
+                if(x>1) pq.push({arr[x],x-1});
+                if(x<n-2) pq.push({arr[x],x+1});
+            }
+        }
     }
-    for(ll i=0;i<c;i++) resu.push_back(0);
-    for(ll i=0;i<n;i++) if(arr[i]) resu.push_back(arr[i]);
-    for(ll i=0;i<n;i++) cout<<resu[i]<<" ";
-    cout<<endl;
+    res=0;
+    for(ll i=0;i<n;++i) res+=arr[i];
+    cout<<res<<endl;
 }
 
 signed main() {

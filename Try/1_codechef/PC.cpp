@@ -66,34 +66,44 @@ ll recur(vector<ll>&v,ll pr,ll df,bool chk){
 
 void solve(){
     ll l=0,r=0;
-    ll x=0,w=0,y=0,z=0;
+    ll x=0,w=0,y=INF,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     res=0;
     cin>>n;
-    vector<ll> arr(n+2,0),brr(n+2,0);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    if(arr[n]!=n){
-        cout<<0<<endl;
-        return;
-    }
-    for(ll i=2;i<=n;++i){
-        if(arr[i]==i&&arr[i-1]==i-1&&(i==n||arr[i+1]==i+1)){
-            brr[i]=1;a++;
+    vector<ll> arr(n+2,0),brr(n+2,0),crr(n+2,0);
+    for(int i=1;i<=n;++i) cin>>arr[i];
+    for(int i=1;i<=n;++i){
+        if(arr[i]>w){
+            brr[i]=1;
+            w=arr[i];
         }
+        else brr[i]=0;
+        y=min(y,arr[i]);
     }
-    b=n-a;
-    res=b*(b-1)%MOD*qexp(4,MOD-2,MOD)%MOD;
-    d=qexp(2*(a+1)%MOD,MOD-2,MOD);
-    for(ll i=1;i<=n;++i){
-        if(brr[i]) c++;
-        else{
-            l=c*(c+1)%MOD;
-            r=(a-c)*(a-c+1)%MOD;
-            res=(res+(l+r)%MOD*d%MOD)%MOD;
+    set<ll> s;
+    for(int i=n;i>=1;--i){
+        auto it=s.lower_bound(arr[i]);
+        if(it!=s.begin()){
+            --it;
+            if(i>1&&arr[i-1]<*it) crr[i-1]=1;
         }
+        s.insert(arr[i]);
     }
-    for(ll i=1;i<=n;++i) res=res*i%MOD;
+    l=1;
+    while(l<=n){
+        if(!brr[l]){
+            l++;
+            continue;
+        }
+        r=l;
+        while(r<n&&brr[r+1]&&crr[r]) r++;
+        k=r-l+1;
+        if(l==1&&arr[1]>y) z+=k/2;
+        else z+=(k+1)/2;
+        l=r+1;
+    }
+    res=n-z;
     cout<<res<<endl;
 }
 

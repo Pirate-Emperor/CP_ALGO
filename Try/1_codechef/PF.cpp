@@ -40,70 +40,104 @@ vector<array<int,2>> edges;
 vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
+vector<ll> tempc[MAX_N],tempd[MAX_N];
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+
+ll bit[2][MAX_N];
+ll node[MAX_N*2];
+
+ll rec(ll i){
+    return par[i]==i?i:par[i]=rec(par[i]);
+}
+
+void add(ll p,ll i,ll v){
+    for(;i<=n;i+=i&-i)bit[p][i]+=v;
+}
+void radd(ll p,ll l,ll r,ll v){
+    add(p,l,v);
+    add(p,r+1,-v);
+}
+
+ll qry(ll p,ll i){
+    ll s=0;
+    for(;i>0;i-=i&-i)s+=bit[p][i];
+    return s;
+}
+ll cnt(ll l,ll r,ll p){
+    return l>r?0:(r-l+1)/2+((r-l+1)%2&&l%2==p);
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>m;
-    vector<ll> arr(n+1);
-    for(ll i=1;i<=n;++i) cin>>arr[i];
-    ll res=0;
-    if(arr[1]!=1){
-        arr[1]=1;
-        res++;
+    cin>>n;
+    vector<ll> arr(n+2,0),brr(n+2,0),crr(n+2,n+2),drr(n+2,n+2);
+    for(int i=1;i<=n;++i) cin>>arr[i];
+    vector<ll> st;
+    for(int i=1;i<=n;++i){
+        while(st.size()&&arr[st.back()]<arr[i]) st.pop_back();
+        brr[i]=st.empty()?0:st.back();
+        st.push_back(i);
     }
-    if(arr[n]!=m){
-        arr[n]=m;
-        res++;
+    st.clear();
+    for(int i=n;i>=1;--i){
+        while(st.size()&&arr[st.back()]>arr[i]) st.pop_back();
+        crr[i]=st.empty()?n+1:st.back();
+        st.push_back(i);
     }
-    vector<ll> brr(n+1,-INF),crr(n+1,-INF);
-    ll msz=n+m+5;
-    vector<ll> drr(msz,-INF), bit(msz+1,-INF);
-    auto fa=[&](ll i,ll v){
-        for(;i<=msz;i+=i&-i) bit[i]=max(bit[i],v);
-    };
-    auto get=[&](ll i){
-        ll rt=-INF;
-        for(;i>0;i-=i&-i) rt=max(rt,bit[i]);
-        return rt;
-    };
-    brr[1]=1;
-    crr[1]=1;
-    ll d1=1-arr[1]+m+1;
-    drr[d1]=1;
-    fa(d1,1);
-    for(int j=2;j<=n;++j){
-        if(arr[j]<=j&&arr[j]>=j+m-n){
-            ll v1=crr[j-arr[j]];
-            ll v2=get(j);
-            ll v3=drr[j-arr[j]+m+1];
-            brr[j]=1+max({v1,v2,v3});
+    for(int i=0;i<=2*n+5;++i) node[i]=INF;
+    for(int i=n;i>=1;--i){
+        if(i<n&&arr[i]<arr[i+1]){
+            ll li=arr[i]+1+n,ri=arr[i+1]-1+n+1;
+            x=INF;
+            for(;li<ri;li>>=1,ri>>=1){
+                if(li&1) x=min(x,node[li++]);
+                if(ri&1) x=min(x,node[--ri]);
+            }
+            if(x!=INF) drr[i]=x;
         }
-        if(brr[j]<0)brr[j]=-INF;
-        crr[j]=max(crr[j-1],brr[j]);
-        if(brr[j]>0){
-            ll dj=j-arr[j]+m+1;
-            drr[dj]=max(drr[dj],brr[j]);
-            fa(dj,brr[j]);
-        }
+        ll p=arr[i]+n;
+        for(node[p]=i;p>1;p>>=1) node[p>>1]=min(node[p],node[p^1]);
     }
-    res+=n-brr[n];
+    par.assign(n+2,0);
+    for(int i=0;i<=n+1;++i){
+        tempc[i].clear();
+        tempd[i].clear();
+        par[i]=i;
+        bit[0][i]=bit[1][i]=0;
+    }
+    for(int i=1;i<=n;++i){
+        if(crr[i]<=n) tempc[crr[i]].push_back(i);
+        if(drr[i]<=n) tempd[drr[i]].push_back(i);
+    }
+    res=0;
+    for(int i=1;i<=n;++i){
+        a+=i-brr[i];
+        for(ll v:tempc[i]){
+            // w=qry(v%2,v);
+            // d=v-brr[v]-w;
+            // par[rec(v)]=rec(v+1);
+            y=rec(v);
+            radd(v%2,v,y,1);
+            radd(1-(v%2),v,y,-1);
+            z+=cnt(v,y,v%2)-cnt(v,y,1-(v%2));
+        }
+        for(ll u:tempd[i]){
+            w=qry(u%2,u);
+            d=u-brr[u]-w;
+            par[rec(u)]=rec(u+1);
+            y=rec(u+1);
+            l=u+1;
+            radd(l%2,l,y,d);
+            radd(1-(l%2),l,y,-d);
+            // radd(1-(l%2),l,y,-1);
+            z+=d*cnt(l,y,l%2)-d*cnt(l,y,1-(l%2));
+            // z+=d*cnt(l,y,l%2)-(d-1)*cnt(l,y,1-(l%2))-cnt(u,y,1-(l%2));
+        }
+        res+=i*(i+1)/2-a+z;
+    }
     cout<<res<<endl;
 }
 
