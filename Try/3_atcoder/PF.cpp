@@ -39,14 +39,12 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-void upd(ll i,ll v){
-	for(;i<=n+1;i+=i&-i) dis[i]=max(dis[i],v);
+
+ll rec(ll x){
+	if(par[x]==x)return x;
+	return par[x]=rec(par[x]);
 }
-ll get(ll i){
-	ll res=-INF;
-	for(;i>0;i-=i&-i) res=max(res,dis[i]);
-	return res;
-}
+
 void solve(){
 	ll l=0,r=0;
 	ll x=0,w=0,y=0,z=0;
@@ -54,22 +52,38 @@ void solve(){
 	ll g=0,q=0,k=0;
 	cin>>n;
 	vector<ll> arr(n);
-	dis.assign(n+2,-INF);
-	upd(1,0);
-	for(ll i=0;i<n;i++){
+	m=0;
+	for(int i=0;i<n;i++){
 		cin>>arr[i];
-		if(arr[i]>m){
-			c++;
-			upd(m+1,res);
-			m=arr[i];
-		}
-		else{
-			x=get(arr[i]);
-			upd(arr[i]+1,x+1);
-			res=max(res,x+1);
+		if(arr[i]>m) m=arr[i];
+	}
+	if(n==1){
+		cout<<0<<endl;
+		return;
+	}
+	vector<ll> crr(m+1,0);
+	for(int i=0;i<n;i++) crr[arr[i]]++;
+	par.assign(m+1,0);
+	for(int i=0;i<=m;i++) par[i]=i;
+	res=0;
+	for(int i=1;i<=m;i++) if(crr[i]>0) res+=(crr[i]-1)*i;
+	for(int i=m;i>=1;i--){
+		a=-1;
+		for(k=1;i*k<=m;k++){
+			x=i*k;
+			if(crr[x]>0){
+				if(a==-1)a=x;
+				else{
+					b=rec(a);
+					c=rec(x);
+					if(b!=c){
+						par[b]=c;
+						res+=i;
+					}
+				}
+			}
 		}
 	}
-	res+=c;
 	cout<<res<<endl;
 }
 

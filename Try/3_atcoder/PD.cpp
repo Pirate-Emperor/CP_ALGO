@@ -39,35 +39,58 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
-// {
-//     vis[u]=1;
-//     for (int it: adj[u])
-//     {
-//         if (vis[it]==0) 
-//         {
-//             par[it]=u;
-//             recur(it, dep+1);
-//         }
-//     }
-//     dis[u]=dep;
-// }
+vector<ll> arr,brr;
+bool rec(ll u,ll v){
+	for(ll i=0;i<m;++i){
+        if(arr[i]!=u&&brr[i]!=u&&arr[i]!=v&&brr[i]!=v) return 0;
+    }
+	return 1;
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin>>s;
-    n=s.size();
-    for(int i=0;i<n;i++) for(int j=0;j<2;j++){
-        for(b=0,a=0;i-b>=0 && (i+j+b)<n;b++){
-            if((a+=s[i-b]!=s[i+j+b])<2) res++;
-            else break;
-        }
+    cin>>n>>m;
+	arr.resize(m);
+    brr.resize(m);
+	for(int i=0;i<m;++i) cin>>arr[i]>>brr[i];
+	a=arr[0];
+    b=brr[0];
+	bool chk1=true,chk2=true;
+	for(k=0;k<m;++k) if(arr[k]!=a&&brr[k]!=a){
+        chk1=false;
+        break;
     }
-    cout<<res;
+	for(l=0;l<m;++l) if(arr[l]!=b&&brr[l]!=b){
+        chk2=false;
+        break;
+    }
+	if(chk1&&chk2){
+        // res=2*n-4;
+        // res=n-3+n+1;
+        res=2*n-3;
+    }
+	else if(chk1){
+		res=n-1;
+		if(arr[k]!=a&& rec(b,arr[k])) res++;
+		if(brr[k]!=a&&rec(b,brr[k])) res++;
+	}
+    else if(chk2){
+		res=n-1;
+		if(arr[l]!=b&& rec(a,arr[l])) res++;
+		if(brr[l]!=b&&rec(a,brr[l])) res++;
+	}
+    else{
+		set<pair<ll,ll>> st;
+		st.insert({min(a,arr[k]),max(a,arr[k])});
+		st.insert({min(a,brr[k]),max(a,brr[k])});
+		st.insert({min(b,arr[l]),max(b,arr[l])});
+		st.insert({min(b,brr[l]),max(b,brr[l])});
+		for(auto p:st) if(rec(p.first,p.second)) res++;
+	}
+	cout<<res<<endl;
 }
 
 signed main() {

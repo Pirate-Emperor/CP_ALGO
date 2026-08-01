@@ -58,11 +58,8 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-    vector<ll> arr(n);
-    for(int i=0;i<n;++i) cin>>arr[i];
-    for(int i=0;i<n-2;++i) if(arr[i]<arr[i+1]&& arr[i+1]>arr[i+2]) res++;
-    cout<<res;
+    cin>>n>>k;
+    cout<<n-k+1<<endl;
 }
 
 signed main() {

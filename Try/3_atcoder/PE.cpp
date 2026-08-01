@@ -8,7 +8,7 @@ using namespace std;
 #define ull unsigned long long
 #define int long long
  
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 1e6 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -40,29 +40,54 @@ vector<ll> dis;
 vector<ll> par;
 ll res=0;
 
+
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-    vector<ll> arr(n+1),brr(n+1,0),crr(n+1,0);
-    for(int i=1;i<=n;i++) cin>>arr[i];
-    if(n>=1){
-        brr[1]=1;
-        crr[1]=1;
+    bool chk=0;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    vector<ll> arr(MAX_N),brr(MAX_N),crr(MAX_N);
+    for(int i=0;i<n;++i) if(s[i]=='o') arr[++w]=i+1;
+    if(w<k){
+        cout<<"0.0000000000\n";
+        return;
     }
-    for(int i=2;i<=n;i++){
-        brr[i]=MOD-((MOD/i)*brr[MOD%i]%MOD);
-        crr[i]=(crr[i-1]+brr[i])%MOD;
+    double resu=-1.0;
+    for(int i=k;i<=w;++i){
+        q=i-k;
+        x=arr[q+1]-1;
+        y=q;
+        while(z>=2){
+            a=brr[z-2];
+            b=crr[z-2];
+            c=brr[z-1];
+            d=crr[z-1];
+            // d=crr[z-2];
+            if((c-a)*(y-b)<=(d-b)*(x-a)) z--;
+            else break;
+        }
+        brr[z]=x;
+        crr[z]=y;
+        z++;
+        l=0;r=z-1;
+        while(l<r){
+            g=(l+r)/2;
+            a=brr[g];
+            b=crr[g];
+            c=brr[g+1];
+            d=crr[g+1];
+            if((c-a)*(i-b)>(d-b)*(arr[i]-a)) l=g+1;
+            // if((c-a)*(i-b)>(d-b)*(arr[i]-a)) l=g;
+            else r=g;
+        }
+        double cur=1.0*(i-crr[l])/(arr[i]-brr[l]);
+        if(cur>resu) resu=cur;
     }
-    res=0;
-    w=crr[n];
-    for(int i=1;i<=n;i++){
-        res=(res+w*arr[i])%MOD;
-        if(i<n) w=(w+crr[n-i]-crr[i]+MOD)%MOD;
-    }
-    cout<<res<<endl;
+    cout<<fixed<<setprecision(10)<<resu<<endl;
 }
 
 signed main() {

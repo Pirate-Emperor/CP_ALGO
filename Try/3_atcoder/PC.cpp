@@ -57,12 +57,16 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    vector<ll> arr(n),brr(n);
-    for(int i=0;i<n;++i) cin>>arr[i];
-    for(int i=0;i<n;++i) cin>>brr[i];
-    res=recur(brr)-recur(arr)-1;
-    if(res<0) res=0;
-    cout<<res<<endl;
+    string s;
+    cin>>s;
+    vector<ll> arr;
+    for(int i=0;i<n;i++){
+        if(s[i]=='x') arr.push_back(i+1);
+    }
+    for(int i=1;i<=n;i++){
+        if(i<=(ll)arr.size()) cout<<arr[i-1]<<endl;
+        else cout<<n<<endl;
+    }
 }
 
 signed main() {
