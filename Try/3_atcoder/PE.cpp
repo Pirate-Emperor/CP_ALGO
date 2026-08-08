@@ -33,6 +33,8 @@ ll qexp(ll a, ll b, ll m){
 }
 
 ll n, m;
+bool chk[205][205][205];
+double dp[205][205][205];
 vector<int> adj[MAX_N];
 vector<array<int,2>> edges;
 vector<ll> vis;
@@ -40,53 +42,41 @@ vector<ll> dis;
 vector<ll> par;
 ll res=0;
 
+double rec(ll n,ll k,ll l){
+    if(!n||!l) return 0;
+    if(chk[n][k][l]) return dp[n][k][l];
+    ll y=2*n-k;
+    if(!(2*n-k)) return 0;
+    double a=0;
+    if(k>0){
+        a+=(double)(k)/y*(1+rec(n-1,k-1,l));
+        // a+=(double)(k+y-1)/y*(rec(n-1,k-1,l));
+    }
+    ll u=2*n-2*k;
+    if(u>0){
+        double s=0;
+        s+=1.0/(y-1)*(1+rec(n-1,k,l));
+        // if(k>0&&l>1) s+=(double)(k+y-2)/(y-1)*(rec(n-1,k,l-1));
+        if(k>0&&l>1) s+=(double)(k)/(y-1)*(1+rec(n-1,k,l-1));
+        if(u>2&&l>1) s+=(double)(u-2)/(y-1)*rec(n,k+2,l-1);
+        a+=(double)u/y*s;
+    }
+    chk[n][k][l]=true;
+    return dp[n][k][l]=a;
+}
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    bool chk=0;
-    cin>>n>>k;
-    string s;
-    cin>>s;
-    vector<ll> arr(MAX_N),brr(MAX_N),crr(MAX_N);
-    for(int i=0;i<n;++i) if(s[i]=='o') arr[++w]=i+1;
-    if(w<k){
-        cout<<"0.0000000000\n";
-        return;
+    ll g=0,q=0,k=0; 
+    cin>>n>>l;
+    vector<ll> arr(n);
+    for(int i=0;i<n;++i){
+        cin>>arr[i];
+        w+=arr[i];
     }
-    double resu=-1.0;
-    for(int i=k;i<=w;++i){
-        q=i-k;
-        x=arr[q+1]-1;
-        y=q;
-        while(z>=2){
-            a=brr[z-2];
-            b=crr[z-2];
-            c=brr[z-1];
-            d=crr[z-1];
-            // d=crr[z-2];
-            if((c-a)*(y-b)<=(d-b)*(x-a)) z--;
-            else break;
-        }
-        brr[z]=x;
-        crr[z]=y;
-        z++;
-        l=0;r=z-1;
-        while(l<r){
-            g=(l+r)/2;
-            a=brr[g];
-            b=crr[g];
-            c=brr[g+1];
-            d=crr[g+1];
-            if((c-a)*(i-b)>(d-b)*(arr[i]-a)) l=g+1;
-            // if((c-a)*(i-b)>(d-b)*(arr[i]-a)) l=g;
-            else r=g;
-        }
-        double cur=1.0*(i-crr[l])/(arr[i]-brr[l]);
-        if(cur>resu) resu=cur;
-    }
+    double resu=rec(n,0,l)*((double)w/n);
     cout<<fixed<<setprecision(10)<<resu<<endl;
 }
 

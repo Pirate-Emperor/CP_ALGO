@@ -40,32 +40,45 @@ vector<ll> dis;
 vector<ll> par;
 ll res=0;
 
-ll recur(vector<ll>&crr){
-    ll r=0,l=1;
-    for(int i=n-1;i>=0;--i){
-        ll a=0;
-        for(int j=i+1;j<n;++j) if(crr[j]<crr[i]) a++;
-        r+=a*l;
-        if(i) l*=n-i;
-    }
-    return r;
-}
+// ll recur(vector<ll>&crr){
+//     ll r=0,l=1;
+//     for(int i=n-1;i>=0;--i){
+//         ll a=0;
+//         for(int j=i+1;j<n;++j) if(crr[j]<crr[i]) a++;
+//         r+=a*l;
+//         if(i) l*=n-i;
+//     }
+//     return r;
+// }
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin>>n;
-    string s;
-    cin>>s;
-    vector<ll> arr;
-    for(int i=0;i<n;i++){
-        if(s[i]=='x') arr.push_back(i+1);
-    }
-    for(int i=1;i<=n;i++){
-        if(i<=(ll)arr.size()) cout<<arr[i-1]<<endl;
-        else cout<<n<<endl;
+    ll g=0,q=0,k=0; 
+    cin>>n>>q;
+    vector<ll> arr(n+1),brr(n+1),crr;
+    while(q--){
+        cin>>y;
+        if(y==1){
+            cin>>x;
+            w=max(z,arr[x]-b);
+            if(w) brr[arr[x]]--;
+            arr[x]=w+b+1;
+            if(!brr[arr[x]]++) crr.push_back(arr[x]);
+        }
+        else ++b;
+        res=0;
+        for(int i=0;i<crr.size();)
+            if(crr[i]<=b||!brr[crr[i]]){
+                crr[i]=crr.back();
+                crr.pop_back();
+            }
+            else{
+                if(brr[crr[i]]&1) res^=crr[i]-b;
+                i++;
+            }
+        cout<<res<<endl;
     }
 }
 

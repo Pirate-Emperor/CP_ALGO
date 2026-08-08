@@ -8,7 +8,7 @@ using namespace std;
 #define ull unsigned long long
 #define int long long
  
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 5e5 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -39,58 +39,59 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-vector<ll> arr,brr;
-bool rec(ll u,ll v){
-	for(ll i=0;i<m;++i){
-        if(arr[i]!=u&&brr[i]!=u&&arr[i]!=v&&brr[i]!=v) return 0;
-    }
-	return 1;
-}
+// vector<ll> arr,brr;
+// bool rec(ll u,ll v){
+// 	for(ll i=0;i<m;++i){
+//         if(arr[i]!=u&&brr[i]!=u&&arr[i]!=v&&brr[i]!=v) return 0;
+//     }
+// 	return 1;
+// }
 
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
-    ll g=0,q=0,k=0;
-    cin>>n>>m;
-	arr.resize(m);
-    brr.resize(m);
-	for(int i=0;i<m;++i) cin>>arr[i]>>brr[i];
-	a=arr[0];
-    b=brr[0];
-	bool chk1=true,chk2=true;
-	for(k=0;k<m;++k) if(arr[k]!=a&&brr[k]!=a){
-        chk1=false;
-        break;
+    ll g=0,q=0,k=0; 
+    cin>>n>>q;
+    vector<ll> arr(n+1),brr(n+1);
+    bool chk=false;
+    for(int i=1;i<=n;i++){
+        cin>>arr[i];
+        brr[arr[i]]=i;
     }
-	for(l=0;l<m;++l) if(arr[l]!=b&&brr[l]!=b){
-        chk2=false;
-        break;
+    while(q--){
+        cin>>x;
+        if(x==2) chk=!chk;
+        else{
+            cin>>y>>z;
+            if(!chk){
+                a=arr[y];
+                b=arr[z];
+                arr[y]^=arr[z];
+                arr[z]^=arr[y];
+                arr[y]^=arr[z];
+                brr[a]=z;
+                brr[b]=y;
+            }
+            else{
+                a=brr[y];
+                b=brr[z];
+                brr[y]^=brr[z];
+                brr[z]^=brr[y];
+                brr[y]^=brr[z];
+                arr[a]=z;
+                arr[b]=y;
+            }
+        }
     }
-	if(chk1&&chk2){
-        // res=2*n-4;
-        // res=n-3+n+1;
-        res=2*n-3;
+    if(!chk){
+        for(int i=1;i<=n;i++) cout<<arr[i]<<" ";
+        cout<<endl;
     }
-	else if(chk1){
-		res=n-1;
-		if(arr[k]!=a&& rec(b,arr[k])) res++;
-		if(brr[k]!=a&&rec(b,brr[k])) res++;
-	}
-    else if(chk2){
-		res=n-1;
-		if(arr[l]!=b&& rec(a,arr[l])) res++;
-		if(brr[l]!=b&&rec(a,brr[l])) res++;
-	}
     else{
-		set<pair<ll,ll>> st;
-		st.insert({min(a,arr[k]),max(a,arr[k])});
-		st.insert({min(a,brr[k]),max(a,brr[k])});
-		st.insert({min(b,arr[l]),max(b,arr[l])});
-		st.insert({min(b,brr[l]),max(b,brr[l])});
-		for(auto p:st) if(rec(p.first,p.second)) res++;
-	}
-	cout<<res<<endl;
+        for(int i=1;i<=n;i++) cout<<brr[i]<<" ";
+        cout<<endl;
+    }
 }
 
 signed main() {

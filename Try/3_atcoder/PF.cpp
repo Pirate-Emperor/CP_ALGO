@@ -40,50 +40,48 @@ vector<ll> dis;
 vector<ll> par;
 ll res=0;
 
-ll rec(ll x){
-	if(par[x]==x)return x;
-	return par[x]=rec(par[x]);
+ll recur(ll x){
+    return par[x]==x?x:par[x]=recur(par[x]);
 }
-
 void solve(){
-	ll l=0,r=0;
-	ll x=0,w=0,y=0,z=0;
-	ll a=0,b=0,c=0,d=0;
-	ll g=0,q=0,k=0;
-	cin>>n;
-	vector<ll> arr(n);
-	m=0;
-	for(int i=0;i<n;i++){
-		cin>>arr[i];
-		if(arr[i]>m) m=arr[i];
+    ll l=0,r=0;
+    ll x=0,w=0,y=0,z=0;
+    ll a=0,b=0,c=0,d=0;
+    ll g=0,q=0,k=0;
+    cin>>n>>m;
+	vector<ll> arr(n+1,1),brr(n+1,1);
+	string s;
+	cin>>s;
+	par.resize(n);
+	for(int i=0;i<n;++i) par[i]=i;
+	dis.assign(n,0);
+	for(int i=0;i<m;++i){
+		cin>>a>>b;
+		par[recur(--a)]=recur(--b);
 	}
-	if(n==1){
-		cout<<0<<endl;
-		return;
+	for(int i=1;i<=n;++i) arr[i]=arr[i-1]*i%MOD;
+	brr[n]=qexp(arr[n],MOD-2,MOD);
+	for(int i=n-1;i>=0;--i) brr[i]=brr[i+1]*(i+1)%MOD;
+	vector<vector<ll>> crr(n,vector<ll>(26,0));
+	for(int i=0;i<n;++i){
+		x=recur(i);
+		crr[x][s[i]-'a']++;
+		dis[x]++;
 	}
-	vector<ll> crr(m+1,0);
-	for(int i=0;i<n;i++) crr[arr[i]]++;
-	par.assign(m+1,0);
-	for(int i=0;i<=m;i++) par[i]=i;
-	res=0;
-	for(int i=1;i<=m;i++) if(crr[i]>0) res+=(crr[i]-1)*i;
-	for(int i=m;i>=1;i--){
-		a=-1;
-		for(k=1;i*k<=m;k++){
-			x=i*k;
-			if(crr[x]>0){
-				if(a==-1)a=x;
-				else{
-					b=rec(a);
-					c=rec(x);
-					if(b!=c){
-						par[b]=c;
-						res+=i;
-					}
+	res=1;
+	bool chk=false;
+	for(int i=0;i<n;++i){
+		if(dis[i]>0){
+			res=res*arr[dis[i]]%MOD;
+			for(int j=0;j<26;++j){
+				if(crr[i][j]>0){
+					res=res*brr[crr[i][j]]%MOD;
+					chk|=(crr[i][j]>1);
 				}
 			}
 		}
 	}
+	if(!chk) res=res*qexp(2,MOD-2,MOD)%MOD;
 	cout<<res<<endl;
 }
 

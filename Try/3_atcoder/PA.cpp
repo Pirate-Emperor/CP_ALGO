@@ -58,8 +58,11 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>k;
-    cout<<n-k+1<<endl;
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        if(i%3==0) cout<<"Fizz\n";
+        else cout<<i<<endl;
+    }
 }
 
 signed main() {

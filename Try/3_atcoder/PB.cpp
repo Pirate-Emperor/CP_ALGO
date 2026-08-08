@@ -59,15 +59,13 @@ void solve(){
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
     cin>>n;
-    string s;
-    cin>>s;
+    map<ll,ll> mpi;
     for(int i=0;i<n;++i){
-        bool chk=true;
-        if((s[i]=='o')||(i>0&&s[i-1]=='o')||(i<n-1&&s[i+1]=='o')){}
-        // if(i<n-1&&s[i+1]=='o'){}
-        else res++;
-        
+        cin>>x;
+        mpi[x]++;
+        a=max(a,mpi[x]);
     }
+    res=n-a;
     cout<<res<<endl;
 }
 
