@@ -16,7 +16,7 @@ const ll MOD = 998244353;
 const ll INF = 1e9;
 const ll LINF = 1e18;
 const int K = 11;
-const int OFF=40;
+const int OFF=30;
 const int MDIF=100;
 const int G=3;
 
@@ -61,38 +61,43 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>x;
-    if((n&(n-1))||(x>0&&n<=2)){
-        cout<<"-1\n";
-        return;
-    }
-    vector<ll> arr(n),brr(n,0);
-    if(x==0) for(ll i=0;i<n;++i) arr[i]=i;
-    else{
-        b=1;
-        for(ll i=0;i<n;++i){
-            if(!brr[i]){
-                brr[i]=brr[i^x]=1;
-                if(a<n){
-                    arr[a]=i;
-                    arr[a+2]=i^x;
-                    a+=4;
-                }
-                else{
-                    arr[b]=i;
-                    arr[b+2]=i^x;
-                    b+=4;
-                }
+    cin>>n;
+    vector<ll>arr(n);
+    for(int i=0;i<n;++i) cin>>arr[i];
+    sort(all(arr));
+    res=n;
+    while(1){
+        b=max(0LL,res-OFF);
+        k=min(res,OFF);
+        if(n-b>k){
+            res++;
+            continue;
+        }
+        priority_queue<ll>pq;
+        for(int i=0;i<n-b;++i) pq.push(arr[i]);
+        bool chk=true;
+        for(int j=k-1;j>=0;--j){
+            if(pq.empty()) break;
+            z=pq.top();
+            pq.pop();
+            if(z<=0) break;
+            z-=(1LL<<j);
+            if(z>0){
+                // chk=false;
+                pq.push(z);
+            }
+            // else if(!chk) chk=true;
+        }
+        if(!pq.empty()){
+            if (pq.top()>0) chk=false;
+            else{
+
             }
         }
+        if(chk) break;
+        res++;
     }
-    for(ll i=0;i<n*n;++i){
-        res=arr[i/n]^arr[i%n];
-        // if(i%2!=0) res^=x;
-        if((((i/n)*(i%n))%2)!=0) res^=x;
-        cout<<res<<" ";
-        if(i%n==n-1) cout<<endl;
-    }
+    cout<<res<<endl;
 }
 
 signed main() {

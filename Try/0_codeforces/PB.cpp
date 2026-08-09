@@ -10,7 +10,7 @@ using namespace std;
 #define ull unsigned long long
 #define int long long
  
-const int MAX_N = 2e5 + 5;
+const int MAX_N = 1e6 + 5;
 const int MAX_K = 360+5;
 const ll MOD = 998244353;
 const ll INF = 1e9;
@@ -41,6 +41,15 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
+ll fac[MAX_N];
+ll ifac[MAX_N];
+void prec(){
+    fac[0]=1;
+    ifac[0]=1;
+    for(int i=1;i<MAX_N;i++) fac[i]=fac[i-1]*i%MOD;
+    ifac[MAX_N-1]=qexp(fac[MAX_N-1],MOD-2,MOD);
+    for(int i=MAX_N-2;i>=1;i--) ifac[i]=ifac[i+1]*(i+1)%MOD;
+}
 // void recur(int u, int dep)
 // {
 //     vis[u]=1;
@@ -60,52 +69,24 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-	if(n==1){
+    string s;
+    cin>>n>>s;
+    for(int i=0;i<n;++i){
+        if(s[i]=='0') a++;
+        else b++;
+        if(i==0||s[i]!=s[i-1]){
+            if(s[i]=='0') c++;
+            else d++;
+        }
+    }
+    if(!a|| !b){
         cout<<1<<endl;
         return;
     }
-	vector<ll> arr(n),brr(n+1,0),crr(n+1,0);
-	bool chk=true;
-    bool check=false;
-	for(ll i=0;i<n-1;++i){
-		cin>>arr[i];
-		if(arr[i]<1||arr[i]>=n){
-            chk=false;
-            continue;
-        }
-		brr[arr[i]]++;
-		a=max(a,arr[i]);
-		if(i>0){
-			if(arr[i]<arr[i-1]) check=true;
-			if(arr[i]>arr[i-1]&& check) chk=false;
-			if(arr[i]!=arr[i-1]&& crr[arr[i]]){
-                if (crr[arr[i]]>0) chk=false;
-                else{
-                    // check=false;
-                }
-            }
-		}
-		crr[arr[i]]=1;
-	}
-	if(!chk||a!=n-1){
-        cout<<0<<endl;
-        return;
-    }
-	res=2;
-    a=0;
-	for(x=n-1;x>=1;--x){
-		if(brr[x]>0) a+=brr[x]-1;
-		else{
-			if(a<=0){
-                res=0;
-                break;
-            }
-			res=(res*a)%MOD;
-			a--;
-		}
-	}
-	cout<<res<<endl;
+    x=fac[a-1]*ifac[c-1]%MOD*ifac[a-c]%MOD;
+    y=fac[b-1]*ifac[d-1]%MOD*ifac[b-d]%MOD;
+    res=x*y%MOD;
+    cout<<res<<endl;
 }
 
 signed main() {
@@ -114,7 +95,7 @@ signed main() {
     // freopen("input.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     // sieve(MAX_N);
-    // prec();
+    prec();
     int tc; tc = 1;
     cin >> tc;
     for (int t = 1; t <= tc; t++) {

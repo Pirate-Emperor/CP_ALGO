@@ -41,7 +41,7 @@ vector<ll> vis;
 vector<ll> dis;
 vector<ll> par;
 ll res=0;
-// void recur(int u, int dep)
+// void recur(int u, int pre)
 // {
 //     vis[u]=1;
 //     for (int it: adj[u])
@@ -49,10 +49,10 @@ ll res=0;
 //         if (vis[it]==0) 
 //         {
 //             par[it]=u;
-//             recur(it, dep+1);
+//             recur(it, pre+1);
 //         }
 //     }
-//     dis[u]=dep;
+//     dis[u]=pre;
 // }
 
 void solve(){
@@ -60,38 +60,47 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-    vector<ll> arr(n+1,0),brr(n+1,0),crr(n+1,0),drr(n+1,0);
-    for(ll i=1;i<=n;++i) cin>>arr[i]>>brr[i]>>crr[i]>>drr[i];
-    for(ll i=n;i>=1;--i){
-        a=1;
-        bool chk=1;
-        for(ll j=1;j<=i;++j){
-            k=i-j+1;
-            b=0;
-            while(a<=n){
-                if(!(j>=arr[a]&&j<=brr[a])){
-                    if (k>=crr[a]&&k<=drr[a]){
-                    }
-                    else{
-                        b=1;
-                        a++;
-                        break;
-                    }
-                }
-                a++;
-            }
-            if(!b){
-                chk=0;
-                break;
-            }
-        }
-        if(chk){
-            cout<<i<<endl;
-            return;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    m=2*n;
+    for(int i=0;i<m;++i){
+        y+=s[i]=='1'?1:(-1);
+        if(y<w){
+            w=y;
+            x=i+1;
         }
     }
-    cout<<0<<endl;
+    x%=m;
+    vector<ll> cnt(m,0);
+    vector<ar<ll,3>> st;
+    for(int i=0;i<m;++i){
+        z=(x+i)%m;
+        if(s[z]=='1') st.push_back({z,0,1});
+        else if(!st.empty()){
+            auto[it,pre,chk]=st.back();
+            st.pop_back();
+            ll swp=(chk&&pre+1<=k);
+            if(swp) cnt[it]=1;
+            if(!st.empty()){
+                st.back()[1]=max(st.back()[1],pre+1);
+                if(!swp){
+                    st.back()[2]=0;
+                }
+                else if(it%2!=st.back()[0]%2){
+                    // st.back()[2]=1;
+                    st.back()[2]=0;
+                }
+            }
+        }
+    }
+    for(int i=0;i<m;i++){
+        if(s[i]=='1'){
+            if((i%2==0)^cnt[i]) b++;
+            else a++;
+        }
+    }
+    cout<<a<<" "<<b<<endl;
 }
 
 signed main() {
