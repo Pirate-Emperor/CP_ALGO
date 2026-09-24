@@ -2,7 +2,7 @@
 
 #define ar array
 using ll = long long;
-using int = long long;
+#define int long long
 const int MAX_N = 2e5+5;
 const int MAX_L = 1e3+5;
 const int MOD = 1e9+7;
