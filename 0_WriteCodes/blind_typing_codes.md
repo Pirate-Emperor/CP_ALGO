@@ -393,6 +393,7 @@ struct DSU {
 ### 2. LCA via Binary Lifting
 
 ```cpp
+// Here the vertices are stored in 1-based indexing (so `0` can be used as parent for root)
 struct LCA {
     int n, l; vector<vector<int>> up, adj; vector<int> dep;
     LCA(int n) : n(n), l(ceil(log2(n))), up(n + 1, vector<int>(l + 1)), dep(n + 1), adj(n + 1) {}
