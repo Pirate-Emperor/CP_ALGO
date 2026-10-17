@@ -61,41 +61,27 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n;
-    vector<ll>arr(n);
-    for(int i=0;i<n;++i) cin>>arr[i];
-    sort(all(arr));
-    res=n;
-    while(1){
-        b=max(0LL,res-OFF);
-        k=min(res,OFF);
-        if(n-b>k){
-            res++;
-            continue;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    vis.assign(n+1,0);
+    dis.assign(n+1,0);
+    par.assign(n+1,0);
+    res=0;
+    for(ll i=1;i<=n;i++){
+        if(s[i-1]=='('){
+            vis[i]=vis[i-1]+1;
+            dis[i]=dis[i-1];
         }
-        priority_queue<ll>pq;
-        for(int i=0;i<n-b;++i) pq.push(arr[i]);
-        bool chk=true;
-        for(int j=k-1;j>=0;--j){
-            if(pq.empty()) break;
-            z=pq.top();
-            pq.pop();
-            if(z<=0) break;
-            z-=(1LL<<j);
-            if(z>0){
-                // chk=false;
-                pq.push(z);
-            }
-            // else if(!chk) chk=true;
+        else{
+            vis[i]=vis[i-1]-1;
+            dis[i]=dis[i-1]+1;
         }
-        if(!pq.empty()){
-            if (pq.top()>0) chk=false;
-            else{
-
-            }
-        }
-        if(chk) break;
-        res++;
+        while(l<r&&vis[par[r-1]]>=vis[i]) r--;
+        par[r++]=i;
+        while(l<r && dis[i]-dis[par[l]]>=k+1) l++;
+        if(dis[i]<=k) res=max(res,min(n/2,vis[i]+k));
+        if(l<r) res=max(res,vis[i]-vis[par[l]]);
     }
     cout<<res<<endl;
 }

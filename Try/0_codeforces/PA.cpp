@@ -60,47 +60,37 @@ void solve(){
     ll x=0,w=0,y=0,z=0;
     ll a=0,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    cin>>n>>k;
+    cin>>n;
     string s;
     cin>>s;
-    m=2*n;
-    for(int i=0;i<m;++i){
-        y+=s[i]=='1'?1:(-1);
-        if(y<w){
-            w=y;
-            x=i+1;
-        }
+    vector<ll> arr;
+    for(int i=0;i<n;i++) if(s[i]=='1'){
+        arr.push_back(i+1);
+        // if(a==0) c=i;
+        // a++;
+        // b=i;
     }
-    x%=m;
-    vector<ll> cnt(m,0);
-    vector<ar<ll,3>> st;
-    for(int i=0;i<m;++i){
-        z=(x+i)%m;
-        if(s[z]=='1') st.push_back({z,0,1});
-        else if(!st.empty()){
-            auto[it,pre,chk]=st.back();
-            st.pop_back();
-            ll swp=(chk&&pre+1<=k);
-            if(swp) cnt[it]=1;
-            if(!st.empty()){
-                st.back()[1]=max(st.back()[1],pre+1);
-                if(!swp){
-                    st.back()[2]=0;
-                }
-                else if(it%2!=st.back()[0]%2){
-                    // st.back()[2]=1;
-                    st.back()[2]=0;
-                }
-            }
-        }
+    // if(a<=1) cout<<0<<endl;
+    // else cout<<b-c<<endl;
+    if(arr.size()<=1){ 
+        cout<<0<<endl; 
+        return;
     }
-    for(int i=0;i<m;i++){
-        if(s[i]=='1'){
-            if((i%2==0)^cnt[i]) b++;
-            else a++;
+    for(auto u:arr){
+        b=1e9;
+        c=-1e9;
+        for(auto j:arr) if(j!=u){
+            b=min(b,j);
+            c=max(c,j);
         }
+        d=1e9;
+        for(int i=1;i<=n;i++){
+            if(i!=u&&s[i-1]=='1') continue;
+            d=min(d,max(c,(ll)i)-min(b,(ll)i));
+        }
+        a=max(a, d);
     }
-    cout<<a<<" "<<b<<endl;
+    cout<<a<<endl;
 }
 
 signed main() {

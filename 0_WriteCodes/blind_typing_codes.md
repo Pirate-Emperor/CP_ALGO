@@ -9,7 +9,7 @@
 4. Compile after each card or pair of cards; fix errors from memory, not by copying.
 
 ## Every day - 8 minutes: Daily Core
-### 1. Math: qexp / gcd / ext_gcd / inv_mod
+### Math: qexp / gcd / ext_gcd / inv_mod
 ```cpp
 long long qexp(long long a, long long b, long long m = MOD) {
     long long res = 1; a %= m;
@@ -29,7 +29,7 @@ long long inv_mod(long long a, long long m) {
 }
 ```
 
-### 2. Bits: core bit operations
+### Bits: core bit operations
 ```cpp
 #define getbit(x,i) (((x)>>(i))&1LL)            // Extract bit at index i exactly as 0 or 1
 #define setbit(x,i) ((x)|(1LL<<(i)))            // Set at index i to 1
@@ -60,7 +60,7 @@ long long count1s_ton(long long n) {
 **0-8:** Daily Core. **8-38:** day cards. **38-53:** Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** Two Sum -> 3Sum -> lower/upper bounds -> binary-search-on-answer.
 **Week B:** Kadane -> rotated search -> merge intervals -> prefix/difference + compression.
-### 1. Two Sum
+### Two Sum
 **Problem:** Find two array elements whose values add to the target.
 ```cpp
 // Hash complements; for duplicates, the stored index may be reused only after checking the current element.
@@ -75,7 +75,7 @@ vector<int> two_sum(const vector<int>& a, int target) {
 }
 ```
 
-### 2. 3Sum
+### 3Sum
 **Problem:** Find all unique triples whose values sum to zero.
 ```cpp
 // Sorting removes duplicate triples cleanly and reduces the inner search to O(n).
@@ -101,7 +101,7 @@ vector<vector<int>> three_sum(vector<int> a) {
 }
 ```
 
-### 3. First/last occurrence and lower/upper bound
+### First/last occurrence and lower/upper bound
 ```cpp
 // These helpers return iterator positions; they work on sorted arrays and handle duplicates.
 int lower_bound_idx(const vector<int>& a, int x) {
@@ -116,7 +116,7 @@ int upper_bound_idx(const vector<int>& a, int x) {
 }
 ```
 
-### 4. Aggressive cows / maximize minimum distance
+### Aggressive cows / maximize minimum distance
 **Problem:** Place cows in stalls so the minimum pairwise distance is maximized.
 ```cpp
 // Greedy placement is optimal for a fixed distance; binary search finds the largest feasible distance.
@@ -137,7 +137,7 @@ int aggressive_cows(vector<int> x, int k) {
 }
 ```
 
-### 5. Maximum subarray / Kadane
+### Maximum subarray / Kadane
 **Problem:** Find the maximum sum of a contiguous subarray.
 ```cpp
 // Start with a[0], not zero, so an array of all negatives returns its true maximum.
@@ -152,7 +152,7 @@ long long kadane(const vector<long long>& a) {
 }
 ```
 
-### 6. Search in rotated sorted array
+### Search in rotated sorted array
 **Problem:** Search for a target in a sorted array rotated at an unknown pivot.
 ```cpp
 // Distinguish the sorted half and test whether the target lies inside it.
@@ -173,7 +173,7 @@ int search_rotated(const vector<int>& a, int target) {
 }
 ```
 
-### 7. Merge intervals
+### Merge intervals
 **Problem:** Merge all overlapping intervals into disjoint ranges.
 ```cpp
 // Sorting by start guarantees every overlapping interval appears next to the current merged interval.
@@ -189,7 +189,7 @@ vector<vector<int>> merge_intervals(vector<vector<int>> a) {
 }
 ```
 
-### 8. Prefix Sum / Prefix XOR / Difference Array / 2D Prefix
+### Prefix Sum / Prefix XOR / Difference Array / 2D Prefix
 ```cpp
 // Prefix arrays turn repeated range arithmetic into O(1) queries; difference arrays turn range updates into O(1) marks.
 vector<long long> prefix(const vector<long long>& a) {
@@ -213,7 +213,9 @@ long long rect_sum(const vector<vector<long long>>& p, int r1, int c1, int r2, i
 }
 ```
 
-### 9. Coordinate Compression
+
+
+### Coordinate Compression
 ```cpp
 // Compress only when ordering/rank matters; preserve the original values separately if they are needed later.
 vector<long long> xs = a;
@@ -222,7 +224,7 @@ xs.erase(unique(xs.begin(), xs.end()), xs.end());
 int id = lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 ```
 
-### 10. Hard transfer - 3165 - Maximum Sum of Subsequence With Non-adjacent Elements
+### Hard transfer - 3165 - Maximum Sum of Subsequence With Non-adjacent Elements
 **Problem:** Given an array with point updates, return the maximum sum of a subsequence with no adjacent selections.
 **Link:** https://leetcode.com/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -252,7 +254,7 @@ struct NonAdjSeg {
 };
 ```
 
-### 11. Hard transfer - 3139 - Minimum Cost to Equalize Array
+### Hard transfer - 3139 - Minimum Cost to Equalize Array
 **Problem:** Find the minimum cost to make all array values equal using single-element and paired operations.
 **Link:** https://leetcode.com/problems/minimum-cost-to-equalize-array/description/?envType=problem-list-v2&envId=0xtaf9f6
 **Typing note:** This is a transfer/re-solve card; use the problem as a timed benchmark rather than memorizing an implementation here.
@@ -260,7 +262,7 @@ struct NonAdjSeg {
 **0-8:** Daily Core. **8-38:** day cards. **38-53:** Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** longest unique -> minimum window -> sliding-window maximum -> next greater.
 **Week B:** Top-K -> min stack -> largest rectangle -> two heaps.
-### 1. Longest substring without repeating characters
+### Longest substring without repeating characters
 **Problem:** Find the longest substring containing no repeated character.
 ```cpp
 // Move the left boundary past the previous occurrence so every active character stays unique.
@@ -274,7 +276,7 @@ int longest_unique(const string& s) {
 }
 ```
 
-### 2. Minimum window substring
+### Minimum window substring
 **Problem:** Find the shortest substring containing all characters of a target multiset.
 ```cpp
 // Expand until all required counts are satisfied, then shrink greedily from the left.
@@ -292,7 +294,7 @@ string min_window(const string& s,const string& t){
 }
 ```
 
-### 3. Sliding window maximum
+### Sliding window maximum
 **Problem:** Return the maximum value in every fixed-size sliding window.
 ```cpp
 // Expire left indices first, then remove smaller values from the back so the front is always the maximum.
@@ -308,7 +310,7 @@ vector<int> sliding_max(const vector<int>& a, int k) {
 }
 ```
 
-### 4. Next greater element
+### Next greater element
 **Problem:** For each element, find the first greater value to its right.
 ```cpp
 // Pop while the current value is larger; every popped index gets its first greater element.
@@ -322,7 +324,7 @@ vector<int> next_greater(const vector<int>& a) {
 }
 ```
 
-### 5. Top K frequent elements
+### Top K frequent elements
 **Problem:** Return the k values with the highest frequencies.
 ```cpp
 // Keep only k candidates in the heap; the smallest frequency is the one discarded first.
@@ -340,7 +342,7 @@ vector<int> top_k_frequent(const vector<int>& a, int k) {
 }
 ```
 
-### 6. Min stack
+### Min stack
 ```cpp
 // Empty-stack behavior is left to the caller; use LLONG_MAX as an identity only when appropriate.
 struct MinStack {
@@ -352,7 +354,7 @@ struct MinStack {
 };
 ```
 
-### 7. Largest Rectangle in Histogram
+### Largest Rectangle in Histogram
 **Problem:** Find the largest rectangle that can be formed under histogram bars.
 ```cpp
 // Maintain increasing heights; when a smaller bar arrives, every popped bar has now found its right boundary.
@@ -371,7 +373,7 @@ long long largestRectangleArea(const vector<int>& h) {
 }
 ```
 
-### 8. Two Heaps / Running Median
+### Two Heaps / Running Median
 **Problem:** Maintain the median while numbers arrive online.
 ```cpp
 // Keep left as a max-heap and right as a min-heap; rebalance so their sizes differ by at most one.
@@ -387,7 +389,7 @@ struct MedianDS {
 };
 ```
 
-### 9. Hard transfer - 3357 - Minimize the Maximum Adjacent Element Difference
+### Hard transfer - 3357 - Minimize the Maximum Adjacent Element Difference
 **Problem:** Replace unknown values so the maximum adjacent difference is as small as possible.
 **Link:** https://leetcode.com/problems/minimize-the-maximum-adjacent-element-difference/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -429,7 +431,7 @@ public:
 };
 ```
 
-### 10. Hard transfer - 3266 - Final Array State II
+### Hard transfer - 3266 - Final Array State II
 **Problem:** Repeatedly multiply the current minimum element, then return the final array after a huge number of operations.
 **Link:** https://leetcode.com/problems/final-array-state-after-k-multiplication-operations-ii/description/?envType=problem-list-v2&envId=0xtaf9f6
 **Typing note:** This is a transfer/re-solve card; use the problem as a timed benchmark rather than memorizing an implementation here.
@@ -437,7 +439,7 @@ public:
 **0-8:** Daily Core. **8-38:** day cards. **38-53:** Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** linked-list core -> KMP -> Z -> LRU.
 **Week B:** linked-list core -> Trie -> group anagrams -> KMP/Z refresh.
-### 1. Linked List Core
+### Linked List Core
 **Problem:** Core pointer operations covering reversal and merging of linked lists.
 ```cpp
 // Dummy nodes remove head special-cases; slow/fast gives the middle and cycle patterns with O(1) extra space.
@@ -464,7 +466,7 @@ bool hasCycle(ListNode* head) {
 }
 ```
 
-### 2. KMP prefix function / pattern matching
+### KMP prefix function / pattern matching
 ```cpp
 // pi[i] is the longest proper prefix of s[0..i] that is also a suffix; pi drives mismatch jumps.
 vector<int> prefix_function(const string& s){
@@ -485,7 +487,7 @@ vector<int> kmp_find(const string& text,const string& pat){
 }
 ```
 
-### 3. Z algorithm
+### Z algorithm
 ```cpp
 // Maintain the rightmost Z-box and reuse mirrored information while inside the box.
 vector<int> z_function(const string& s){
@@ -499,7 +501,7 @@ vector<int> z_function(const string& s){
 }
 ```
 
-### 4. LRU Cache
+### LRU Cache
 **Problem:** Support get/put in O(1) while evicting the least-recently-used entry.
 ```cpp
 // Front is most recent and back is least recent; map stores node iterators for direct removal.
@@ -520,7 +522,7 @@ public:
 };
 ```
 
-### 5. Trie
+### Trie
 ```cpp
 // Standard String Trie
 struct Trie {
@@ -557,7 +559,7 @@ struct BitTrie {
 };
 ```
 
-### 6. Group anagrams
+### Group anagrams
 **Problem:** Group strings that contain the same multiset of characters.
 ```cpp
 // Sorting the letters gives identical keys for anagrams; replace with frequency keys when n is large.
@@ -568,7 +570,7 @@ vector<vector<string>> group_anagrams(const vector<string>& s){
 }
 ```
 
-### 7. Hard transfer - 420 - Strong Password Checker
+### Hard transfer - 420 - Strong Password Checker
 **Problem:** Find the minimum edits needed to make a password satisfy length, character-class, and repetition rules.
 **Link:** https://leetcode.com/problems/strong-password-checker/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -600,7 +602,7 @@ public:
 };
 ```
 
-### 8. Hard transfer - 3303 - First Almost Equal Substring
+### Hard transfer - 3303 - First Almost Equal Substring
 **Problem:** Find the first substring that differs from a pattern in at most one position.
 **Link:** https://leetcode.com/problems/find-the-occurrence-of-first-almost-equal-substring/description/?envType=problem-list-v2&envId=0xtaf9f6
 **Typing note:** This is a transfer/re-solve card; use the problem as a timed benchmark rather than memorizing an implementation here.
@@ -608,7 +610,7 @@ public:
 **0-8:** Daily Core. **8-38:** day cards. **38-53:** Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** BFS/DFS -> grid BFS/DFS -> Dijkstra -> Kahn.
 **Week B:** DSU -> LCA -> Kruskal -> tree diameter/BST.
-### 1. BFS / DFS graph traversal
+### BFS / DFS graph traversal
 ```cpp
 // BFS gives minimum edge count in an unweighted graph; DFS is the usual component traversal.
 vector<int> bfs_dist(int s,const vector<vector<int>>& g){
@@ -618,7 +620,7 @@ vector<int> bfs_dist(int s,const vector<vector<int>>& g){
 }
 ```
 
-### 2. Grid DFS/BFS Scaffold
+### Grid DFS/BFS Scaffold
 ```cpp
 // Four-direction traversal is the reusable core for islands, flood fill, rotten oranges, shortest grids, and increasing-path variants.
 vector<pair<int,int>> dirs = {{1,0},{-1,0},{0,1},{0,-1}};
@@ -628,7 +630,7 @@ void grid_dfs(int r, int c, const vector<vector<int>>& g, vector<vector<char>>& 
 }
 ```
 
-### 3. Dijkstra shortest path
+### Dijkstra shortest path
 ```cpp
 // The stale-pair check is mandatory with a standard priority_queue because decrease-key is not implemented.
 vector<long long> dijkstra(int s,const vector<vector<pair<int,int>>>& g){
@@ -639,7 +641,7 @@ vector<long long> dijkstra(int s,const vector<vector<pair<int,int>>>& g){
 }
 ```
 
-### 4. Topological sort (Kahn)
+### Topological sort (Kahn)
 ```cpp
 // A DAG has exactly n vertices removed; fewer means a cycle prevented full ordering.
 vector<int> topo_sort(const vector<vector<int>>& g){
@@ -650,7 +652,7 @@ vector<int> topo_sort(const vector<vector<int>>& g){
 }
 ```
 
-### 5. Disjoint Set Union
+### Disjoint Set Union
 ```cpp
 struct DSU {
     vector<int> p, sz; int comps;
@@ -664,7 +666,7 @@ struct DSU {
 };
 ```
 
-### 6. LCA via binary lifting
+### LCA via binary lifting
 ```cpp
 // Here the vertices are stored in 1-based indexing (so `0` can be used as parent for root)
 struct LCA {
@@ -685,7 +687,7 @@ struct LCA {
 };
 ```
 
-### 7. Kruskal MST
+### Kruskal MST
 ```cpp
 // The first n-1 edges that connect different components form the MST when the graph is connected.
 struct Edge{int u,v;long long w;};
@@ -696,7 +698,7 @@ long long kruskal(int n,vector<Edge> e){
 }
 ```
 
-### 8. Tree diameter
+### Tree diameter
 **Problem:** Find the longest path between any two nodes of a tree.
 ```cpp
 // Diameter endpoints are farthest from one another in a tree; weighted variants replace BFS distance with DFS/Dijkstra.
@@ -708,7 +710,7 @@ pair<int,int> farthest(int s,const vector<vector<int>>&g){
 int tree_diameter(const vector<vector<int>>&g){auto a=farthest(0,g).first;return farthest(a,g).second;}
 ```
 
-### 9. BST search/insert/delete
+### BST search/insert/delete
 **Problem:** Search, insert, and delete values while preserving BST ordering.
 ```cpp
 // Replace a deleted node with its inorder successor when both children exist.
@@ -722,7 +724,7 @@ TreeNode* bst_delete(TreeNode*r,int x){
 }
 ```
 
-### 10. Hard transfer - 2612 - Minimum Reverse Operations
+### Hard transfer - 2612 - Minimum Reverse Operations
 **Problem:** From one starting index, find the minimum reversals needed to reach every position while respecting banned positions.
 **Link:** https://leetcode.com/problems/minimum-reverse-operations/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -749,7 +751,7 @@ public:
 };
 ```
 
-### 11. Hard transfer - 3609 - Minimum Moves to Reach Target in Grid
+### Hard transfer - 3609 - Minimum Moves to Reach Target in Grid
 **Problem:** Find the minimum moves to reach a target grid point under the problem's coordinate transformation rule.
 **Link:** https://leetcode.com/problems/minimum-moves-to-reach-target-in-grid/description/?envType=problem-list-v2&envId=0xtaf9f6
 **Typing note:** This is a transfer/re-solve card; use the problem as a timed benchmark rather than memorizing an implementation here.
@@ -757,7 +759,7 @@ public:
 **0-8:** Daily Core. **8-38:** day cards. **38-53:** Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** 0/1 knapsack -> subset sum -> LIS -> House Robber.
 **Week B:** LCS -> edit distance -> Word Break -> Decode Ways/grid DP.
-### 1. 0/1 Knapsack
+### 0/1 Knapsack
 **Problem:** Choose each item at most once to maximize value under a capacity limit.
 ```cpp
 // Reverse capacity iteration prevents using the same item multiple times in one transition.
@@ -766,7 +768,7 @@ int knapsack01(const vector<int>& w,const vector<int>& val,int W){
 }
 ```
 
-### 2. Subset sum / partition
+### Subset sum / partition
 **Problem:** Determine whether array elements can form a required sum or equal partition.
 ```cpp
 // For 0/1 subset choice, update sums downward so one item is not counted twice.
@@ -775,7 +777,7 @@ bool subset_sum(const vector<int>& a,int S){
 }
 ```
 
-### 3. Longest Increasing Subsequence
+### Longest Increasing Subsequence
 **Problem:** Find the longest strictly increasing subsequence.
 ```cpp
 // tails[len-1] is the smallest possible tail value of a subsequence of length len.
@@ -784,7 +786,7 @@ int lis(const vector<int>& a){
 }
 ```
 
-### 4. House Robber
+### House Robber
 **Problem:** Maximize value when adjacent houses cannot both be chosen.
 ```cpp
 // prev2 and prev track the best answer through the previous two positions.
@@ -793,7 +795,7 @@ long long house_robber(const vector<long long>&a){
 }
 ```
 
-### 5. Longest Common Subsequence
+### Longest Common Subsequence
 **Problem:** Find the longest subsequence shared by two strings.
 ```cpp
 // dp[j] is the best LCS length for the processed prefix of the first string and the first j characters of the second.
@@ -804,7 +806,7 @@ int lcs(const string&a,const string&b){
 }
 ```
 
-### 6. Edit distance
+### Edit distance
 **Problem:** Find the minimum insert/delete/replace operations to convert one string to another.
 ```cpp
 // prev/cur rows are enough because each transition uses only left, up, and diagonal cells.
@@ -815,7 +817,7 @@ int edit_distance(const string&a,const string&b){
 }
 ```
 
-### 7. Word Break
+### Word Break
 **Problem:** Determine whether a string can be segmented into dictionary words.
 ```cpp
 // dp[i] means s[0..i) can be segmented; check every earlier cut that is reachable.
@@ -824,7 +826,7 @@ bool word_break(const string&s,const unordered_set<string>&dict){
 }
 ```
 
-### 8. Decode Ways
+### Decode Ways
 **Problem:** Count the ways to decode a digit string into letters.
 ```cpp
 // Zero can only appear as part of a valid 10..26 pair; it cannot start a one-digit decoding.
@@ -834,7 +836,7 @@ int decode_ways(const string&s){
 }
 ```
 
-### 9. Unique paths / minimum path sum
+### Unique paths / minimum path sum
 ```cpp
 // For unique paths, each cell is top + left; for min path sum, replace addition with min transition.
 long long unique_paths(int m,int n){
@@ -845,7 +847,7 @@ long long min_path_sum(vector<vector<int>>g){
 }
 ```
 
-### 10. N-Queens
+### N-Queens
 **Problem:** Place n queens on an n x n board so that no two attack each other.
 ```cpp
 // col, diag1, and diag2 masks encode exactly the unavailable positions for the next row.
@@ -859,7 +861,7 @@ long long nqueens(int n){
 }
 ```
 
-### 11. Hard transfer - 2945 - Find Maximum Non-decreasing Array Length
+### Hard transfer - 2945 - Find Maximum Non-decreasing Array Length
 **Problem:** Split the array into the maximum number of contiguous parts whose sums are non-decreasing.
 **Link:** https://leetcode.com/problems/find-maximum-non-decreasing-array-length/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -884,7 +886,7 @@ public:
 **0-8:** Daily Core. **8-38:** Week A/B range cards. **38-53:** GCD/DP Segment Tree Hard transfer. **53-60:** retype misses + edge case.
 **Week A:** Fenwick -> coordinate compression -> generic Segment Tree -> lazy add+sum -> max-subarray tree.
 **Week B:** generic monoid -> generic lazy -> add+min/max/sum -> min+frequency.
-### 1. Fenwick Tree
+### Fenwick Tree
 ```cpp
 struct BIT {
     int n; vector<long long> ft;
@@ -895,7 +897,47 @@ struct BIT {
 };
 ```
 
-### 2. Coordinate Compression
+### Fenwick: range add + range sum (two BITs)
+
+Use this when **updates add `x` to every `a[i]` in `[l,r)`**, while queries ask the sum of any `[l,r)`. The initial-vector constructor preserves the starting array. This is often simpler than lazy propagation for this exact operation pair.
+
+```cpp
+struct RangeAddRangeSumBIT {
+    int n; vector<long long> b1, b2;
+    explicit RangeAddRangeSumBIT(int n) : n(n), b1(n + 1), b2(n + 1) {}
+    explicit RangeAddRangeSumBIT(const vector<long long>& a)
+        : RangeAddRangeSumBIT((int)a.size()) {
+        for (int i = 0; i < n; ++i) addRange(i, i + 1, a[i]);
+    }
+    void add(vector<long long>& b, int i, long long x) {
+        for (; i <= n; i += i & -i) b[i] += x;
+    }
+    long long sum(const vector<long long>& b, int i) const {
+        long long ans = 0;
+        for (; i > 0; i -= i & -i) ans += b[i];
+        return ans;
+    }
+    void addRange(int l, int r, long long x) { // add x to [l,r)
+        if (l >= r) return;
+        add(b1, l + 1, x); add(b2, l + 1, x * l);
+        if (r < n) { add(b1, r + 1, -x); add(b2, r + 1, -x * r); }
+    }
+    long long prefixSum(int r) const { // sum of a[0..r), r in [0,n]
+        return 1LL * r * sum(b1, r) - sum(b2, r);
+    }
+    long long sumRange(int l, int r) const { // sum of [l,r)
+        return prefixSum(r) - prefixSum(l);
+    }
+};
+```
+
+**Call:** `RangeAddRangeSumBIT fw(a); fw.addRange(1,4,7); long long s=fw.sumRange(0,4);`
+
+**Why two BITs:** `b1` stores difference events; `b2` stores each event weighted by its zero-based position. Prefix sum is `r * sum(b1,r) - sum(b2,r)`. All public ranges are zero-based and half-open.
+
+
+
+### Coordinate Compression
 ```cpp
 // Compress only when ordering/rank matters; preserve the original values separately if they are needed later.
 vector<long long> xs = a;
@@ -904,7 +946,7 @@ xs.erase(unique(xs.begin(), xs.end()), xs.end());
 int id = lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 ```
 
-### 3. Generic associative Segment Tree
+### Generic associative Segment Tree
 ```cpp
 // Only associativity is required; commutativity is optional, and the identity is used for disjoint query parts.
 // Only associativity is required; commutativity is optional, and the identity is used for disjoint query parts.
@@ -930,7 +972,7 @@ struct SegTree {
 };
 ```
 
-### 4. Generic Lazy Segment Tree
+### Generic Lazy Segment Tree
 ```cpp
 // Associative merge is required; lazy tags must form a composable action on nodes, with order preserved for noncommutative updates.
 template<class Node,class Tag,class Merge,class Apply,class Compose>
@@ -957,7 +999,7 @@ struct LazySegTree {
 };
 ```
 
-### 5. Lazy Segment Tree: range add + range sum
+### Lazy Segment Tree: range add + range sum
 ```cpp
 // For a node covering len elements, adding x increases its sum by x*len and its lazy tag by x.
 struct LazySum {
@@ -978,7 +1020,7 @@ struct LazySum {
 };
 ```
 
-### 6. Lazy Segment Tree: range add + min/max/sum
+### Lazy Segment Tree: range add + min/max/sum
 ```cpp
 // A range add shifts sum, minimum, and maximum by predictable amounts, so one lazy tag is sufficient.
 struct AddMinMax {
@@ -1001,7 +1043,7 @@ struct AddMinMax {
 };
 ```
 
-### 7. Segment Tree: maximum subarray sum
+### Segment Tree: maximum subarray sum
 ```cpp
 // Four aggregate fields are exactly the information needed to combine two adjacent segments.
 struct MaxSubSeg {
@@ -1014,7 +1056,7 @@ struct MaxSubSeg {
 };
 ```
 
-### 8. Segment Tree: minimum value + frequency
+### Segment Tree: minimum value + frequency
 ```cpp
 // On equal minima, add frequencies; on unequal minima, keep only the smaller side.
 struct MinCountSeg {
@@ -1026,7 +1068,7 @@ struct MinCountSeg {
 };
 ```
 
-### 9. Hard transfer - 3901 - Good Subsequence Queries: GCD Segment Tree variant
+### Hard transfer - 3901 - Good Subsequence Queries: GCD Segment Tree variant
 **Problem:** Support updates and queries for a GCD-based subsequence condition.
 **Link:** https://leetcode.com/problems/good-subsequence-queries/description/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -1042,7 +1084,7 @@ struct GcdSeg {
 };
 ```
 
-### 10. Hard transfer - 3920 - Maximize Fixed Points After Deletions
+### Hard transfer - 3920 - Maximize Fixed Points After Deletions
 **Problem:** Delete elements to maximize how many remaining positions become fixed points.
 **Link:** https://leetcode.com/problems/maximize-fixed-points-after-deletions/?envType=problem-list-v2&envId=0xtaf9f6
 ```cpp
@@ -1079,10 +1121,553 @@ public:
     }
 };
 ```
+### CP-Algorithms recursive Segment Tree pack - memorize this, adapt the merge
+
+**Convention:** this pack follows the CP-Algorithms recursive style and uses half-open ranges `[tl,tr)` and query ranges `[l,r)`. A point `p` is a leaf when `tr-tl==1`. Do not mix this with the inclusive `[l,r]` variants elsewhere in this file. Standard build/query/update are `O(n) / O(log n) / O(log n)`.
+
+
+#### How to call the recursive functions (memorize this before the variants)
+
+This pack uses **half-open ranges** `[tl,tr)` and query/update ranges `[l,r)`. Thus `[1,4)` contains indexes `1,2,3`; `l==r` is empty. This matches the current CP-Algorithms implementation convention.
+
+| Name | Meaning | Typical value / rule |
+|---|---|---|
+| `n` | Number of elements in the original array | `n = a.size()`; it is **not** the tree-vector size |
+| `t` / `lazy` | Stored node summaries / pending tags | Recursive trees allocate `4 * max(1,n)`; `4*n` is storage only, never a query boundary |
+| `v` | Index of the current node inside `t` | Root is `1`; children are `2*v` and `2*v+1` |
+| `tl,tr` | Segment represented by node `v` | Start root with `v=1, tl=0, tr=n`; current node covers `[tl,tr)` |
+| `l,r` | Requested range for query/update | Pass your problem's zero-based `[l,r)`; **not** the current node bounds |
+| `tm` | Midpoint of the current node segment | `tm=(tl+tr)/2`; recurse `[tl,tm)` and `[tm,tr)` |
+| `p` | One point index for a point update | `0 <= p < n`; go left if `p < tm`, otherwise right |
+| `x` / `tag` | New value or range-update payload | Meaning depends on the structure: assign value, add delta, `chmin` cap, or lazy tag |
+
+**The internal recursive call uses both kinds of boundaries.** Example: `query(v,tl,tr,l,r)` means “look at node `v`, whose interval is `[tl,tr)`, and answer only the requested intersection with `[l,r)`.” You normally should not manually pass `v/tl/tr`: call the public wrappers below.
+
+```cpp
+vector<long long> a = {5, 1, 7, 3, 2};
+SumSeg sum(a);                    // recursively builds root (1,0,n)
+long long s = sum.query(1, 4);    // a[1]+a[2]+a[3]
+sum.setPoint(2, 10);              // assign a[2]=10
+
+LazySumSeg lazySum(a);
+lazySum.add(1, 4, 5);             // add 5 to a[1], a[2], a[3]
+long long s2 = lazySum.query(0, 4);
+
+MinCountSeg mc(a); auto mn = mc.query(1, 4); // mn.mn and mn.cnt
+MaxSubSeg ms(a); auto best = ms.query(0, 5);   // best.ans
+AddStatsSeg stats(a); auto q = stats.query(1, 4); // q.sum, q.mn, q.mx
+AssignSumSeg as(a); as.assignRange(1, 4, 8); as.addRange(0, 2, 3);
+AffineSumSeg af(a); af.update(1, 4, {2, 3}); // x -> 2*x+3, then query(1,4)
+SegBeats beats(a); beats.chmin(1, 4, 6); beats.querySum(0, 5); beats.queryMax(0, 5);
+MergeSortTree mst(vector<int>{5,1,7,3,2}); int cnt = mst.countLE(1, 4, 3);
+PersistentSeg pst; pst.build(vector<int>{5,1,7,3,2}); int kth = pst.kth(1, 4, 2); // k is 1-based
+```
+
+#### Which object should I create for each variant?
+
+| Need | Structure | Public operations | What actually changes |
+|---|---|---|---|
+| Sum/min/max/GCD/XOR/OR/AND/product/matrix/string aggregate + point assignment | `SumSeg` as starting skeleton (rename/generalize stored type and `+`) | `query(l,r)`, `setPoint(p,x)` | Store a node type; replace merge and disjoint-query identity. Use `gcd` with identity `0`, min with `LLONG_MAX`, max with `LLONG_MIN`, XOR with `0`, product with `1`; keep left/right order for non-commutative merges. |
+| Range minimum + frequency | `MinCountSeg` | `query(l,r)`, `setPoint(p,x)` | Node `{mn,cnt,empty}`; take smaller minimum, or add counts on ties. |
+| Maximum **non-empty** subarray sum | `MaxSubSeg` | `query(l,r)`, `setPoint(p,x)` | Node `{sum,pref,suff,ans,empty}`; crossing answer is `left.suff + right.pref`. |
+| Generic range update + range query | `GenericLazySeg<Node,Tag,...>` | `update(l,r,tag)`, `query(l,r)` | Supply `merge`, `apply(node,tag,len)`, and `compose(newTag,oldTag)`. New tag is applied after old tag. |
+| Range add + sum | `LazySumSeg` | `add(l,r,x)`, `query(l,r)` | Node is sum; apply `sum += x*(tr-tl)`; lazy tags add. |
+| Range add + sum/min/max | `AddStatsSeg` | `add(l,r,x)`, `query(l,r)` | Node `{sum,mn,mx,empty}`; add shifts all statistics predictably. |
+| Range assignment + range add + sum | `AssignSumSeg` | `assignRange(l,r,x)`, `addRange(l,r,x)`, `query(l,r)` | Keep `hasSet`; assignment overrides older tags; push assignment before add. |
+| Affine range update + sum | `AffineSumSeg` | `update(l,r,{a,b})`, `query(l,r)` | Apply `x -> a*x+b`; compose new `(a,b)` after old `(c,d)` as `(a*c,a*d+b)`. |
+| Range `chmin` + sum/max | `SegBeats` | `chmin(l,r,x)`, `querySum(l,r)`, `queryMax(l,r)` | Special Beats condition `secondMax < x < max`; ordinary lazy add tags are not enough. |
+| Count values `<=x` in a static range | `MergeSortTree` | `countLE(l,r,x)` | Each node stores a sorted vector; no efficient ordinary point-update support. |
+| k-th smallest in a subarray | `PersistentSeg` | `build(a)`, `kth(l,r,k)` | Keep prefix roots; `k` is one-based and range `[l,r)` is zero-based/half-open. |
+| GCD DP, non-adjacent DP, fixed-point DP | Problem-specific node/DP | See the corresponding problem card | Reuse the recursive tree mechanics; customize the node and merge, or `max` + point-`chmax`. |
+
+**When to use `4*n` versus `n`:** recursive `v*2` trees need `4*max(1,n)` slots because node indexes are heap-style and not all array slots are used. The iterative generic tree in the earlier mini-bank stores leaves at `st[n..2*n)` and therefore allocates `2*n`. Do not pass `4*n` as `tr`; `tr` is the array interval endpoint, `n`.
+
+#### 1. Canonical CP-Algorithms base: range sum + point assignment
+
+```cpp
+struct SumSeg {
+    int n;
+    vector<long long> t;
+    SumSeg(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = a[tl]; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm);
+        build(a, v * 2 + 1, tm, tr);
+        t[v] = t[v * 2] + t[v * 2 + 1];
+    }
+    long long query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return t[v];
+        int tm = (tl + tr) / 2;
+        return query(v * 2, tl, tm, l, r) + query(v * 2 + 1, tm, tr, l, r);
+    }
+    void setPoint(int v, int tl, int tr, int p, long long x) {
+        if (tr - tl == 1) { t[v] = x; return; }
+        int tm = (tl + tr) / 2;
+        if (p < tm) setPoint(v * 2, tl, tm, p, x);
+        else setPoint(v * 2 + 1, tm, tr, p, x);
+        t[v] = t[v * 2] + t[v * 2 + 1];
+    }
+    long long query(int l, int r) { return l >= r ? 0 : query(1, 0, n, l, r); }
+    void setPoint(int p, long long x) { setPoint(1, 0, n, p, x); }
+};
+```
+
+#### 2. Ordinary range-query variants: change only `merge` and the identity
+
+| Need | Store / merge | Identity for a disjoint query |
+|---|---|---|
+| Sum | `long long`, `a+b` | `0` |
+| Minimum | `long long`, `min(a,b)` | `LLONG_MAX` |
+| Maximum | `long long`, `max(a,b)` | `LLONG_MIN` |
+| GCD | `gcd(a,b)` | `0` |
+| XOR / OR | `a^b` / `a|b` | `0` |
+| AND | `a&b` | all bits set, e.g. `~0LL` |
+| Product | `a*b` (watch overflow/modulo) | `1` |
+| Matrix product / string concat | operation in original left-to-right order | identity matrix / empty string |
+
+For a generic monoid tree, make `t` store the node type, replace the `+` in `build` and `setPoint` with `merge(left,right)`, and make the no-overlap branch of `query` return `identity`. **For non-commutative merges, preserve left-before-right order.** GCD Segment Tree cards only need `merge = gcd` and identity `0` before adding their problem-specific DP logic.
+
+#### 3. Minimum value + frequency
+
+```cpp
+struct MinCountSeg {
+    struct Node { long long mn; int cnt; bool empty; };
+    int n; vector<Node> t;
+    static Node mergeN(Node a, Node b) {
+        if (a.empty) return b;
+        if (b.empty) return a;
+        if (a.mn < b.mn) return a;
+        if (b.mn < a.mn) return b;
+        return {a.mn, a.cnt + b.cnt, false};
+    }
+    MinCountSeg(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = {a[tl], 1, false}; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    Node query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return {0, 0, true};
+        if (l <= tl && tr <= r) return t[v];
+        int tm = (tl + tr) / 2;
+        return mergeN(query(v * 2, tl, tm, l, r), query(v * 2 + 1, tm, tr, l, r));
+    }
+    void setPoint(int v, int tl, int tr, int p, long long x) {
+        if (tr - tl == 1) { t[v] = {x, 1, false}; return; }
+        int tm = (tl + tr) / 2;
+        if (p < tm) setPoint(v * 2, tl, tm, p, x); else setPoint(v * 2 + 1, tm, tr, p, x);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    Node query(int l, int r) { return query(1, 0, n, l, r); }
+    void setPoint(int p, long long x) { setPoint(1, 0, n, p, x); }
+};
+```
+
+#### 4. Maximum subarray sum
+
+Each node stores `sum`, best non-empty `pref`, best non-empty `suff`, and best non-empty `ans`. The `empty` flag gives a valid identity for disjoint query parts.
+
+```cpp
+struct MaxSubSeg {
+    struct Node { long long sum, pref, suff, ans; bool empty; };
+    int n; vector<Node> t;
+    static Node mergeN(Node a, Node b) {
+        if (a.empty) return b;
+        if (b.empty) return a;
+        return {a.sum + b.sum, max(a.pref, a.sum + b.pref),
+                max(b.suff, b.sum + a.suff), max({a.ans, b.ans, a.suff + b.pref}), false};
+    }
+    MaxSubSeg(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { long long x = a[tl]; t[v] = {x, x, x, x, false}; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    Node query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return {0, 0, 0, 0, true};
+        if (l <= tl && tr <= r) return t[v];
+        int tm = (tl + tr) / 2;
+        return mergeN(query(v * 2, tl, tm, l, r), query(v * 2 + 1, tm, tr, l, r));
+    }
+    void setPoint(int v, int tl, int tr, int p, long long x) {
+        if (tr - tl == 1) { t[v] = {x, x, x, x, false}; return; }
+        int tm = (tl + tr) / 2;
+        if (p < tm) setPoint(v * 2, tl, tm, p, x); else setPoint(v * 2 + 1, tm, tr, p, x);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    Node query(int l, int r) { return query(1, 0, n, l, r); }
+    void setPoint(int p, long long x) { setPoint(1, 0, n, p, x); }
+};
+```
+
+#### 5. Generic lazy Segment Tree in CP recursive style
+
+This is the reusable lazy skeleton. `apply(node, tag, len)` mutates a node, and `compose(newTag, oldTag)` returns the tag equivalent to applying the old tag and then the new one.
+
+```cpp
+template<class Node, class Tag, class Merge, class Apply, class Compose>
+struct GenericLazySeg {
+    int n; Node idNode; Tag idTag; Merge merge; Apply apply; Compose compose;
+    vector<Node> t; vector<Tag> lazy; vector<char> has;
+    GenericLazySeg(const vector<Node>& a, Node idN, Tag idT, Merge mg, Apply ap, Compose cp)
+        : n((int)a.size()), idNode(idN), idTag(idT), merge(mg), apply(ap), compose(cp),
+          t(4 * max(1, n), idNode), lazy(4 * max(1, n), idTag), has(4 * max(1, n), false) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<Node>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = a[tl]; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr); t[v] = merge(t[v * 2], t[v * 2 + 1]);
+    }
+    void applyTag(int v, const Tag& x, int len) {
+        apply(t[v], x, len);
+        if (has[v]) lazy[v] = compose(x, lazy[v]); else { lazy[v] = x; has[v] = true; }
+    }
+    void push(int v, int tl, int tr) {
+        if (!has[v] || tr - tl == 1) return;
+        int tm = (tl + tr) / 2;
+        applyTag(v * 2, lazy[v], tm - tl); applyTag(v * 2 + 1, lazy[v], tr - tm);
+        lazy[v] = idTag; has[v] = false;
+    }
+    void update(int v, int tl, int tr, int l, int r, const Tag& x) {
+        if (r <= tl || tr <= l) return;
+        if (l <= tl && tr <= r) { applyTag(v, x, tr - tl); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        update(v * 2, tl, tm, l, r, x); update(v * 2 + 1, tm, tr, l, r, x);
+        t[v] = merge(t[v * 2], t[v * 2 + 1]);
+    }
+    Node query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return idNode;
+        if (l <= tl && tr <= r) return t[v];
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return merge(query(v * 2, tl, tm, l, r), query(v * 2 + 1, tm, tr, l, r));
+    }
+    void update(int l, int r, const Tag& x) { if (l < r) update(1, 0, n, l, r, x); }
+    Node query(int l, int r) { return query(1, 0, n, l, r); }
+};
+```
+
+#### 6. Lazy propagation: range add + range sum
+
+Memorize the four operations: `build`, `apply`, `push`, and `pull`. Push before descending; pull after recursive updates. A covered segment `[tl,tr)` has length `tr-tl`.
+
+```cpp
+struct LazySumSeg {
+    int n; vector<long long> t, lazy;
+    LazySumSeg(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)), lazy(4 * max(1, n)) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = a[tl]; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr); pull(v);
+    }
+    void pull(int v) { t[v] = t[v * 2] + t[v * 2 + 1]; }
+    void apply(int v, int tl, int tr, long long x) { t[v] += x * (tr - tl); lazy[v] += x; }
+    void push(int v, int tl, int tr) {
+        if (!lazy[v] || tr - tl == 1) return;
+        int tm = (tl + tr) / 2;
+        apply(v * 2, tl, tm, lazy[v]); apply(v * 2 + 1, tm, tr, lazy[v]); lazy[v] = 0;
+    }
+    void add(int v, int tl, int tr, int l, int r, long long x) {
+        if (r <= tl || tr <= l) return;
+        if (l <= tl && tr <= r) { apply(v, tl, tr, x); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        add(v * 2, tl, tm, l, r, x); add(v * 2 + 1, tm, tr, l, r, x); pull(v);
+    }
+    long long query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return t[v];
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return query(v * 2, tl, tm, l, r) + query(v * 2 + 1, tm, tr, l, r);
+    }
+    void add(int l, int r, long long x) { if (l < r) add(1, 0, n, l, r, x); }
+    long long query(int l, int r) { return l < r ? query(1, 0, n, l, r) : 0; }
+};
+```
+
+#### 7. Range add + sum/min/max
+
+This is the concrete change when a lazy node must support all three statistics, not just sum.
+
+```cpp
+struct AddStatsSeg {
+    struct Node { long long sum, mn, mx; bool empty; };
+    int n; vector<Node> t; vector<long long> lazy;
+    static Node mergeN(Node a, Node b) {
+        if (a.empty) return b;
+        if (b.empty) return a;
+        return {a.sum + b.sum, min(a.mn, b.mn), max(a.mx, b.mx), false};
+    }
+    AddStatsSeg(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)), lazy(4 * max(1, n)) {
+        if (n) build(a, 1, 0, n);
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = {a[tl], a[tl], a[tl], false}; return; }
+        int tm = (tl + tr) / 2;
+        build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr); pull(v);
+    }
+    void pull(int v) { t[v] = mergeN(t[v * 2], t[v * 2 + 1]); }
+    void apply(int v, int tl, int tr, long long x) {
+        t[v].sum += x * (tr - tl); t[v].mn += x; t[v].mx += x; lazy[v] += x;
+    }
+    void push(int v, int tl, int tr) {
+        if (!lazy[v] || tr - tl == 1) return;
+        int tm = (tl + tr) / 2;
+        apply(v * 2, tl, tm, lazy[v]); apply(v * 2 + 1, tm, tr, lazy[v]); lazy[v] = 0;
+    }
+    void add(int v, int tl, int tr, int l, int r, long long x) {
+        if (r <= tl || tr <= l) return;
+        if (l <= tl && tr <= r) { apply(v, tl, tr, x); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        add(v * 2, tl, tm, l, r, x); add(v * 2 + 1, tm, tr, l, r, x); pull(v);
+    }
+    Node query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return {0, 0, 0, true};
+        if (l <= tl && tr <= r) return t[v];
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return mergeN(query(v * 2, tl, tm, l, r), query(v * 2 + 1, tm, tr, l, r));
+    }
+    void add(int l, int r, long long x) { if (l < r) add(1, 0, n, l, r, x); }
+    Node query(int l, int r) { return query(1, 0, n, l, r); }
+};
+```
+
+#### 8. Lazy variants - exact changes to the same recursive skeleton
+
+| Variant | Node merge / `pull` | Tag application and composition |
+|---|---|---|
+| Range add + sum | `sum = left.sum + right.sum` | `sum += x * len`; compose additions as `old + x` |
+| Range add + minimum | `mn = min(left.mn,right.mn)` | `mn += x`; identity for no overlap is `+INF` |
+| Range add + maximum | `mx = max(left.mx,right.mx)` | `mx += x`; identity for no overlap is `-INF` |
+| Range add + sum/min/max | Store `{sum,mn,mx}`; merge each field | `sum += x*len`, `mn += x`, `mx += x`; one additive tag works for all fields |
+| Range assignment + sum | Merge sums | Set: `sum=x*len`, pending assignment becomes `x`, pending add resets to `0`; a later set overrides earlier tags |
+| Range add + assignment + sum | Merge sums | Add changes `sum += x*len`; if assignment is pending, increment its value, else accumulate lazy add. Push assignment before add |
+| Affine update `x -> a*x+b` + sum | Merge sums | Apply: `sum = a*sum+b*len`; compose new `(a,b)` after old `(c,d)` as `(a*c, a*d+b)`; identity tag `(1,0)` |
+
+For a truly generic lazy tree, define `merge(left,right)`, `apply(node,tag,len)`, and `compose(newTag,oldTag)`. **Composition is chronological: the new tag is applied after the old tag.** That order matters for assignment and affine transformations. If operating modulo `MOD`, normalize every tag/value operation under the modulus.
+
+#### Full lazy code: range assignment + range sum
+
+```cpp
+struct AssignSumSeg {
+    int n; vector<long long> sum, addTag, setVal; vector<char> hasSet;
+    AssignSumSeg(const vector<long long>& a) : n((int)a.size()), sum(4 * max(1, n)), addTag(4 * max(1, n)), setVal(4 * max(1, n)), hasSet(4 * max(1, n)) { if (n) build(a, 1, 0, n); }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { sum[v] = a[tl]; return; }
+        int tm = (tl + tr) / 2; build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr); pull(v);
+    }
+    void pull(int v) { sum[v] = sum[v * 2] + sum[v * 2 + 1]; }
+    void applySet(int v, int tl, int tr, long long x) { sum[v] = x * (tr - tl); setVal[v] = x; hasSet[v] = true; addTag[v] = 0; }
+    void applyAdd(int v, int tl, int tr, long long x) { sum[v] += x * (tr - tl); if (hasSet[v]) setVal[v] += x; else addTag[v] += x; }
+    void push(int v, int tl, int tr) {
+        if (tr - tl == 1) return;
+        int tm = (tl + tr) / 2;
+        if (hasSet[v]) { applySet(v * 2, tl, tm, setVal[v]); applySet(v * 2 + 1, tm, tr, setVal[v]); hasSet[v] = false; }
+        if (addTag[v]) { applyAdd(v * 2, tl, tm, addTag[v]); applyAdd(v * 2 + 1, tm, tr, addTag[v]); addTag[v] = 0; }
+    }
+    void update(int v, int tl, int tr, int l, int r, long long x, bool isSet) {
+        if (r <= tl || tr <= l) return;
+        if (l <= tl && tr <= r) { if (isSet) applySet(v, tl, tr, x); else applyAdd(v, tl, tr, x); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        update(v * 2, tl, tm, l, r, x, isSet); update(v * 2 + 1, tm, tr, l, r, x, isSet); pull(v);
+    }
+    long long query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return sum[v];
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return query(v * 2, tl, tm, l, r) + query(v * 2 + 1, tm, tr, l, r);
+    }
+    void assignRange(int l, int r, long long x) { if (l < r) update(1, 0, n, l, r, x, true); }
+    void addRange(int l, int r, long long x) { if (l < r) update(1, 0, n, l, r, x, false); }
+    long long query(int l, int r) { return query(1, 0, n, l, r); }
+};
+```
+
+#### Full lazy code: affine update + range sum
+
+The affine update is `x -> a*x+b`. The tag composition below applies the incoming tag after the stored one.
+
+```cpp
+struct AffineSumSeg {
+    struct Tag { long long a = 1, b = 0; };
+    int n; vector<long long> sum; vector<Tag> lazy; vector<char> has;
+    AffineSumSeg(const vector<long long>& a) : n((int)a.size()), sum(4 * max(1, n)), lazy(4 * max(1, n)), has(4 * max(1, n)) { if (n) build(a, 1, 0, n); }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { sum[v] = a[tl]; return; }
+        int tm = (tl + tr) / 2; build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr); pull(v);
+    }
+    void pull(int v) { sum[v] = sum[v * 2] + sum[v * 2 + 1]; }
+    void apply(int v, int tl, int tr, Tag x) {
+        sum[v] = x.a * sum[v] + x.b * (tr - tl);
+        lazy[v] = {x.a * lazy[v].a, x.a * lazy[v].b + x.b}; has[v] = true;
+    }
+    void push(int v, int tl, int tr) {
+        if (!has[v] || tr - tl == 1) return;
+        int tm = (tl + tr) / 2; apply(v * 2, tl, tm, lazy[v]); apply(v * 2 + 1, tm, tr, lazy[v]);
+        lazy[v] = {1, 0}; has[v] = false;
+    }
+    void update(int v, int tl, int tr, int l, int r, Tag x) {
+        if (r <= tl || tr <= l) return;
+        if (l <= tl && tr <= r) { apply(v, tl, tr, x); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        update(v * 2, tl, tm, l, r, x); update(v * 2 + 1, tm, tr, l, r, x); pull(v);
+    }
+    long long query(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return sum[v];
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return query(v * 2, tl, tm, l, r) + query(v * 2 + 1, tm, tr, l, r);
+    }
+    void update(int l, int r, Tag x) { if (l < r) update(1, 0, n, l, r, x); }
+    long long query(int l, int r) { return query(1, 0, n, l, r); }
+};
+```
+
+#### 9. Segment Tree Beats: range `chmin` + range sum/max
+
+This is **not** ordinary lazy propagation. Store maximum `mx`, second-largest value `sx`, count of maximum `cnt`, and sum. The fast full-cover update is legal only when `sx < x < mx`.
+
+```cpp
+struct SegBeats {
+    struct Node { long long mx, sx, sum; int cnt; };
+    int n; vector<Node> t;
+    SegBeats(const vector<long long>& a) : n((int)a.size()), t(4 * max(1, n)) { if (n) build(a, 1, 0, n); }
+    static Node mergeN(Node a, Node b) {
+        Node z; z.sum = a.sum + b.sum;
+        if (a.mx == b.mx) z.mx = a.mx, z.cnt = a.cnt + b.cnt, z.sx = max(a.sx, b.sx);
+        else if (a.mx > b.mx) z.mx = a.mx, z.cnt = a.cnt, z.sx = max(a.sx, b.mx);
+        else z.mx = b.mx, z.cnt = b.cnt, z.sx = max(a.mx, b.sx);
+        return z;
+    }
+    void build(const vector<long long>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = {a[tl], LLONG_MIN, a[tl], 1}; return; }
+        int tm = (tl + tr) / 2; build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    void apply(int v, long long x) {
+        if (x >= t[v].mx) return;
+        t[v].sum -= (t[v].mx - x) * t[v].cnt; t[v].mx = x;
+    }
+    void push(int v, int tl, int tr) {
+        if (tr - tl == 1) return;
+        apply(v * 2, t[v].mx); apply(v * 2 + 1, t[v].mx);
+    }
+    void chmin(int v, int tl, int tr, int l, int r, long long x) {
+        if (r <= tl || tr <= l || x >= t[v].mx) return;
+        if (l <= tl && tr <= r && x > t[v].sx) { apply(v, x); return; }
+        if (tr - tl == 1) { apply(v, x); return; }
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        chmin(v * 2, tl, tm, l, r, x); chmin(v * 2 + 1, tm, tr, l, r, x);
+        t[v] = mergeN(t[v * 2], t[v * 2 + 1]);
+    }
+    long long querySum(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return t[v].sum;
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return querySum(v * 2, tl, tm, l, r) + querySum(v * 2 + 1, tm, tr, l, r);
+    }
+    long long queryMax(int v, int tl, int tr, int l, int r) {
+        if (r <= tl || tr <= l) return LLONG_MIN;
+        if (l <= tl && tr <= r) return t[v].mx;
+        push(v, tl, tr); int tm = (tl + tr) / 2;
+        return max(queryMax(v * 2, tl, tm, l, r), queryMax(v * 2 + 1, tm, tr, l, r));
+    }
+    void chmin(int l, int r, long long x) { if (l < r) chmin(1, 0, n, l, r, x); }
+    long long querySum(int l, int r) { return querySum(1, 0, n, l, r); }
+    long long queryMax(int l, int r) { return queryMax(1, 0, n, l, r); }
+};
+```
+
+#### 10. Static Merge Sort Tree: count values `<= x` in `[l,r)`
+
+At each node store a sorted vector instead of a scalar. It is static; the query counts values `<= x` in `[l,r)`.
+
+```cpp
+struct MergeSortTree {
+    int n; vector<vector<int>> t;
+    MergeSortTree(const vector<int>& a) : n((int)a.size()), t(4 * max(1, n)) { if (n) build(a, 1, 0, n); }
+    void build(const vector<int>& a, int v, int tl, int tr) {
+        if (tr - tl == 1) { t[v] = {a[tl]}; return; }
+        int tm = (tl + tr) / 2; build(a, v * 2, tl, tm); build(a, v * 2 + 1, tm, tr);
+        merge(t[v * 2].begin(), t[v * 2].end(), t[v * 2 + 1].begin(), t[v * 2 + 1].end(), back_inserter(t[v]));
+    }
+    int countLE(int v, int tl, int tr, int l, int r, int x) const {
+        if (r <= tl || tr <= l) return 0;
+        if (l <= tl && tr <= r) return upper_bound(t[v].begin(), t[v].end(), x) - t[v].begin();
+        int tm = (tl + tr) / 2;
+        return countLE(v * 2, tl, tm, l, r, x) + countLE(v * 2 + 1, tm, tr, l, r, x);
+    }
+    int countLE(int l, int r, int x) const { return countLE(1, 0, n, l, r, x); }
+};
+```
+
+A node vector can be updated only by rebuilding its sorted contents; use a different structure if frequent point updates are required.
+
+#### 11. Persistent Segment Tree: k-th value in a subarray
+
+Keep a root for each prefix. Inserting one value clones only its root-to-leaf path; previous versions are unchanged. Values are coordinate-compressed and `k` is 1-indexed.
+
+```cpp
+struct PersistentSeg {
+    struct Node { int left = 0, right = 0, cnt = 0; };
+    vector<Node> t{{}};
+    vector<int> roots, vals;
+    int U = 0;
+    int add(int old, int tl, int tr, int p) {
+        int v = (int)t.size(); t.push_back(t[old]); ++t[v].cnt;
+        if (tr - tl > 1) {
+            int tm = (tl + tr) / 2;
+            if (p < tm) t[v].left = add(t[old].left, tl, tm, p);
+            else t[v].right = add(t[old].right, tm, tr, p);
+        }
+        return v;
+    }
+    void build(const vector<int>& a) {
+        vals = a; sort(vals.begin(), vals.end()); vals.erase(unique(vals.begin(), vals.end()), vals.end());
+        U = (int)vals.size(); roots.assign(a.size() + 1, 0);
+        for (int i = 0; i < (int)a.size(); ++i) {
+            int p = lower_bound(vals.begin(), vals.end(), a[i]) - vals.begin();
+            roots[i + 1] = add(roots[i], 0, U, p);
+        }
+    }
+    int kthIndex(int leftRoot, int rightRoot, int tl, int tr, int k) const {
+        if (tr - tl == 1) return tl;
+        int tm = (tl + tr) / 2;
+        int leftCount = t[t[rightRoot].left].cnt - t[t[leftRoot].left].cnt;
+        if (k <= leftCount) return kthIndex(t[leftRoot].left, t[rightRoot].left, tl, tm, k);
+        return kthIndex(t[leftRoot].right, t[rightRoot].right, tm, tr, k - leftCount);
+    }
+    int kth(int l, int r, int k) const { return vals[kthIndex(roots[l], roots[r], 0, U, k)]; }
+};
+```
+
+
+
+#### 12. Problem-specific Segment Tree nodes already in this template
+
+| Existing card | Adaptation to the CP recursive pattern |
+|---|---|
+| **3901 GCD Segment Tree** | Scalar node; `merge = gcd(left,right)`, identity `0`, point update as base. Keep the problem's DP/state logic outside the tree. |
+| **3165 Maximum Sum of Non-adjacent Elements** | Node has four endpoint states `s[leftSelected][rightSelected]`; merging two nodes maximizes over their inner boundary states while rejecting `left.rightSelected && right.leftSelected`. Point-update recursion stays the base. |
+| **3920 Maximize Fixed Points After Deletions** | Tree stores a maximum DP value over transformed coordinates; merge is `max`, identity `0`, update is point-`chmax`, query is range max. Batch equal values before applying updates so equal-value states cannot chain. |
+
+**Memory rule:** first memorize the three recursive lines of thought: (1) disjoint / full-cover / partial-overlap, (2) recurse left and right at `tm`, (3) `pull` from children. Most variants change the node plus `merge`; lazy variants additionally change `apply`, `push`, and tag composition. See the [CP-Algorithms Segment Tree reference](https://cp-algorithms.com/data_structures/segment_tree.html) for the source convention.
+
 # Sunday - C++ Pointer / OOP / Quant Simulation
 **0-8:** Daily Core. **8-28:** detailed C++ systems lab. **28-48:** timed benchmark. **48-55:** STL/quant drill. **55-60:** failure retype.
 **Week A:** full Pointer + OOP Systems Lab. **Week B:** full Order Book drill + pointer/tree excerpts.
-### 1. C++ Pointer + OOP Systems Lab
+### C++ Pointer + OOP Systems Lab
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -1194,7 +1779,7 @@ int main() {
 }
 ```
 
-### 2. Quant-style order-book / STL drill
+### Quant-style order-book / STL drill
 ```cpp
 struct Quote {
     long long id, px, qty;
@@ -1223,7 +1808,7 @@ public:
 };
 ```
 
-### 3. Optional low-level drill - every 3-4 Sundays
+### Optional low-level drill - every 3-4 Sundays
 ```cpp
 template<class T, size_t N>
 class ObjectPool {

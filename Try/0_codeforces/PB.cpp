@@ -67,25 +67,23 @@ void prec(){
 void solve(){
     ll l=0,r=0;
     ll x=0,w=0,y=0,z=0;
-    ll a=0,b=0,c=0,d=0;
+    ll a=2e9,b=0,c=0,d=0;
     ll g=0,q=0,k=0;
-    string s;
-    cin>>n>>s;
-    for(int i=0;i<n;++i){
-        if(s[i]=='0') a++;
-        else b++;
-        if(i==0||s[i]!=s[i-1]){
-            if(s[i]=='0') c++;
-            else d++;
+    cin>>n;
+    vector<int> arr(n,0);
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+        a=min(a,(ll)arr[i]);
+        b=max(b,(ll)arr[i]);
+    }
+    
+    ll res=b;
+    for(int i=30;i>=0;i--){
+        if((a&(1LL<<i))!= (b&(1LL<<i))){
+            res=b|((1LL<<i)-1);
+            break;
         }
     }
-    if(!a|| !b){
-        cout<<1<<endl;
-        return;
-    }
-    x=fac[a-1]*ifac[c-1]%MOD*ifac[a-c]%MOD;
-    y=fac[b-1]*ifac[d-1]%MOD*ifac[b-d]%MOD;
-    res=x*y%MOD;
     cout<<res<<endl;
 }
 
